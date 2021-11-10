@@ -3,7 +3,7 @@
 mkdir -p ~/.ssh && cd $_
 touch ~/.ssh/config
 echo "The default key name is github_jared.vogt"
-echo "Enter a new one (no spaces)... or return to accept"
+echo "Enter a new one (no spaces)... or return to accept"  # FIXME: allow for spaces
 read KEYNAME
 if [ ${#KEYNAME} -ge 1  ]
   then
