@@ -30,6 +30,13 @@ loopback
 audio-hijack
 vlc
 textexpander
+adobe-creative-cloud
+keycastr
+kindle
+putio-adder
+stay
+brave-browser
+espresso
 )
 
 for file in "${files[@]}" 

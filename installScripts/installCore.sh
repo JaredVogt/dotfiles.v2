@@ -2,21 +2,28 @@
 BREWCOMMAND="brew install --cask"
 # link these files to the home directory
 declare -a files=(
+# languages
+node
+python@3.10
+ruby
+# shell
+fish
+bash
+zsh-vi-mode
+# tools/help stuff
 jq
 fzf
-fish
-zsh-vi-mode
-vim
-ruby
-pygments
-bash
-brew isntall neovim
-switchaudio-osx
-loopback
-audio-hijack
-vlc
 tmux
 exa
+dockutil
+wget
+pygments
+# editors
+vim
+neovim
+# audio
+switchaudio-osx
+ffmpeg
 )
 
 for file in "${files[@]}" 
