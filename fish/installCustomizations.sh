@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
+#!/opt/homebrew/bin/fish
 
-DATAPATH=~/projects/dotfiles.v2/fish
+set DATAPATH ~/projects/dotfiles.v2/fish
 # this needs to be run inside of fish shell
 
 # set the theme
@@ -18,5 +18,6 @@ fisher install danhper/fish-ssh-agent
 fisher install jorgebucaran/fish-bax
 
 # move config.fish into place
-ln -sf $DATAPATH/setAbbreviations.sh ~/.config/fish/. 
+ln -sf $DATAPATH/aliases.fish ~/.config/fish/. 
+ln -sf $DATAPATH/config.fish ~/.config/fish/. 
 

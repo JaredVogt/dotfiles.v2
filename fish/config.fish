@@ -4,8 +4,11 @@ end
 
 fish_vi_key_bindings
 
+# source all aliases
+source ./aliases.fish
 
-# Got the chucnk below from: https://github.com/fish-shell/fish-shell/issues/5471
+
+# Got the chunk below from: https://github.com/fish-shell/fish-shell/issues/5471
 function fish_user_key_bindings
 #    fish_vi_mode
 #    bind -M insert \cf accept-autosuggestion
@@ -15,3 +18,4 @@ function fish_user_key_bindings
 #      bind -M $mode \cj 'history --merge ; down-or-search' 
 #    end
 end
+
