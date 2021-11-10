@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
+
 BREWCOMMAND="brew install --cask"
-# link these files to the home directory
 declare -a files=(
 1password
 alfred
+iterm2
 avibrazil-rdm
 mailplane
 macvim
