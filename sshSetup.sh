@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
 
-mkdir .ssh && cd $_
+mkdir -p .ssh && cd $_
 touch ~/.ssh/config
-echo "The default key name is github_jared.vogt" 
-ssh-keygen -t ed25519 -C "jared.vogt@gmail.com"
-# this will prompt for a file name. The commands below expect that filename to be `github_jared.vogt`
+echo "The default key name is github_jared.vogt"
+echo "Enter a new one... or return to accept"
+read KEYNAME
+if [ ${#KEYNAME} -ge 1  ]
+  then
+    echo "New name: $KEYNAME"
+  else
+    KEYNAME=github_jared.vogt
+fi
+ssh-keygen -t ed25519 -f $KEYNAME -C "jared.vogt@gmail.com"
 eval "$(ssh-agent -s)"
-ssh-add -K ~/.ssh/github_jared.vogt
-less github_jared.vogt.pub | pbcopy  # get the pub key to move to github
+ssh-add -K ~/.ssh/$KEYNAME
+less $KEYNAME.pub | pbcopy  # get the pub key to move to github
