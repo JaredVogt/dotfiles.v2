@@ -2,6 +2,7 @@
 
 mkdir .ssh && cd $_
 touch ~/.ssh/config
+echo "The default key name is github_jared.vogt" 
 ssh-keygen -t ed25519 -C "jared.vogt@gmail.com"
 # this will prompt for a file name. The commands below expect that filename to be `github_jared.vogt`
 eval "$(ssh-agent -s)"
