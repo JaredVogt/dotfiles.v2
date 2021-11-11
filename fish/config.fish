@@ -5,7 +5,7 @@ end
 fish_vi_key_bindings
 
 # source all aliases
-source ./aliases.fish
+source ~/.config/fish/aliases.fish
 
 
 # Got the chunk below from: https://github.com/fish-shell/fish-shell/issues/5471

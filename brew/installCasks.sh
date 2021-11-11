@@ -38,6 +38,8 @@ putio-adder
 stay
 brave-browser
 espresso
+easyfind
+profind
 )
 
 for file in "${files[@]}" 

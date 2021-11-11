@@ -17,6 +17,11 @@ fisher install jethrokuan/z
 fisher install danhper/fish-ssh-agent
 fisher install jorgebucaran/fish-bax
 
+# this is required to get node working  FIXME: but it still has to be run twice to prime pump??
+# https://eshlox.net/2019/01/27/how-to-use-nvm-with-fish-shell /https://superuser.com/questions/905255/how-to-get-fish-shell-and-nvm-both-installed-with-homebrew-to-work-together 
+omf install nvm
+set -gx NVM_DIR (brew --prefix nvm)
+
 # move config.fish into place
 ln -sf $DATAPATH/aliases.fish ~/.config/fish/. 
 ln -sf $DATAPATH/config.fish ~/.config/fish/. 
