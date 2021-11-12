@@ -19,3 +19,7 @@ function fish_user_key_bindings
 #    end
 end
 
+# set --universal tide_vi_mode_icon_default N
+# set --universal tide_vi_mode_icon_repalce R
+# set --universal tide_left_prompt_items vi_mode $tide_left_prompt_items
+# set -e --universal tide_right_prompt_items[(contains -i vimode $tide_right_prompt_items)]

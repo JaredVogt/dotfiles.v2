@@ -15,6 +15,7 @@ jq
 fzf
 tmux
 exa
+peco
 dockutil
 wget
 pygments

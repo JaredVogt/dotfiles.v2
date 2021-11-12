@@ -23,8 +23,13 @@ abbr -a proj 'cd ~/projects && ls -alhF'
 abbr -a config 'cd ~/.config && ls -alhF' # go to .config directory
 abbr -a cellar 'cd /opt/homebrew/Cellar && ls -alhF'
 
+# change themes
+abbr -a theme-agno 'fisher install hauleth/agnoster'
+abbr -a theme-tide 'fisher install IlanCosman/tide@v5'
 # Some git related abbrs
+# abbr -a gits git status
 abbr -a g 'git'
+abbr -a gam 'git commit -am'
 abbr -a ga 'git add'
 abbr -a gb 'git branch'
 abbr -a gbl 'git blame'

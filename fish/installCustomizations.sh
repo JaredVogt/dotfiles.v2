@@ -8,6 +8,9 @@ omf theme agnoster
 omf install agnoster
 
 # install plugins
+curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher  # plugin manager
+
+# fisher install IlanCosman/tide@v5  # https://github.com/IlanCosman/tide
 fisher install FabioAntunes/fish-nvm edc/bass
 fisher install jethrokuan/fzf
 fisher install laughedelic/pisces

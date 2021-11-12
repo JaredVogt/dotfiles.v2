@@ -14,6 +14,7 @@ keyboard-maestro
 switchresx
 inkdrop
 bettertouchtool
+witch
 little-snitch
 karabiner-elements
 slack
