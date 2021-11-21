@@ -6,8 +6,12 @@ declare -a files=(
 node
 python@3.10
 ruby
+luarocks
+deno
+# nvm
 # shell
 fish
+fisher
 bash
 zsh-vi-mode
 # tools/help stuff
@@ -19,9 +23,11 @@ peco
 dockutil
 wget
 pygments
+trash
 # editors
 vim
 neovim
+tree-sitter  # I think this is the right thing - need to verify how install works
 # audio
 switchaudio-osx
 ffmpeg

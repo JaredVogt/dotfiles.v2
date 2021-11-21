@@ -13,10 +13,16 @@ abbr -a less 'mdless'
 abbr -a rmt 'trash'
 abbr -a back 'cd -'
 
+# brew
+abbr -a bs 'brew search'
+abbr -a bi 'brew install'
+abbr -a bic 'brew install --cask'
+
 # application shortcuts
 abbr -a imgcat '~/.iterm2/imgcat'
 abbr -a ipm '/Applications/Inkdrop.app/Contents/Resources/app/ipm/bin/ipm'
 abbr -a lvim '/Users/jaredvogt/.local/bin/lvim'
+abbr -a luv 'nvim -u ~/.config/nvim/init.lua'
 
 # directories
 abbr -a proj 'cd ~/projects && ls -alhF'
