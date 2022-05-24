@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-BREWCOMMAND="brew install --cask"
+BREWCOMMAND="brew install"
 # link these files to the home directory
 declare -a files=(
 # languages
@@ -24,6 +24,9 @@ dockutil
 wget
 pygments
 trash
+ripgrep
+ripgrep-all
+fasd
 # editors
 vim
 neovim

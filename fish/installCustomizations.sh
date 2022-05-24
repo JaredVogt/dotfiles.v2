@@ -20,6 +20,13 @@ fisher install oh-my-fish/plugin-pj
 fisher install jethrokuan/z
 fisher install danhper/fish-ssh-agent
 fisher install jorgebucaran/fish-bax
+fisher install jorgebucaran/autopair.fish
+fisher install fishgretel/fasd
+
+# FIXME the fasd plugin requires a fix ~/.config/fish/conf.d/__fasd_run.fish. 
+# for now, this script will copy over the fixed file
+
+cp __fasd_run.fish ~/.config/fish/conf.d/.
 
 # this is required to get node working  FIXME: but it still has to be run twice to prime pump??
 # https://eshlox.net/2019/01/27/how-to-use-nvm-with-fish-shell /https://superuser.com/questions/905255/how-to-get-fish-shell-and-nvm-both-installed-with-homebrew-to-work-together 

@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
+# i is interactive mode
+# this will loop through all of the apps and ask for confirmation - only confirmated ones will be installed
+
 BREWCOMMAND="brew install --cask"
 declare -a files=(
+
 1password
 adobe-creative-cloud
 alacritty
@@ -36,10 +40,12 @@ profind
 putio-adder
 python
 slack
+spotify
 stay
 switchaudio-osx
 switchresx
 textexpander
+tidal
 vimr
 vlc
 witch
