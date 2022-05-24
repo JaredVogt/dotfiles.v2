@@ -1,0 +1,29 @@
+# languages
+node
+python@3.10
+ruby
+luarocks
+deno
+# nvm
+# shell
+fish
+fisher
+bash
+zsh-vi-mode
+# tools/help stuff
+jq
+fzf
+tmux
+exa
+peco
+dockutil
+wget
+pygments
+trash
+# editors
+vim
+neovim
+tree-sitter
+# audio
+switchaudio-osx
+ffmpeg
