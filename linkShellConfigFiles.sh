@@ -12,6 +12,8 @@ ln -sfv $DATAPATH/fish/config.fish ~/.config/fish/.
 ln -sfv $DATAPATH/fish/aliases.fish ~/.config/fish/. 
 ln -sfv $DATAPATH/fish/functions/*.fish ~/.config/fish/functions/  # move all functions into place
 
+# move git files into place
+ln -sfv $DATAPATH/git/.gitconfig ~/.
 
 
 
