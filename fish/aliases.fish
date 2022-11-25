@@ -4,7 +4,9 @@ abbr -a l 'less'  # this uses actual less
 abbr -a h 'history -R -n 75'
 abbr -a hs 'history search'
 abbr -a reload 'source ~/.config/fish/config.fish'
-abbr -a ralias '~/.config/fish/setAbbreviations.sh'  # FIXME this is abandoned?
+abbr -a r 'source ~/.config/fish/config.fish'
+# abbr -a ralias 'nvim ~/.config/fish/setAbbreviations.sh'  # FIXME this is abandoned?
+abbr -a raliases 'nvim ~/.config/fish/aliases.fish'
 abbr -a aliases 'less ~/.config/fish/aliases.fish'
 abbr -a lla 'exa --git -l -g --icons -h -a -H --time-style=long-iso'  # https://www.youtube.com/watch?v=KKxhf50FIPI&t=305s  
 # git, long, group, icons, header, all , links, long-iso date / man exa   
@@ -23,7 +25,8 @@ abbr -a bic 'brew install --cask'
 abbr -a imgcat '~/.iterm2/imgcat'
 abbr -a ipm '/Applications/Inkdrop.app/Contents/Resources/app/ipm/bin/ipm'
 abbr -a ks 'ksc -ms -p'
-abbr -a jv 'nvim -u ~/.config/nvim/jaredv.init.lua'
+# abbr -a jv 'nvim -u ~/.config/nvim/jaredv.init.lua'
+abbr -a sess 'nvim -S Session.vim'
 
 # my shortcuts
 
@@ -58,6 +61,10 @@ abbr -a gr 'git remote'
 abbr -a grb 'git rebase'
 abbr -a gs 'git status'
 abbr -a gst 'git stash'
+abbr -a gamm 'git commit --ammend'
 
 # tmux abbreviations
 abbr -a tl 'tmux list-sessions'
+abbr -a ta 'tmux attach -t'
+abbr -a tk 'tmux kill-session -t'
+abbr -a tr 'tmux rename-session -t'

@@ -112,3 +112,8 @@ export GEM_HOME=$HOME/gems
 export PATH=$HOME/gems/bin:$PATH
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+# Run these commands immediately
+echo "popping directly into fish"
+cd ~/projects
+fish

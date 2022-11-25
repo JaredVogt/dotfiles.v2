@@ -19,10 +19,12 @@ ipm install link-card
 ipm install markdown-emoji
 ipm install material-dark-mod-syntax
 ipm install math
+ipm install mermaid
 ipm install open-in-external-editor
 ipm install paste-as-markdown
 ipm install paste-as-plain-text
 ipm install paste-url
+ipm install preview-word-wrap
 ipm install sequence-diagrams
 ipm install sidetoc
 ipm install simple-note-list

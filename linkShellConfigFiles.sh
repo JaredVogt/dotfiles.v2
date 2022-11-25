@@ -15,5 +15,9 @@ ln -sfv $DATAPATH/fish/functions/*.fish ~/.config/fish/functions/  # move all fu
 # move git files into place
 ln -sfv $DATAPATH/git/.gitconfig ~/.
 
+# move tmux conf file into place
+ln -sfv $DATAPATH/tmux/.tmux.conf ~/.
 
+# move README.md into place 
+ln -sfv $DATAPATH/README.md ~/.
 
