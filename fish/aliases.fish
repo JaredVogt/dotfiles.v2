@@ -1,20 +1,23 @@
 #!/opt/homebrew/bin/fish
 
-abbr -a l 'less'  # this uses actual less
+abbr -a l 'bat'  # this uses actual less
 abbr -a h 'history -R -n 75'
 abbr -a hs 'history search'
 abbr -a reload 'source ~/.config/fish/config.fish'
 abbr -a r 'source ~/.config/fish/config.fish'
-# abbr -a ralias 'nvim ~/.config/fish/setAbbreviations.sh'  # FIXME this is abandoned?
-abbr -a raliases 'nvim ~/.config/fish/aliases.fish'
-abbr -a aliases 'less ~/.config/fish/aliases.fish'
+abbr -a ral 'nvim ~/.config/fish/aliases.fish'
+abbr -a aliases 'bat ~/.config/fish/aliases.fish'
 abbr -a lla 'exa --git -l -g --icons -h -a -H --time-style=long-iso'  # https://www.youtube.com/watch?v=KKxhf50FIPI&t=305s  
 # git, long, group, icons, header, all , links, long-iso date / man exa   
 abbr -a lll 'ls -alhF'
+abbr -a ... '../..'
+abbr -a .... '../../..'
+abbr -a ..... '../../../..'
 abbr -a less 'mdless'
-abbr -a rmt 'trash'
+abbr -a rmnt 'rm'
 abbr -a back 'cd -'
 abbr -a rm 'trash'
+# abbr -a z 'zoxide'
 
 # brew
 abbr -a bs 'brew search'
@@ -27,6 +30,7 @@ abbr -a ipm '/Applications/Inkdrop.app/Contents/Resources/app/ipm/bin/ipm'
 abbr -a ks 'ksc -ms -p'
 # abbr -a jv 'nvim -u ~/.config/nvim/jaredv.init.lua'
 abbr -a sess 'nvim -S Session.vim'
+abbr -a youtubedl 'youtube-dl -f bestvideo+bestaudio'
 
 # my shortcuts
 
@@ -68,3 +72,4 @@ abbr -a tl 'tmux list-sessions'
 abbr -a ta 'tmux attach -t'
 abbr -a tk 'tmux kill-session -t'
 abbr -a tr 'tmux rename-session -t'
+abbr -a tn "tmux new -s (pwd | sed 's/.*\///g')"  # grab current directory and create a new tmux session with that name

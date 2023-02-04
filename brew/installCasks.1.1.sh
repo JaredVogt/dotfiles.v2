@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # i is interactive mode
-# this will loop through all of the apps and ask for confirmation - only confirmated ones will be installed
+# this will loop through all of the apps and ask for confirmation - only confirmed ones will be installed
 
 # FIXME figure out what cores I installed and what was installed as a dependancy
 # TIP brew leaves | xargs brew deps --installed --for-each | sed "s/^.*:/$(tput setaf 4)&$(tput sgr0)/"

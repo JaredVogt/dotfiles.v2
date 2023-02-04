@@ -1,29 +1,45 @@
-# languages
-node
-python@3.10
-ruby
-luarocks
-deno
-# nvm
-# shell
-fish
-fisher
 bash
-zsh-vi-mode
-# tools/help stuff
-jq
-fzf
-tmux
-exa
-peco
+bat
+btop
+cscope
+deno
 dockutil
-wget
-pygments
-trash
-# editors
-vim
-neovim
-tree-sitter
-# audio
-switchaudio-osx
+entr
+exa
+fasd
+fd
 ffmpeg
+fisher
+fzf
+gawk
+grep
+helix
+jakehilborn/jakehilborn/displayplacer
+jq
+jsonpp
+libssh2
+luajit-openresty
+luarocks
+mas
+neovide
+node
+nvm
+pcre
+peco
+pygments
+python@3.10
+python@3.9
+redis
+ripgrep-all
+rust
+six
+speedtest-cli
+stow
+switchaudio-osx
+tmux
+trash
+vim
+wifi-password
+youtube-dl
+zoxide
+zsh-vi-mode
