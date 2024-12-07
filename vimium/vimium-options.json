@@ -1,0 +1,24 @@
+{
+  "keyMappings": "# Insert your preferred key mappings here.# Insert your preferred key mappings here.\n# Useful list of commands - https://github.com/philc/vimium/wiki/Key-Mappings\nmap  F LinkHints.activateMode\nmap  f LinkHints.activateModeToOpenInNewTab\nmap  H goBack\nmap  L goForward\nmap  l nextTab\nmap  h previousTab\nmap o Vomnibar.activateInNewTab\nmap O Vomnibar.activate\nmap b Vomnibar.activateBookmarksInNewTab\nmap B Vomnibar.activateBookmarks\n\nmap <c-h> createTab https://github.com/JaredVogt/dotfiles/blob/master/macos/apps/vimium_mappings.md#keyboard-bindings\nmap t createTab file:///tmp/helpme.html#index\nmap z createTab www.native-instruments.com/forum/forums/maschine-area.222/ line6.com/support/forum/86-helix/\nmap c createTab https://coinmarketcap.com/all/views/all/\nmap a createTab file:///tmp/helpme.html#index\n#map a createWindow https://test",
+  "linkHintCharacters": "sadfjklwcmpgh",
+  "scrollStepSize": 100,
+  "settingsVersion": "2.1.2",
+  "exclusionRules": [
+    {
+      "passKeys": "",
+      "pattern": "https?://mail.google.com/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://codeshare.io/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://duc.avid.com/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://airtable.com/*"
+    }
+  ]
+}

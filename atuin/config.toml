@@ -1,0 +1,114 @@
+## atuin config file
+
+## Vim-style modal behavior
+keymap_mode = "vim-normal"    # Start in normal mode
+enter_accept = false          # Shift+Enter to execute, Enter to paste
+
+# Navigation keys (vim-style)
+key_binding_up = "k"
+key_binding_down = "j"
+key_binding_search = "/"
+key_binding_search_next = "n"
+key_binding_search_prev = "N"
+key_binding_exit = ["q", "Escape"]
+key_binding_bottom = "G"
+key_binding_top = "gg"
+key_binding_page_up = "Control-U"
+key_binding_page_down = "Control-D"
+key_binding_select = "v"
+key_binding_filter_mode = "i"
+
+filter_mode = "global"
+
+# db_path = "~/.history.db"
+# key_path = "~/.key"
+# session_path = "~/.session"
+# dialect = "us"
+# timezone = "local"
+# auto_sync = true
+update_check = true
+# sync_address = "https://api.atuin.sh"
+# sync_frequency = "10m"
+search_mode = "fuzzy"
+# workspaces = false
+# filter_mode_shell_up_key_binding = "global"
+# search_mode_shell_up_key_binding = "fuzzy"
+# style = "auto"
+# inline_height = 0
+# invert = false
+# show_preview = true
+exit_mode = "return-original"
+# word_jump_mode = "emacs"
+# word_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+# scroll_context_lines = 1
+# ctrl_n_shortcuts = false
+history_format = "{time}\t{command}\t{duration}"
+# history_filter = [
+#   "^secret-cmd",
+#   "^innocuous-cmd .*--secret=.+",
+# ]
+# cwd_filter = [
+#   "^/very/secret/area",
+# ]
+# max_preview_height = 4
+show_help = true
+show_tabs = true
+# secrets_filter = true
+keymap_cursor = { emacs = "blink-block", vim_insert = "blink-block", vim_normal = "steady-block" }
+# network_connect_timeout = 5
+# network_timeout = 5
+# local_timeout = 5
+# prefers_reduced_motion = false
+
+[keys]
+scroll_exits = false          # Don't exit when scrolling past edges
+
+history_filter = [
+#  "^secret-cmd",
+#  "^innocuous-cmd .*--secret=.+",
+  "^alias$",
+  "^anotherone$"
+]
+
+[stats]
+# common_subcommands = [
+#   "apt",
+#   "cargo",
+#   "composer",
+#   "dnf",
+#   "docker",
+#   "git",
+#   "go",
+#   "ip",
+#   "kubectl",
+#   "nix",
+#   "nmcli",
+#   "npm",
+#   "pecl",
+#   "pnpm",
+#   "podman",
+#   "port",
+#   "systemctl",
+#   "tmux",
+#   "yarn",
+# ]
+# common_prefix = ["sudo"]
+ignored_commands = [
+  "cd",
+  "ls",
+  "lla",
+  "..",
+]
+
+[sync]
+records = true
+
+[preview]
+# strategy = "auto"
+
+[daemon]
+# enabled = false
+# sync_frequency = 300
+# socket_path = "~/.local/share/atuin/atuin.sock"
+# systemd_socket = false
+# tcp_port = 8889

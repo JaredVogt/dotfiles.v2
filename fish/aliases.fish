@@ -7,10 +7,11 @@ abbr -a reload 'source ~/.config/fish/config.fish'
 abbr -a r 'source ~/.config/fish/config.fish'
 abbr -a ral 'nvim ~/.config/fish/aliases.fish'
 abbr -a aliases 'bat ~/.config/fish/aliases.fish'
-abbr -a lla 'exa --git -l -g --icons -h -a -H --time-style=long-iso'  # https://www.youtube.com/watch?v=KKxhf50FIPI&t=305s  
+abbr -a lla 'eza --git -l -g --icons -h -a -H --time-style=long-iso'  # https://www.youtube.com/watch?v=KKxhf50FIPI&t=305s  
 # git, long, group, icons, header, all , links, long-iso date / man exa   
 abbr -a lll 'ls -alhF'
 abbr -a ... '../..'
+abbr -a - 'cd -'
 abbr -a .... '../../..'
 abbr -a ..... '../../../..'
 abbr -a less 'mdless'

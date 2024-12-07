@@ -1,0 +1,16 @@
+[manager]
+show_hidden = true
+
+keymap = [
+    { on = ["<Esc>"], exec = "quit" }
+]
+
+[[opener.rules]]
+name = "directory"
+pattern = "^.*/$"
+run = 'cd "$@"'
+
+[[opener.rules]]
+name = "text"
+pattern = "*"
+run = '$EDITOR "$@"'
