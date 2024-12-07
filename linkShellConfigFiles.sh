@@ -11,6 +11,7 @@ ln -sfv $REPOPATH/zsh/.zshrc ~/.
 # move fish files into place
 ln -sfv $REPOPATH/fish/config.fish $CONFIGPATH/fish/. 
 ln -sfv $REPOPATH/fish/aliases.fish $CONFIGPATH/fish/. 
+ln -sfv $REPOPATH/fish/aliases_git.fish $CONFIGPATH/fish/. 
 ln -sfv $REPOPATH/fish/functions/*.fish $CONFIGPATH/fish/functions/  # move all functions into place
 
 # move git files into place

@@ -113,6 +113,6 @@ eval "$(atuin init zsh)"
 # Last commands to execute
 echo "popping directly into fish"
 cd ~/projects
-# fish
+fish
 
 

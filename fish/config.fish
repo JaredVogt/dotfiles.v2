@@ -1,37 +1,38 @@
 if status is-interactive
     # Commands to run in interactive sessions can go here
+    setupFisher
+    fisherUpdate
 end
 
+# Disable the welcome message that appears when opening a new shell
+set fish_greeting
+
+# Enable vi mode
 fish_vi_key_bindings
+
+# Set cursor shapes for different vi modes
 set fish_cursor_default block
 set fish_cursor_insert line
 set fish_cursor_replace_one underscore
 set fish_cursor_visual block
 
-# source all aliases
+# Source all aliases
 source ~/.config/fish/aliases.fish
+source ~/.config/fish/aliases_git.fish
 
-# get zoxide running
+# Initialize zoxide (smart directory jumper)
 zoxide init fish | source
+
+# Initialize starship prompt
 starship init fish | source
+
+# Initialize atuin (shell history manager)
 atuin init fish | source
 
 # Bind up arrow and 'k' in vi mode to Atuin search
 bind -k up _atuin_search
 bind -M default k _atuin_search
 
-# Got the chunk below from: https://github.com/fish-shell/fish-shell/issues/5471
-function fish_user_key_bindings
-#    fish_vi_mode
-   bind -M insert \cf accept-autosuggestion
-   bind \cf accept-autosuggestion
-#    for mode in insert default visual
-#      bind -M $mode \ck 'history --merge ; up-or-search'
-#      bind -M $mode \cj 'history --merge ; down-or-search' 
-#    end
-end
-
-# set --universal tide_vi_mode_icon_default N
-# set --universal tide_vi_mode_icon_repalce R
-# set --universal tide_left_prompt_items vi_mode $tide_left_prompt_items
-# set -e --universal tide_right_prompt_items[(contains -i vimode $tide_right_prompt_items)]
+# Bind Ctrl+F to accept autosuggestion in both insert and default modes
+bind -M insert \cf accept-autosuggestion
+bind \cf accept-autosuggestion
