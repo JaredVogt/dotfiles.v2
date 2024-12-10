@@ -1,6 +1,10 @@
 #!/opt/homebrew/bin/fish
 
-abbr -a l 'bat'  # this uses actual less
+abbr -a n 'nvim'
+abbr -a y 'yazi'
+abbr -a mess 'mdless'  # less for markdown
+abbr -a more 'less'  # less is better than more 
+abbr -a cat 'bat'  # bat is better 
 abbr -a h 'history -R -n 75'
 abbr -a hs 'history search'
 abbr -a reload 'source ~/.config/fish/config.fish'
@@ -14,7 +18,6 @@ abbr -a ... '../..'
 abbr -a - 'cd -'
 abbr -a .... '../../..'
 abbr -a ..... '../../../..'
-abbr -a less 'mdless'
 abbr -a rmnt 'rm'
 abbr -a back 'cd -'
 abbr -a rm 'trash'
@@ -22,6 +25,7 @@ abbr -a rm 'trash'
 
 # brew
 abbr -a bs 'brew search'
+abbr -a bo 'brew outdated'
 abbr -a bi 'brew install'
 abbr -a bic 'brew install --cask'
 
@@ -30,7 +34,7 @@ abbr -a imgcat '~/.iterm2/imgcat'
 abbr -a ipm '/Applications/Inkdrop.app/Contents/Resources/app/ipm/bin/ipm'
 abbr -a ks 'ksc -ms -p'
 # abbr -a jv 'nvim -u ~/.config/nvim/jaredv.init.lua'
-abbr -a sess 'nvim -S Session.vim'
+abbr -a sess 'nvim -S ~/projects/dotfiles.v2/Session.vim'
 abbr -a youtubedl 'youtube-dl -f bestvideo+bestaudio'
 
 # my shortcuts

@@ -1,5 +1,4 @@
-# Git Abbreviations for Fish Shell
-# Save this as ~/.config/fish/conf.d/git_abbreviations.fish
+# Git Abbreviations for Fish Shell (these were adapted from OhMyZsh)
 
 # Helper functions
 function git_main_branch
