@@ -12,6 +12,7 @@ abbr -a r 'source ~/.config/fish/config.fish'
 abbr -a ral 'nvim ~/.config/fish/aliases.fish'
 abbr -a aliases 'bat ~/.config/fish/alias*.fish'
 abbr -a lla 'eza --git -l -g --icons -h -a -H --time-style=long-iso'  # https://www.youtube.com/watch?v=KKxhf50FIPI&t=305s  
+abbr -a l 'eza --git -l -g --icons -h -a -H --time-style=long-iso'  
 # git, long, group, icons, header, all , links, long-iso date / man exa   
 abbr -a lll 'ls -alhF'
 abbr -a ... '../..'
@@ -21,6 +22,7 @@ abbr -a ..... '../../../..'
 abbr -a rmnt 'rm'
 abbr -a back 'cd -'
 abbr -a rm 'trash'
+abbr -a icat 'kitty icat'
 # abbr -a z 'zoxide'
 
 # brew
@@ -34,8 +36,11 @@ abbr -a imgcat '~/.iterm2/imgcat'
 abbr -a ipm '/Applications/Inkdrop.app/Contents/Resources/app/ipm/bin/ipm'
 abbr -a ks 'ksc -ms -p'
 # abbr -a jv 'nvim -u ~/.config/nvim/jaredv.init.lua'
-abbr -a sess 'nvim -S ~/projects/dotfiles.v2/Session.vim'
+abbr -a sess 'name-window dotfiles; nvim -S ~/projects/dotfiles.v2/Session.vim'
+abbr -a vc 'name-window nvim_config; nvim -S ~/.config/nvim/Session.vim'
 abbr -a youtubedl 'youtube-dl -f bestvideo+bestaudio'
+abbr -a relink '~/projects/dotfiles.v2/linkShellConfigFiles.sh'
+abbr -a ad 'atuinDelete'
 
 # my shortcuts
 

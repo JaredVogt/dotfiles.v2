@@ -164,7 +164,7 @@ vimcmd_visual_symbol = "[ V ](bg:#FFFFFF fg:#000000)"   # Black text on white bg
 
 
 [shell]
-fish_indicator = "FISH"
+fish_indicator = "🐡"
 zsh_indicator = ""
 style = "bg:#9A348E fg:#FF0000"
 format = '[](${env_var.STARSHIP_SHELL == "fish" && "bg:#98971a" || "bg:#9A348E"})[$indicator]($style)'

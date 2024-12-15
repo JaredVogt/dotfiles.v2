@@ -89,8 +89,14 @@ fi
 # - $ZSH_CUSTOM/macos.zsh
 # For a full list of active aliases, run `alias`.
 #
-# Example aliases
+
+# Aliases
+alias ipm=/Applications/Inkdrop.app/Contents/Resources/app/ipm/bin/ipm
+alias lla="eza --git -l -g --icons -h -a -H --time-style=long-iso"
 alias reload="source ~/.zshrc"
+# alias reload="source ~/.zprofile"
+alias proj="cd ~/projects"
+alias cellar="cd /opt/homebrew/Cellar && lla"
 
 ## VIM MODE STUFF
 # Changes the cursor shape for different modes
@@ -101,6 +107,11 @@ VI_MODE_SET_CURSOR=true
 # MODE_INDICATOR="%F{white}<%F{yellow}NORMAL%F{white}>"
 # INSERT_MODE_INDICATOR="%F{white}<%F{green}INSERT%F{white}>"
 # VISUAL_MODE_INDICATOR="%F{white}<%F{blue}VISUAL%F{white}>"
+
+## eza stuff
+# FIXME this is fucked up - https://github.com/eza-community/eza/issues/1224
+# It should be reading $XDG_CONFIG_HOME but it isn't
+export EZA_CONFIG_DIR=/Users/jaredvogt/.config/eza
 
 ## Starship stuff
 export STARSHIP_CONFIG=~/.config/starship/starship.toml

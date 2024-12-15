@@ -9,9 +9,7 @@ ln -sfv $REPOPATH/zsh/.zshenv ~/.
 ln -sfv $REPOPATH/zsh/.zshrc ~/.
 
 # move fish files into place
-ln -sfv $REPOPATH/fish/config.fish $CONFIGPATH/fish/. 
-ln -sfv $REPOPATH/fish/aliases.fish $CONFIGPATH/fish/. 
-ln -sfv $REPOPATH/fish/aliases_git.fish $CONFIGPATH/fish/. 
+ln -sfv $REPOPATH/fish/*.fish $CONFIGPATH/fish/. 
 ln -sfv $REPOPATH/fish/functions/*.fish $CONFIGPATH/fish/functions/  # move all functions into place
 
 # move git files into place
@@ -36,8 +34,7 @@ ln -sfv $REPOPATH/wezterm/wezterm.lua $CONFIGPATH/wezterm/.
 ln -sfv $REPOPATH/karabiner/karabiner.json $CONFIGPATH/karabiner/. 
 
 # move nushell file into place
-ln -sfv $REPOPATH/nushell/config.nu $CONFIGPATH/nushell/. 
-ln -sfv $REPOPATH/nushell/env.nu $CONFIGPATH/nushell/. 
+ln -sfv $REPOPATH/nushell/*.nu $CONFIGPATH/nushell/. 
 
 # move vimium-options file into place
 ln -sfv $REPOPATH/vimium/vimium-options.json $CONFIGPATH/vimium/. 
@@ -47,4 +44,3 @@ ln -sfv $REPOPATH/yazi/yazi.toml $CONFIGPATH/yazi/.
 
 # move kitty file into place
 ln -sfv $REPOPATH/kitty/kitty.conf $CONFIGPATH/kitty/. 
-

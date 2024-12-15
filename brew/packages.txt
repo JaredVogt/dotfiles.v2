@@ -1,0 +1,103 @@
+## Regular homebrew packages - core utilities, CLI tools, and development dependencies
+bash
+bat
+# btop
+# cscope
+# deno
+# dockutil
+# entr
+eza
+# fasd
+fd
+# ffmpeg
+# fisher
+fzf
+# gawk
+# grep
+# helix
+imagemagick
+# jakehilborn/jakehilborn/displayplacer
+jq
+# jsonpp
+# libssh2
+# luajit-openresty
+# luarocks
+# mas
+mdless
+neovim
+node
+# node@22
+nushell
+# nvm
+# pcre
+# peco
+# pygments
+# python@3.10
+# python@3.9
+readline
+redis
+ripgrep
+# ripgrep-all
+ruby
+rust
+# six
+speedtest-cli
+starship
+# stow
+# switchaudio-osx
+tmux
+# trash
+tree-sitter
+vim
+# wifi-password
+xz
+yazi
+youtube-dl
+zoxide
+# zsh-vi-mode
+
+## Cask packages - applications, fonts, and GUI tools
+# --cask 1password
+--cask alfred
+# --cask alt-tab
+# --cask amethyst
+--cask audio-hijack
+# --cask avibrazil-rdm
+# --cask bartender
+--cask bettertouchtool
+--cask bitbar
+# --cask cheatsheet
+--cask discord
+--cask easyfind
+# --cask fantastical
+--cask font-fira-code
+--cask font-fira-code-nerd-font
+--cask font-hack-nerd-font
+--cask font-jetbrains-mono-nerd-font
+# --cask iina
+--cask inkdrop
+# --cask karabiner-elements
+# --cask keepassx
+--cask keyboard-maestro
+# --cask keycastr
+--cask kitty
+--cask little-snitch
+# --cask loopback
+--cask macvim
+--cask moom
+--cask neovide
+# --cask nikitabobko/tap/aerospace
+# --cask path-finder
+# --cask popclip
+# --cask postman
+# --cask profind
+--cask raycast
+# --cask stay
+--cask spotify
+--cask switchresx
+--cask textexpander
+--cask tidal
+--cask vlc
+--cask warp
+--cask wezterm
+# --cask witch
