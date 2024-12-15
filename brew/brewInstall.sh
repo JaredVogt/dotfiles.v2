@@ -17,6 +17,13 @@ log_message() {
     echo "$1" | tee -a "$LOG_FILE"
 }
 
+# Function to log only if verbose
+verbose_log() {
+    if [ "$VERBOSE" = true ]; then
+        log_message "$1"
+    fi
+}
+
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -207,7 +214,7 @@ for package in "${regular_packages[@]}"; do
                 log_message "Skipping upgrade of $package"
             fi
         else
-            log_message "$package is already installed and up to date. Skipping."
+            verbose_log "$package is already installed and up to date. Skipping."
         fi
     else
         if (( ${package_decisions[$package]} )); then
@@ -233,7 +240,7 @@ for package in "${cask_packages[@]}"; do
                 log_message "Skipping upgrade of $package"
             fi
         else
-            log_message "$package is already installed and up to date. Skipping."
+            verbose_log "$package is already installed and up to date. Skipping."
         fi
     else
         if (( ${package_decisions[$package]} )); then

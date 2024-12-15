@@ -1,3 +1,8 @@
+# Handles the installation and setup of Fisher package manager and essential plugins.
+# Reads plugin list from ../fish_plugins file and ensures all are installed.
+# Automatically installs Fisher if not present, then checks for and installs missing plugins.
+# Usage: Call setupFisher to ensure Fisher and all required plugins are installed.
+
 function fisherUpdate
     # Get current day of month
     set -l current_day (date '+%-d')

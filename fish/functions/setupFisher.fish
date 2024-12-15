@@ -1,11 +1,24 @@
+# Handles the installation and setup of Fisher package manager and essential plugins.
+# Reads plugin list from $XDG_CONFIG_HOME/fish/fish_plugins (defaults to ~/.config/fish/fish_plugins)
+# Automatically installs Fisher if not present, then checks for and installs missing plugins.
+# Usage: Call setupFisher to ensure Fisher and all required plugins are installed.
+
 function setupFisher
     echo "Running Fisher Setup"
-    # List of desired plugins
-    set -l plugin_list \
-        'PatrickF1/fzf.fish' \
-        'jorgebucaran/nvm.fish' \
-        'jorgebucaran/autopair.fish' \
-        'nickeb96/puffer-fish'
+    # Determine config path
+    set -l config_dir $XDG_CONFIG_HOME
+    if test -z "$XDG_CONFIG_HOME"
+        set config_dir ~/.config
+    end
+    set -l plugin_file "$config_dir/fish/fish_plugins"
+
+    if not test -e $plugin_file
+        echo "Error: $plugin_file not found"
+        return 1
+    end
+    
+    # Read plugin list from file, skipping empty lines and comments
+    set -l plugin_list (cat $plugin_file | string match -rv '^#|^$')
 
     # Check if fisher is installed - if not, install it
     if not type -q fisher
@@ -35,7 +48,6 @@ function setupFisher
             end
         end
     end
-
     # Install any missing plugins
     if test -n "$missing_plugins"
         echo "Installing missing plugins: $missing_plugins"
