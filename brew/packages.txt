@@ -52,7 +52,7 @@ vim
 # wifi-password
 xz
 yazi
-youtube-dl
+# youtube-dl
 zoxide
 # zsh-vi-mode
 
@@ -66,6 +66,7 @@ zoxide
 # --cask bartender
 --cask bettertouchtool
 --cask bitbar
+--cask chatgpt
 # --cask cheatsheet
 --cask discord
 --cask easyfind

@@ -23,7 +23,7 @@ abbr -a rmnt 'rm'
 abbr -a back 'cd -'
 abbr -a rm 'trash'
 abbr -a icat 'kitty icat'
-# abbr -a z 'zoxide'
+ abbr -a zz 'zi'
 
 # brew
 abbr -a bs 'brew search'

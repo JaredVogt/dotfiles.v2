@@ -3,10 +3,16 @@
 REPOPATH=~/projects/dotfiles.v2
 CONFIGPATH=~/.config
 
+# FIXME a bunch of these directories won't exist... so have to create them first
+
 # move zsh files into place
 ln -sfv $REPOPATH/zsh/.zprofile ~/.
 ln -sfv $REPOPATH/zsh/.zshenv ~/.
 ln -sfv $REPOPATH/zsh/.zshrc ~/.
+ln -sfv $REPOPATH/zsh/aliases.zsh $CONFIGPATH/zsh/. 
+# ln -sfv $REPOPATH/zsh/functions/ $CONFIGPATH/zsh/functions/. # FIXME move any files in htis folder
+# mkdir -p $CONFIGPATH/zsh/functions && find $REPOPATH/zsh/functions -type f -exec ln -s {} $CONFIGPATH/zsh/functions/. + 
+mkdir -p "$CONFIGPATH/zsh/functions" && find "$REPOPATH/zsh/functions" -type f -exec ln -sfv {} "$CONFIGPATH/zsh/functions/." \; 
 
 # move fish files into place
 ln -sfv $REPOPATH/fish/*.fish $CONFIGPATH/fish/. 
