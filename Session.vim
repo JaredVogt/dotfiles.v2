@@ -43,7 +43,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 2 - ((1 * winheight(0) + 57) / 114)
+let s:l = 2 - ((1 * winheight(0) + 55) / 111)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -64,27 +64,11 @@ setlocal fdn=20
 setlocal fen
 3
 normal! zo
-241
+432
 normal! zo
-431
+1923
 normal! zo
-587
-normal! zo
-779
-normal! zo
-856
-normal! zo
-1053
-normal! zo
-1411
-normal! zo
-1798
-normal! zo
-1922
-normal! zo
-2460
-normal! zo
-let s:l = 1784 - ((57 * winheight(0) + 57) / 114)
+let s:l = 1784 - ((372 * winheight(0) + 55) / 111)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -109,7 +93,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 38 - ((37 * winheight(0) + 57) / 114)
+let s:l = 38 - ((36 * winheight(0) + 55) / 111)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -133,7 +117,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 28 - ((27 * winheight(0) + 57) / 114)
+let s:l = 28 - ((26 * winheight(0) + 55) / 111)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -157,7 +141,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 57) / 114)
+let s:l = 1 - ((0 * winheight(0) + 55) / 111)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -178,7 +162,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 30 - ((29 * winheight(0) + 57) / 114)
+let s:l = 30 - ((28 * winheight(0) + 55) / 111)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt

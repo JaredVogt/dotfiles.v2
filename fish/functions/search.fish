@@ -46,7 +46,7 @@ function search
     # --color=always: Necessary for fzf preview
     # --smart-case: Case-insensitive unless pattern contains uppercase
     # Store the search result in a variable for processing
-    set -l result (rg --line-number --no-heading --color=always --smart-case \
+    set -l result (rg --line-number --no-heading --color=always --smart-case --follow \
        $ignore_patterns \
        "$argv" |
     # Pipe to fzf for interactive filtering

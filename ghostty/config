@@ -7,14 +7,14 @@ background-opacity = 0.8
 background-blur-radius = 20
 
 # Set a theme (optional, but can enhance the transparent effect)
-theme = dark
+# theme = dark
 
 # Ensure window decorations are disabled for a cleaner look
-window-decoration = false
+window-decoration = true
 
 # Set a font and size (optional, adjust as needed)
 font-family = JetBrains Mono
-font-size = 14
+font-size = 15
 
 # Enable clipboard integration
 clipboard-read = allow
