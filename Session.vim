@@ -13,12 +13,12 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +1 linkShellConfigFiles.sh
-badd +1 kitty/kitty.conf
-badd +1 fish/aliases.fish
-badd +1 fish/config.fish
+badd +12 linkShellConfigFiles.sh
+badd +1784 kitty/kitty.conf
+badd +30 fish/aliases.fish
+badd +38 fish/config.fish
 badd +1 starship/starship.toml
-badd +0 atuin/config.toml
+badd +1 atuin/config.toml
 argglobal
 %argdel
 $argadd linkShellConfigFiles.sh
@@ -43,12 +43,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 14 - ((13 * winheight(0) + 57) / 115)
+let s:l = 2 - ((1 * winheight(0) + 57) / 114)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 14
-normal! 032|
+keepjumps 2
+normal! 0
 tabnext
 edit kitty/kitty.conf
 argglobal
@@ -62,11 +62,33 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 1 - ((0 * winheight(0) + 57) / 115)
+3
+normal! zo
+241
+normal! zo
+431
+normal! zo
+587
+normal! zo
+779
+normal! zo
+856
+normal! zo
+1053
+normal! zo
+1411
+normal! zo
+1798
+normal! zo
+1922
+normal! zo
+2460
+normal! zo
+let s:l = 1784 - ((57 * winheight(0) + 57) / 114)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
+keepjumps 1784
 normal! 0
 tabnext
 edit fish/config.fish
@@ -87,12 +109,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 4 - ((3 * winheight(0) + 57) / 115)
+let s:l = 38 - ((37 * winheight(0) + 57) / 114)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 4
-normal! 016|
+keepjumps 38
+normal! 02|
 tabnext
 edit starship/starship.toml
 argglobal
@@ -156,13 +178,13 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 17 - ((16 * winheight(0) + 57) / 115)
+let s:l = 30 - ((29 * winheight(0) + 57) / 114)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 17
-normal! 016|
-tabnext 5
+keepjumps 30
+normal! 023|
+tabnext 3
 set stal=1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
@@ -175,7 +197,7 @@ if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
-nohlsearch
+set hlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :

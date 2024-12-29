@@ -90,3 +90,5 @@ cd ~/projects
 fish
 
 
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

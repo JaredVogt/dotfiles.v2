@@ -5,7 +5,7 @@
             "complex_modifications": {
                 "rules": [
                     {
-                        "description": "CAPS_LOCK : (HYPER) SHIFT+COMMAND+OPTION+CONTROL or ESCAPE (If Alone)",
+                        "description": "CAPS_LOCK Modifier: Transform Caps Lock into a powerful modifier key that acts as HYPER (Shift+Command+Option+Control) when held, or produces Escape when tapped. This creates a new modifier key in a convenient location for complex shortcuts without losing the ability to quickly access Escape.",
                         "manipulators": [
                             {
                                 "from": {
@@ -22,7 +22,7 @@
                                 "type": "basic"
                             },
                             {
-                                "description": "Avoid starting sysdiagnose with the built-in macOS shortcut cmd+shift+option+ctrl+,",
+                                "description": "Safety Feature: Prevent accidental triggering of system diagnostics. This blocks the built-in macOS shortcut cmd+shift+option+ctrl+comma which would normally start sysdiagnose and potentially cause system slowdown.",
                                 "from": {
                                     "key_code": "comma",
                                     "modifiers": { "mandatory": ["command", "shift", "option", "control"] }
@@ -31,7 +31,7 @@
                                 "type": "basic"
                             },
                             {
-                                "description": "Avoid starting sysdiagnose with the built-in macOS shortcut cmd+shift+option+ctrl+.",
+                                "description": "Safety Feature: Block sysdiagnose trigger with period key. Similar to the comma rule, this prevents accidentally starting system diagnostics with cmd+shift+option+ctrl+period.",
                                 "from": {
                                     "key_code": "period",
                                     "modifiers": { "mandatory": ["command", "shift", "option", "control"] }
@@ -41,7 +41,7 @@
                             },
                             {
                                 "from": {
-                                    "description": "Avoid starting sysdiagnose with the built-in macOS shortcut cmd+shift+option+ctrl+/",
+                                    "description": "Safety Feature: Block sysdiagnose trigger with forward slash. Completes the trio of safety measures preventing accidental system diagnostic triggers with common punctuation keys.",
                                     "key_code": "slash",
                                     "modifiers": { "mandatory": ["command", "shift", "option", "control"] }
                                 },
@@ -51,7 +51,7 @@
                         ]
                     },
                     {
-                        "description": "Toggle CAPS_LOCK with LEFT_SHIFT + RIGHT_SHIFT",
+                        "description": "Caps Lock Toggle: Enable Caps Lock by pressing both Shift keys simultaneously (Left_Shift + Right_Shift). This provides a more intentional way to toggle Caps Lock, reducing accidental activation while maintaining the functionality. Each shift key still works normally when pressed alone.",
                         "manipulators": [
                             {
                                 "from": {
@@ -80,7 +80,7 @@
                         ]
                     },
                     {
-                        "description": "CAPS_LOCK + SPACE : Toggle Raycast",
+                        "description": "Raycast Quick Toggle: Press HYPER (Caps Lock) + Space to activate Raycast. This creates a quick way to access Raycast's features while using the custom HYPER modifier. The combination is mapped to Option+Space, which is Raycast's default activation shortcut.",
                         "manipulators": [
                             {
                                 "from": {
@@ -98,7 +98,7 @@
                         ]
                     },
                     {
-                        "description": "CAPS_LOCK + i/j/k/l == Arrow Keys",
+                        "description": "Vim-style Navigation: Transform HYPER (Caps Lock) + HJKL into arrow keys, creating a Vim-like navigation system available anywhere. H=Left, J=Down, K=Up, L=Right. Additionally, HYPER + Semicolon jumps to line end (Command+Right). This allows for efficient cursor movement without moving hands from the home row.",
                         "manipulators": [
                             {
                                 "from": {

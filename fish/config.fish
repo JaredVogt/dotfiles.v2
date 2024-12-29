@@ -34,5 +34,10 @@ bind -k up _atuin_search
 bind -M default k _atuin_search
 
 # Bind Ctrl+F to accept autosuggestion in both insert and default modes
-bind -M insert \cf accept-autosuggestion
-bind \cf accept-autosuggestion
+# kitty is remapping `hyper+l` to `opt+f` to trigger this command (see kitty.conf)
+bind -M insert \ef accept-autosuggestion
+bind \ef accept-autosuggestion
+
+# FZF
+bind -M default f _fzf_search_directory
+set -gx FZF_DEFAULT_OPTS "--layout=reverse --height 90% --bind 'tab:toggle-search,shift-tab:toggle-search,J:down,K:up'"

@@ -1,7 +1,7 @@
 ## Regular homebrew packages - core utilities, CLI tools, and development dependencies
 bash
 bat
-# btop
+btop
 # cscope
 # deno
 # dockutil
@@ -9,12 +9,12 @@ bat
 eza
 # fasd
 fd
-# ffmpeg
+ffmpeg
 # fisher
 fzf
-# gawk
+gawk
 # grep
-# helix
+helix
 imagemagick
 # jakehilborn/jakehilborn/displayplacer
 jq
@@ -22,13 +22,13 @@ jq
 # libssh2
 # luajit-openresty
 # luarocks
-# mas
+# mas  # deprecated for newer macs
 mdless
 neovim
 node
 # node@22
 nushell
-# nvm
+# nvm  # don't use this
 # pcre
 # peco
 # pygments
@@ -37,7 +37,7 @@ nushell
 readline
 redis
 ripgrep
-# ripgrep-all
+ripgrep-all
 ruby
 rust
 # six
@@ -52,6 +52,7 @@ vim
 # wifi-password
 xz
 yazi
+yt-dlp
 # youtube-dl
 zoxide
 # zsh-vi-mode
@@ -94,6 +95,7 @@ zoxide
 # --cask postman
 # --cask profind
 --cask raycast
+--cask shortcat
 # --cask stay
 --cask spotify
 --cask switchresx
