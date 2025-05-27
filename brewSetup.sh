@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Homebrew Package Manager Script
-# Version: 1.4.1
+# Jared's Homebrew Package Manager Script
+# Version: 1.4.2
 #
 # DESCRIPTION:
 # This script provides comprehensive tools for managing Homebrew installations on macOS.
@@ -55,7 +55,7 @@
 # - All operations are logged with timestamps
 # - Existing files are backed up before being overwritten
 
-VERSION="1.4.1"
+VERSION="1.4.2"
 
 # Colors for better readability
 RED='\033[0;31m'
@@ -230,23 +230,35 @@ generate_json_output() {
         echo "{"
         echo '    "formulae": ['
         brew leaves | while IFS= read -r formula; do
+            local full_name
+            full_name=$(brew info --json=v2 --formula "$formula" 2>/dev/null | jq -r '.formulae[0].full_name // .formulae[0].name // "'"$formula"'"')
             local version
-            version=$(brew info --json=v2 "$formula" | jq -r '.formulae[0].versions.stable')
+            version=$(brew info --json=v2 --formula "$formula" 2>/dev/null | jq -r '.formulae[0].versions.stable // "unknown"')
             local installed_on
-            installed_on=$(ls -ld "$(brew --cellar)/$formula" | awk '{print $6, $7, $8}')
+            local cellar_path="$(brew --cellar)/$formula"
+            if [ -d "$cellar_path" ]; then
+                installed_on=$(ls -ld "$cellar_path" 2>/dev/null | awk '{print $6, $7, $8}' || echo "unknown")
+            else
+                installed_on="unknown"
+            fi
             local dependencies
             dependencies=$(brew deps "$formula" 2>/dev/null | jq -R -s -c 'split("\n")[:-1]')
-            echo "        {\"name\": \"$formula\", \"version\": \"$version\", \"installed_on\": \"$installed_on\", \"dependencies\": $dependencies},"
+            echo "        {\"name\": \"$full_name\", \"version\": \"$version\", \"installed_on\": \"$installed_on\", \"dependencies\": $dependencies},"
         done | sed '$ s/,$//'
         echo "    ],"
         echo '    "casks": ['
         brew list --cask | while IFS= read -r cask; do
             local version
-            version=$(brew info --json=v2 --cask "$cask" | jq -r '.casks[0].version')
+            version=$(brew info --json=v2 --cask "$cask" 2>/dev/null | jq -r '.casks[0].version // "unknown"')
             local installed_on
-            installed_on=$(ls -ld "$(brew --caskroom)/$cask" | awk '{print $6, $7, $8}')
+            local caskroom_path="$(brew --caskroom)/$cask"
+            if [ -d "$caskroom_path" ]; then
+                installed_on=$(ls -ld "$caskroom_path" 2>/dev/null | awk '{print $6, $7, $8}' || echo "unknown")
+            else
+                installed_on="unknown"
+            fi
             local dependencies
-            dependencies=$(brew info --json=v2 --cask "$cask" | jq -r '.casks[0].depends_on | values | .[] | select(. != null) | keys[]' | jq -R -s -c 'split("\n")[:-1]')
+            dependencies=$(brew info --json=v2 --cask "$cask" 2>/dev/null | jq -r '.casks[0].depends_on | values | .[] | select(. != null) | keys[]' 2>/dev/null | jq -R -s -c 'split("\n")[:-1]' 2>/dev/null || echo '[]')
             echo "        {\"name\": \"$cask\", \"version\": \"$version\", \"installed_on\": \"$installed_on\", \"dependencies\": $dependencies},"
         done | sed '$ s/,$//'
         echo "    ]"
@@ -305,10 +317,108 @@ install_from_json() {
     log_and_print "\n${GREEN}Processing complete.${NC}"
 }
 
+# Quick listing of top-level packages and casks
+show_quick_list() {
+    log_and_print "\n📦 Top Level Packages (brew leaves):"
+    brew leaves | while IFS= read -r formula; do
+        log_and_print "• $formula"
+    done
+
+    log_and_print "\n🎪 Installed Casks:"
+    brew list --cask | while IFS= read -r cask; do
+        log_and_print "• $cask"
+    done
+
+    log_and_print "\n📊 Quick Summary:"
+    log_and_print "Total Top Level Packages: $(brew leaves | wc -l | tr -d ' ')"
+    log_and_print "Total Casks: $(brew list --cask | wc -l | tr -d ' ')"
+}
+
+# Quick listing from JSON backup file
+show_json_quick_list() {
+    local json_file="homebrew-packages.json"
+    if [ ! -f "$json_file" ]; then
+        log_and_print "${RED}Error: $json_file not found. Run --backup first to generate it.${NC}"
+        exit 1
+    fi
+
+    log_and_print "\n📦 Packages from JSON backup:"
+    jq -r '.formulae[].name' "$json_file" | while IFS= read -r formula; do
+        log_and_print "• $formula"
+    done
+
+    log_and_print "\n🎪 Casks from JSON backup:"
+    jq -r '.casks[].name' "$json_file" | while IFS= read -r cask; do
+        log_and_print "• $cask"
+    done
+
+    log_and_print "\n📊 JSON Backup Summary:"
+    log_and_print "Total Packages: $(jq -r '.formulae | length' "$json_file")"
+    log_and_print "Total Casks: $(jq -r '.casks | length' "$json_file")"
+}
+
+# Show help information
+show_help() {
+    cat << EOF
+Jared's Homebrew Package Manager Script v${VERSION}
+
+DESCRIPTION:
+This script provides comprehensive tools for managing Homebrew installations on macOS.
+It helps with package analysis, backup/restore operations, update management, and system migration.
+
+USAGE:
+Interactive mode (recommended):
+  ./brewSetup.sh
+
+Command-line flags:
+  ./brewSetup.sh --verbose         # Show detailed package analysis
+  ./brewSetup.sh --backup          # Generate homebrew-packages.json backup
+  ./brewSetup.sh --install         # Install packages from JSON backup
+  ./brewSetup.sh --dry-run         # Preview what would be installed
+  ./brewSetup.sh --check-outdated  # Check for package updates
+  ./brewSetup.sh --update          # Update all outdated packages
+  ./brewSetup.sh --ls              # Quick list of top-level packages and casks
+  ./brewSetup.sh --jls             # Quick list from JSON backup file
+  ./brewSetup.sh --help, -h        # Show this help message
+
+TYPICAL WORKFLOWS:
+1. System Migration:
+   - On old system: ./brewSetup.sh --backup
+   - Copy homebrew-packages.json to new system
+   - On new system: ./brewSetup.sh --install
+
+2. Regular Maintenance:
+   - ./brewSetup.sh --verbose (shows analysis + update check)
+   - ./brewSetup.sh --update (if updates are needed)
+
+3. Package Backup:
+   - ./brewSetup.sh --backup (creates timestamped backup)
+
+MAIN FEATURES:
+- Verbose analysis of installed formulae and casks with dependency mapping
+- Generate JSON backup files with package details for system migration
+- Restore packages from JSON backup files on fresh installations
+- Check for outdated packages and perform updates
+- Dry-run mode to preview operations without making changes
+- Interactive menu interface for easy operation
+- Comprehensive logging of all operations
+
+OUTPUT:
+- homebrew-packages.json: Package backup file
+- logs-backups/: Directory containing operation logs and backups
+
+DEPENDENCIES:
+- brew (Homebrew package manager)
+- jq (JSON processor - auto-installed if missing)
+- python3 (for JSON processing)
+
+EOF
+}
+
 show_menu() {
     while true; do
         echo
-        echo -e "${BLUE}=== Homebrew Package Manager v${VERSION} ===${NC}"
+        echo -e "${BLUE}=== Jared's Homebrew Package Manager v${VERSION} ===${NC}"
         echo -e "${GREEN}Comprehensive tool for managing Homebrew installations on macOS${NC}"
         echo -e "${GREEN}• Analyze installed packages with dependency mapping${NC}"
         echo -e "${GREEN}• Create JSON backups for system migration${NC}"
@@ -322,9 +432,11 @@ show_menu() {
         echo "4) Dry-run: Show what would be installed"
         echo "5) Check for outdated packages"
         echo "6) Update all outdated packages"
-        echo "7) Exit"
+        echo "7) Quick list of packages and casks"
+        echo "8) Quick list from JSON backup"
+        echo "9) Exit"
         echo
-        read -p "Select an option (1-7): " choice
+        read -p "Select an option (1-9): " choice
 
         case $choice in
             1) show_verbose_output ;;
@@ -333,25 +445,73 @@ show_menu() {
             4) install_from_json --dry-run ;;
             5) check_outdated_packages ;;
             6) update_packages ;;
-            7) echo "Goodbye!" && exit 0 ;;
+            7) show_quick_list ;;
+            8) show_json_quick_list ;;
+            9) echo "Goodbye!" && exit 0 ;;
             *) log_and_print "${RED}Invalid option selected.${NC}" ;;
         esac
     done
 }
 
 # Main execution
-prepare_logs_backups_dir
-initialize_log_file
-install_jq
-check_dependencies
-
 case "$1" in
-    --verbose) show_verbose_output ;;
-    --backup) generate_json_output ;;
-    --output) generate_json_output ;;  # Deprecated: use --backup
-    --install) install_from_json ;;
-    --dry-run) install_from_json --dry-run ;;
-    --check-outdated) check_outdated_packages ;;
-    --update) update_packages ;;
-    *) show_menu ;;
+    --help|-h) 
+        show_help ;;
+    --verbose) 
+        prepare_logs_backups_dir
+        initialize_log_file
+        install_jq
+        check_dependencies
+        show_verbose_output ;;
+    --backup) 
+        prepare_logs_backups_dir
+        initialize_log_file
+        install_jq
+        check_dependencies
+        generate_json_output ;;
+    --output) 
+        prepare_logs_backups_dir
+        initialize_log_file
+        install_jq
+        check_dependencies
+        generate_json_output ;;  # Deprecated: use --backup
+    --install) 
+        prepare_logs_backups_dir
+        initialize_log_file
+        install_jq
+        check_dependencies
+        install_from_json ;;
+    --dry-run) 
+        prepare_logs_backups_dir
+        initialize_log_file
+        install_jq
+        check_dependencies
+        install_from_json --dry-run ;;
+    --check-outdated) 
+        prepare_logs_backups_dir
+        initialize_log_file
+        install_jq
+        check_dependencies
+        check_outdated_packages ;;
+    --update) 
+        prepare_logs_backups_dir
+        initialize_log_file
+        install_jq
+        check_dependencies
+        update_packages ;;
+    --ls) 
+        prepare_logs_backups_dir
+        initialize_log_file
+        show_quick_list ;;
+    --jls) 
+        prepare_logs_backups_dir
+        initialize_log_file
+        install_jq
+        show_json_quick_list ;;
+    *) 
+        prepare_logs_backups_dir
+        initialize_log_file
+        install_jq
+        check_dependencies
+        show_menu ;;
 esac
