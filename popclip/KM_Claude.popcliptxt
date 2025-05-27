@@ -1,0 +1,8 @@
+#popclip
+name: KM Claude
+icon: iconify:ri:keyboard-box-line
+before: copy
+applescript: |
+  tell application "Keyboard Maestro Engine"
+    do script "Claude"
+  end tell

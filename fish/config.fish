@@ -33,7 +33,6 @@ atuin init fish | source
 bind -k up _atuin_search
 bind -M default k _atuin_search
 
-# Bind Ctrl+F to accept autosuggestion in both insert and default modes
 # kitty is remapping `hyper+l` to `opt+f` to trigger this command (see kitty.conf)
 bind -M insert \ef accept-autosuggestion
 bind \ef accept-autosuggestion

@@ -1,6 +1,7 @@
 # dotfiles.v2
 
 ### Install
+4. `sshSetup.sh` this setups up keys for github (follow instructions)
 1. `git clone xx` this into `/projects/`
 2. `linkShellConfigFiles.sh` to create all the appropriate symlinks 
 3. `linkCloudStorageProviders.sh` to create all the appropriate symlinks (dropbox/gdrive have to be installed first)

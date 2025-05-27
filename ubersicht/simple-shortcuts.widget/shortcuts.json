@@ -1,0 +1,24 @@
+// Reference key values
+// command: ⌘
+// option: ⌥
+// control: ⌃
+// shift: ⇧
+// hyper: ◆
+// eject: ⏏
+{
+  "Hyper key shortcuts": {
+    "View Desktop": "◆ + d",
+    "Moom - move window": "◆ + w",
+    "Shortcat links": "◆ + f",
+    "Fish autocompletion": "◆ + l",
+    "Open Maschine": "◆ + m",
+    "Toggle Raycast": "◆ + space",
+  },
+  "Karabiner": {
+    "Chrome": "⌘ + ⌘",
+    "Slack": "⌥ + ⌥",
+    "Inkdrop": "⌘",
+    "Kitty": "⌃ + ⌥ + ⌘",
+    "Messages": "⌥",
+  }
+}

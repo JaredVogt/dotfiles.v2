@@ -1,0 +1,48 @@
+{
+  "globalShortcut": "",
+  "mcpServers": {
+    "exa": {
+      "command": "npx",
+      "args": ["/opt/homebrew/lib/node_modules/exa-mcp-server/build/index.js"],
+      "env": {
+        "EXA_API_KEY": ""
+      }
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": ""
+      }
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "figma": {
+      "command": "npx",
+      "args": [
+        "figma-mcp"
+      ],
+      "env": {
+        "FIGMA_API_KEY": ""
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "~/Desktop",
+        "~/Downloads"
+      ]
+    }
+  }
+}
+

@@ -12,7 +12,9 @@ abbr -a r 'source ~/.config/fish/config.fish'
 abbr -a ral 'nvim ~/.config/fish/aliases.fish'
 abbr -a aliases 'bat ~/.config/fish/alias*.fish'
 abbr -a lla 'eza --git -l -g --icons -h -a -H --time-style=long-iso'  # https://www.youtube.com/watch?v=KKxhf50FIPI&t=305s  
+abbr -a llad 'eza --git -l -g -s modified -r --icons -h -a -H --time-style=long-iso' # added reverse date 
 abbr -a l 'eza --git -l -g --icons -h -a -H --time-style=long-iso'  
+abbr -a chx 'chmod +x'
 
 # git, long, group, icons, header, all , links, long-iso date / man exa   
 abbr -a lll 'ls -alhF'
@@ -24,7 +26,7 @@ abbr -a rmnt 'rm'
 abbr -a back 'cd -'
 abbr -a rm 'trash'
 abbr -a icat 'kitty icat'
- abbr -a zz 'zi'
+abbr -a zz 'zi'
 
 # brew
 abbr -a bs 'brew search'
@@ -44,6 +46,7 @@ abbr -a tn "tmux new -s (pwd | sed 's/.*\///g')"  # grab current directory and c
 abbr -a imgcat '~/.iterm2/imgcat'
 abbr -a ipm '/Applications/Inkdrop.app/Contents/Resources/app/ipm/bin/ipm'
 abbr -a ks 'ksc -ms -p'
+abbr -a claudec '~/.config/zsh/functions/claudeSaveSession.sh'
 # abbr -a jv 'nvim -u ~/.config/nvim/jaredv.init.lua'
 
 # nvim session shortcuts
@@ -65,3 +68,6 @@ abbr -a cellar 'cd /opt/homebrew/Cellar && eza --git -l -g --icons -h -a -H --ti
 abbr -a theme-agno 'fisher install hauleth/agnoster'
 abbr -a theme-tide 'fisher install IlanCosman/tide@v5'
 
+# Wolffhound shortcuts
+abbr -a whclear 'rm -rf ~/Library/Application\ Support/Wolffhound/wolff_data/config.json'
+abbr -a whedit 'nvim ~/Library/Application\ Support/Wolffhound/wolff_data/config.json'

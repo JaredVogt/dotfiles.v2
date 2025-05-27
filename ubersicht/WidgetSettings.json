@@ -1,0 +1,18 @@
+{
+  "GettingStarted-jsx": {
+    "showOnAllScreens": false,
+    "showOnMainScreen": false,
+    "showOnSelectedScreens": true,
+    "hidden": false,
+    "screens": [1],
+    "sorting": 0,
+    "updateOnShow": false,
+    "lastUpdated": 0,
+    "showOnSpaces": true,
+    "showInSelection": false,
+    "interaction": {
+      "enabled": false
+    },
+    "updateStatesOnShow": false
+  }
+}

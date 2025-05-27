@@ -1,0 +1,24 @@
+// #popclip
+// name: LDL
+// icon: link
+// language: javascript
+// regex: https?://linear\.app/.*?/issue/.*
+
+function convertToDeepLink(url) {
+  const regex = /https?:\/\/linear\.app\/(.*?)\/issue\/(.*?)($|\/)/;
+  const match = url.match(regex);
+  if (match) {
+    const [, workspace, issueId] = match;
+    return `linear://${workspace}/issue/${issueId}`;
+  }
+  return null;
+}
+
+const webUrl = popclip.input.text;
+const deepLink = convertToDeepLink(webUrl);
+
+if (deepLink) {
+  popclip.openUrl(deepLink);
+} else {
+  popclip.showText("Invalid Linear URL");
+}

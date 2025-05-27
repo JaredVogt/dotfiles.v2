@@ -98,6 +98,7 @@ abbr -a grset 'git remote set-url'
 # Reset commands
 abbr -a grh 'git reset'
 abbr -a grhh 'git reset --hard'
+abbr -a gover 'git reset --hard HEAD'
 abbr -a grhs 'git reset --soft'
 
 # Stash commands

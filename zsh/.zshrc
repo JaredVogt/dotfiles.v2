@@ -23,7 +23,7 @@ ENABLE_CORRECTION="true"
 ZSH_CUSTOM="$XDG_CONFIG_HOME/zsh"
 
 # Which plugins would you like to load?
-plugins=(zoxide git vi-mode)
+plugins=(zoxide git vi-mode web-search)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -85,10 +85,16 @@ eval "$(starship init zsh)" # NOTE this is supposed to be in .zshrc - and there 
 eval "$(atuin init zsh)"
 
 # Last commands to execute
-echo "popping directly into fish"
-cd ~/projects
-fish
+# echo "popping directly into fish"
+# cd ~/projects
+# fish
 
 
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Added by Windsurf
+export PATH="/Users/jaredvogt/.codeium/windsurf/bin:$PATH"
+
+# Added by Windsurf - Next
+export PATH="/Users/jaredvogt/.codeium/windsurf/bin:$PATH"

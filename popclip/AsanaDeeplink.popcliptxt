@@ -1,0 +1,24 @@
+// #popclip
+// name: ADL
+// icon: link
+// language: javascript
+// regex: https?://app\.asana\.com/\d+/.*
+
+function convertToDeepLink(url) {
+  const regex = /https?:\/\/app\.asana\.com(\/\d+\/\d+\/\d+\/[^\/]*)/;
+  const match = url.match(regex);
+  if (match) {
+    const [, path] = match;
+    return `asanadesktop://${path}`;
+  }
+  return null;
+}
+
+const webUrl = popclip.input.text;
+const deepLink = convertToDeepLink(webUrl);
+
+if (deepLink) {
+  popclip.openUrl(deepLink);
+} else {
+  popclip.showText("Invalid Asana URL");
+}

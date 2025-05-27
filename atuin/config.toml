@@ -18,7 +18,7 @@ key_binding_page_down = "Control-D"
 key_binding_select = "v"
 key_binding_filter_mode = "i"
 
-filter_mode = "global"
+filter_mode = "session"
 
 # db_path = "~/.history.db"
 # key_path = "~/.key"
@@ -33,8 +33,8 @@ search_mode = "fuzzy"
 # workspaces = false
 # filter_mode_shell_up_key_binding = "global"
 # search_mode_shell_up_key_binding = "fuzzy"
-# style = "auto"
-# inline_height = 0
+style = "full"
+inline_height = 0
 # invert = false
 # show_preview = true
 exit_mode = "return-original"
@@ -112,3 +112,9 @@ records = true
 # socket_path = "~/.local/share/atuin/atuin.sock"
 # systemd_socket = false
 # tcp_port = 8889
+
+# Remove the inline height limit to use full screen
+# inline_height = 0
+
+# Use the full UI style instead of compact
+# style = "full"
