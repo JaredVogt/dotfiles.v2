@@ -216,12 +216,71 @@ show_verbose_output() {
 # Generate JSON file
 generate_json_output() {
     local json_file="homebrew-packages.json"
+    local new_formulae=()
+    local new_casks=()
 
-    # Backup the existing JSON file, if it exists
+    # Get current packages
+    local current_formulae
+    local current_casks
+    current_formulae=$(brew leaves | sort)
+    current_casks=$(brew list --cask | sort)
+
+    # Load previous backup if it exists, otherwise start with empty lists
+    local previous_formulae=""
+    local previous_casks=""
+    local is_first_backup=false
+    
     if [ -f "$json_file" ]; then
         local backup_file="${LOGS_BACKUPS_DIR}/homebrew-packages_backup_$(date +%Y%m%d_%H%M%S).json"
         cp "$json_file" "$backup_file"
         log_and_print "${YELLOW}Existing JSON file backed up as $backup_file.${NC}"
+        
+        # Load previous packages from backup
+        previous_formulae=$(jq -r '.formulae[].name' "$json_file" 2>/dev/null | sort)
+        previous_casks=$(jq -r '.casks[].name' "$json_file" 2>/dev/null | sort)
+    else
+        log_and_print "\n${BLUE}ℹ️  No existing backup file found. This will be a first-time backup.${NC}"
+        is_first_backup=true
+    fi
+    
+    # Find new formulae (compared to previous backup, or all if first backup)
+    while IFS= read -r formula; do
+        if [ -n "$formula" ] && ! echo "$previous_formulae" | grep -Fxq "$formula"; then
+            new_formulae+=("$formula")
+        fi
+    done <<< "$current_formulae"
+    
+    # Find new casks (compared to previous backup, or all if first backup)
+    while IFS= read -r cask; do
+        if [ -n "$cask" ] && ! echo "$previous_casks" | grep -Fxq "$cask"; then
+            new_casks+=("$cask")
+        fi
+    done <<< "$current_casks"
+    
+    # Report new packages
+    if [ ${#new_formulae[@]} -gt 0 ] || [ ${#new_casks[@]} -gt 0 ]; then
+        if [ "$is_first_backup" = true ]; then
+            log_and_print "\n${GREEN}🆕 All packages in this first backup:${NC}"
+        else
+            log_and_print "\n${GREEN}🆕 New packages detected since last backup:${NC}"
+        fi
+        
+        if [ ${#new_formulae[@]} -gt 0 ]; then
+            log_and_print "\n📦 Formulae (${#new_formulae[@]}):"
+            for formula in "${new_formulae[@]}"; do
+                log_and_print "• $formula"
+            done
+        fi
+        
+        if [ ${#new_casks[@]} -gt 0 ]; then
+            log_and_print "\n🎪 Casks (${#new_casks[@]}):"
+            for cask in "${new_casks[@]}"; do
+                log_and_print "• $cask"
+            done
+        fi
+        log_and_print ""
+    else
+        log_and_print "\n${BLUE}ℹ️  No new packages since last backup.${NC}"
     fi
 
     log_and_print "Generating JSON file at $json_file..."
