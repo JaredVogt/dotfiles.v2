@@ -184,8 +184,9 @@ handle_existing_file() {
     echo "1) Create link (overwrite existing file)"
     echo "2) Backup existing file and create link"
     echo "3) Skip this file"
+    echo "4) Overwrite dotfiles version with existing file, then create link"
     echo
-    printf "Choose option [1-3]: "
+    printf "Choose option [1-4]: "
     read choice
     
     case $choice in
@@ -219,6 +220,29 @@ handle_existing_file() {
         3)
             echo -e "${YELLOW}Skipping file${NC}"
             return 2
+            ;;
+        4)
+            echo -e "${YELLOW}Backing up dotfiles version and overwriting with existing file...${NC}"
+            local backup_dotfiles="$target.bak"
+            if cp "$target" "$backup_dotfiles" 2>/dev/null; then
+                echo -e "${GREEN}✓ Backed up dotfiles version to:${NC} $backup_dotfiles"
+                if cp "$link" "$target" 2>/dev/null; then
+                    echo -e "${GREEN}✓ Overwrote dotfiles version with existing file${NC}"
+                    # Ensure parent directory exists
+                    local link_dir=$(dirname "$link")
+                    if [[ ! -d "$link_dir" ]]; then
+                        run_cmd mkdir -p "$link_dir"
+                    fi
+                    run_cmd ln -sfv "$target" "$link"
+                    return $?
+                else
+                    echo -e "${RED}✗ Failed to overwrite dotfiles version${NC}"
+                    return 1
+                fi
+            else
+                echo -e "${RED}✗ Failed to backup dotfiles version${NC}"
+                return 1
+            fi
             ;;
         *)
             echo "Invalid choice. Skipping file."
