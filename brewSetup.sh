@@ -285,41 +285,98 @@ generate_json_output() {
 
     log_and_print "Generating JSON file at $json_file..."
 
+    # Get all installed package info in one fast API call
+    log_and_print "Fetching package information from Homebrew..."
+    local all_installed_info
+    all_installed_info=$(brew info --json=v2 --installed 2>/dev/null)
+    
+    # Get list of top-level packages (leaves)
+    local top_level_formulae
+    top_level_formulae=$(brew leaves | sort)
+    
     {
         echo "{"
         echo '    "formulae": ['
-        brew leaves | while IFS= read -r formula; do
-            local full_name
-            full_name=$(brew info --json=v2 --formula "$formula" 2>/dev/null | jq -r '.formulae[0].full_name // .formulae[0].name // "'"$formula"'"')
-            local version
-            version=$(brew info --json=v2 --formula "$formula" 2>/dev/null | jq -r '.formulae[0].versions.stable // "unknown"')
-            local installed_on
-            local cellar_path="$(brew --cellar)/$formula"
-            if [ -d "$cellar_path" ]; then
-                installed_on=$(ls -ld "$cellar_path" 2>/dev/null | awk '{print $6, $7, $8}' || echo "unknown")
-            else
-                installed_on="unknown"
+        
+        # Process formulae efficiently
+        local first_formula=true
+        while IFS= read -r formula; do
+            if [ -n "$formula" ]; then
+                # Extract info from the single API response
+                local formula_info
+                formula_info=$(echo "$all_installed_info" | jq -r --arg name "$formula" '.formulae[] | select(.name == $name or .full_name == $name)')
+                
+                if [ -n "$formula_info" ]; then
+                    local full_name version dependencies installed_on
+                    full_name=$(echo "$formula_info" | jq -r '.full_name // .name')
+                    version=$(echo "$formula_info" | jq -r '.versions.stable // "unknown"')
+                    
+                    # Get installation date from file system
+                    local cellar_path="$(brew --cellar)/$formula"
+                    if [ -d "$cellar_path" ]; then
+                        installed_on=$(ls -ld "$cellar_path" 2>/dev/null | awk '{print $6, $7, $8}' || echo "unknown")
+                    else
+                        installed_on="unknown"
+                    fi
+                    
+                    # Get dependencies more efficiently
+                    dependencies=$(brew deps "$formula" 2>/dev/null | jq -R -s -c 'split("\n")[:-1]')
+                    
+                    # Add comma separator for all but first entry
+                    if [ "$first_formula" = false ]; then
+                        echo ","
+                    fi
+                    first_formula=false
+                    
+                    printf '        {"name": "%s", "version": "%s", "installed_on": "%s", "dependencies": %s}' \
+                        "$full_name" "$version" "$installed_on" "$dependencies"
+                fi
             fi
-            local dependencies
-            dependencies=$(brew deps "$formula" 2>/dev/null | jq -R -s -c 'split("\n")[:-1]')
-            echo "        {\"name\": \"$full_name\", \"version\": \"$version\", \"installed_on\": \"$installed_on\", \"dependencies\": $dependencies},"
-        done | sed '$ s/,$//'
+        done <<< "$top_level_formulae"
+        
+        echo ""
         echo "    ],"
         echo '    "casks": ['
-        brew list --cask | while IFS= read -r cask; do
-            local version
-            version=$(brew info --json=v2 --cask "$cask" 2>/dev/null | jq -r '.casks[0].version // "unknown"')
-            local installed_on
-            local caskroom_path="$(brew --caskroom)/$cask"
-            if [ -d "$caskroom_path" ]; then
-                installed_on=$(ls -ld "$caskroom_path" 2>/dev/null | awk '{print $6, $7, $8}' || echo "unknown")
-            else
-                installed_on="unknown"
+        
+        # Process casks efficiently
+        local first_cask=true
+        local installed_casks
+        installed_casks=$(brew list --cask | sort)
+        
+        while IFS= read -r cask; do
+            if [ -n "$cask" ]; then
+                # Extract cask info from the single API response
+                local cask_info
+                cask_info=$(echo "$all_installed_info" | jq -r --arg name "$cask" '.casks[] | select(.token == $name)')
+                
+                if [ -n "$cask_info" ]; then
+                    local version dependencies installed_on
+                    version=$(echo "$cask_info" | jq -r '.version // "unknown"')
+                    
+                    # Get installation date from file system
+                    local caskroom_path="$(brew --caskroom)/$cask"
+                    if [ -d "$caskroom_path" ]; then
+                        installed_on=$(ls -ld "$caskroom_path" 2>/dev/null | awk '{print $6, $7, $8}' || echo "unknown")
+                    else
+                        installed_on="unknown"
+                    fi
+                    
+                    # Get cask dependencies
+                    dependencies=$(echo "$cask_info" | jq -c '.depends_on | if . then [.[] | keys[]] | flatten else [] end' 2>/dev/null || echo '[]')
+                    
+                    # Add comma separator for all but first entry
+                    if [ "$first_cask" = false ]; then
+                        echo ","
+                    fi
+                    first_cask=false
+                    
+                    printf '        {"name": "%s", "version": "%s", "installed_on": "%s", "dependencies": %s}' \
+                        "$cask" "$version" "$installed_on" "$dependencies"
+                fi
             fi
-            local dependencies
-            dependencies=$(brew info --json=v2 --cask "$cask" 2>/dev/null | jq -r '.casks[0].depends_on | values | .[] | select(. != null) | keys[]' 2>/dev/null | jq -R -s -c 'split("\n")[:-1]' 2>/dev/null || echo '[]')
-            echo "        {\"name\": \"$cask\", \"version\": \"$version\", \"installed_on\": \"$installed_on\", \"dependencies\": $dependencies},"
-        done | sed '$ s/,$//'
+        done <<< "$installed_casks"
+        
+        echo ""
         echo "    ]"
         echo "}"
     } > "$json_file"
