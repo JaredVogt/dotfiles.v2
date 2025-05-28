@@ -44,7 +44,7 @@
 # DEPENDENCIES:
 # - brew (Homebrew package manager)
 # - jq (JSON processor - auto-installed if missing)
-# - python3 (for JSON processing)
+# - python3 (for JSON processing - auto-installed if missing)
 #
 # OUTPUT:
 # - homebrew-packages.json: Package backup file
@@ -95,14 +95,23 @@ install_jq() {
     fi
 }
 
+# Ensure python3 is installed
+install_python3() {
+    if ! command -v python3 >/dev/null; then
+        log_and_print "${YELLOW}Installing python3...${NC}"
+        brew install python3 || {
+            log_and_print "${RED}Failed to install python3. Please install it manually.${NC}"
+            exit 1
+        }
+    fi
+}
+
 # Preflight checks
 check_dependencies() {
-    for cmd in brew jq python3; do
-        if ! command -v "$cmd" >/dev/null; then
-            log_and_print "${RED}Error: $cmd is not installed. Please install it before running this script.${NC}"
-            exit 1
-        fi
-    done
+    if ! command -v brew >/dev/null; then
+        log_and_print "${RED}Error: brew is not installed. Please install Homebrew before running this script.${NC}"
+        exit 1
+    fi
 }
 
 # Utility: Print and optionally log
@@ -526,7 +535,7 @@ OUTPUT:
 DEPENDENCIES:
 - brew (Homebrew package manager)
 - jq (JSON processor - auto-installed if missing)
-- python3 (for JSON processing)
+- python3 (for JSON processing - auto-installed if missing)
 
 EOF
 }
@@ -577,42 +586,49 @@ case "$1" in
         prepare_logs_backups_dir
         initialize_log_file
         install_jq
+        install_python3
         check_dependencies
         show_verbose_output ;;
     --backup) 
         prepare_logs_backups_dir
         initialize_log_file
         install_jq
+        install_python3
         check_dependencies
         generate_json_output ;;
     --output) 
         prepare_logs_backups_dir
         initialize_log_file
         install_jq
+        install_python3
         check_dependencies
         generate_json_output ;;  # Deprecated: use --backup
     --install) 
         prepare_logs_backups_dir
         initialize_log_file
         install_jq
+        install_python3
         check_dependencies
         install_from_json ;;
     --dry-run) 
         prepare_logs_backups_dir
         initialize_log_file
         install_jq
+        install_python3
         check_dependencies
         install_from_json --dry-run ;;
     --check-outdated) 
         prepare_logs_backups_dir
         initialize_log_file
         install_jq
+        install_python3
         check_dependencies
         check_outdated_packages ;;
     --update) 
         prepare_logs_backups_dir
         initialize_log_file
         install_jq
+        install_python3
         check_dependencies
         update_packages ;;
     --ls) 
@@ -623,11 +639,13 @@ case "$1" in
         prepare_logs_backups_dir
         initialize_log_file
         install_jq
+        install_python3
         show_json_quick_list ;;
     *) 
         prepare_logs_backups_dir
         initialize_log_file
         install_jq
+        install_python3
         check_dependencies
         show_menu ;;
 esac
