@@ -2,3 +2,4 @@
 *.bak
 logs-backups/
 .DS_Store
+hammerspoon/backups/

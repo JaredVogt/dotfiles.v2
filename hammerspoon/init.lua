@@ -1,8 +1,8 @@
-
 hs.loadSpoon("Hammerflow")
 spoon.Hammerflow.loadFirstValidTomlFile({
-    "myLeaders.toml",
-    "Spoons/Hammerflow.spoon/sample.toml"
+    "home.toml",
+    "work.toml",
+    "Spoons/Hammerflow.spoon/config.toml"
 })
 -- optionally respect auto_reload setting in the toml config.
 if spoon.Hammerflow.auto_reload then
