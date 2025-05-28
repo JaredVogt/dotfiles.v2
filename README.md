@@ -109,7 +109,7 @@ The `linkShellConfigFiles.sh` script creates symlinks for all configurations:
 ```
 
 **What this does:**
-- Links home directory files: `.zprofile`, `.zshenv`, `.zshrc`, `.gitconfig`, `.tmux.conf`
+- Links custom configuration files: `.zprofile`, `.zshenv`, `.zshrc`, `.gitconfig`, `.tmux.conf`, Hammerspoon configs
 - Creates `~/.config` directories for each application
 - Symlinks all configuration files to their proper locations
 - Preserves existing files by creating backups

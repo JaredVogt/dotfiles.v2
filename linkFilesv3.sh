@@ -227,9 +227,9 @@ handle_existing_file() {
     esac
 }
 
-# Function to setup home directory files
-setup_home_directory() {
-    echo -e "\n${GREEN}Setting up Home Directory (~/)${NC}"
+# Function to setup custom links
+setup_custom_links() {
+    echo -e "\n${GREEN}Setting up Custom Links${NC}"
     
     handle_link "$REPOPATH/zsh/.zprofile" ~/.zprofile
     handle_link "$REPOPATH/zsh/.zshenv" ~/.zshenv
@@ -237,6 +237,12 @@ setup_home_directory() {
     handle_link "$REPOPATH/git/.gitconfig" ~/.gitconfig
     handle_link "$REPOPATH/tmux/.tmux.conf" ~/.tmux.conf
     handle_link "$REPOPATH/README.md" ~/.README.md
+    
+    # Hammerspoon configuration links
+    handle_link "$REPOPATH/hammerspoon/init.lua" ~/.hammerspoon/init.lua
+    handle_link "$REPOPATH/hammerspoon/Hammerflow/init.lua" ~/.hammerspoon/Spoons/Hammerflow.spoon/init.lua
+    handle_link "$REPOPATH/hammerspoon/Hammerflow/RecursiveBinder/init.lua" ~/.hammerspoon/Spoons/Hammerflow.spoon/Spoons/RecursiveBinder.spoon/init.lua
+    handle_link "$REPOPATH/hammerspoon/Hammerflow/config.toml" ~/.hammerspoon/Spoons/Hammerflow.spoon/config.toml
 }
 
 # Function to setup Application Support directory
@@ -327,7 +333,7 @@ setup_config_directory() {
 
 # Main execution function
 run_dotfiles_setup() {
-    setup_home_directory
+    setup_custom_links
     setup_application_support
     setup_config_directory
 
