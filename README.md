@@ -20,6 +20,7 @@ A comprehensive macOS dotfiles configuration system that automates the setup and
 
 This dotfiles repository provides a complete development environment setup for macOS, featuring:
 
+- **One-command setup orchestrator** (`go.sh`) for streamlined installation
 - **Automated SSH key generation and GitHub authentication**
 - **Comprehensive shell configurations** (zsh, fish, nushell)
 - **Modern terminal emulators** (WezTerm, Kitty, Ghostty)
@@ -31,7 +32,7 @@ This dotfiles repository provides a complete development environment setup for m
 - **Browser extensions** (Vimium)
 - **Note-taking setup** (Inkdrop)
 
-The system is designed for easy migration between machines, with intelligent symlink management and comprehensive backup capabilities.
+The system is designed for easy migration between machines, with intelligent symlink management, comprehensive backup capabilities, and a new setup orchestrator that automates the entire process.
 
 ## Quick Start
 
@@ -40,10 +41,21 @@ The system is designed for easy migration between machines, with intelligent sym
 - Internet connection for downloading packages
 - Admin privileges for installing applications
 
-### New Machine Setup (5 minutes)
+### New Machine Setup (2 minutes)
 
+**Option 1: One-Command Setup (Recommended)**
 ```bash
-# 1. Setup GitHub SSH access
+# 1. Clone the repository
+git clone git@github.com:[your-username]/dotfiles.v2.git ~/projects/dotfiles.v2
+cd ~/projects/dotfiles.v2
+
+# 2. Run the complete setup orchestrator
+./go.sh
+```
+
+**Option 2: Manual Step-by-Step Setup**
+```bash
+# 1. Setup GitHub SSH access (if needed)
 curl -O https://raw.githubusercontent.com/[your-username]/dotfiles.v2/main/sshSetup.sh
 chmod +x sshSetup.sh
 ./sshSetup.sh
@@ -53,7 +65,7 @@ git clone git@github.com:[your-username]/dotfiles.v2.git ~/projects/dotfiles.v2
 cd ~/projects/dotfiles.v2
 
 # 3. Create all configuration symlinks
-./linkShellConfigFiles.sh
+./linkFilesv3.sh
 
 # 4. Install Homebrew packages (optional but recommended)
 ./brewSetup.sh --install
@@ -102,10 +114,10 @@ cd ~/projects/dotfiles.v2
 
 ### Step 3: Configuration Linking
 
-The `linkShellConfigFiles.sh` script creates symlinks for all configurations:
+The `linkFilesv3.sh` script creates symlinks for all configurations:
 
 ```bash
-./linkShellConfigFiles.sh
+./linkFilesv3.sh
 ```
 
 **What this does:**
@@ -343,6 +355,51 @@ Link cloud storage directories for easy access:
 
 ## Automation Scripts
 
+### go.sh - Setup Orchestrator (New!)
+
+A comprehensive setup orchestrator that automates the entire dotfiles installation process:
+
+#### Features
+- **One-Command Setup**: Complete environment setup with a single command
+- **Intelligent Ordering**: Runs all setup scripts in the correct sequence
+- **Error Handling**: Robust error detection and reporting for each step
+- **Flexible Options**: Skip specific steps as needed
+- **Dry-run Mode**: Preview what would be done without making changes
+- **Progress Tracking**: Clear visual feedback on setup progress
+
+#### Usage
+```bash
+# Complete setup (recommended for new machines)
+./go.sh
+
+# Preview what would be done
+./go.sh --dry-run
+
+# Skip specific steps
+./go.sh --skip-brew --skip-ssh --skip-cloud
+
+# Show help and options
+./go.sh --help
+```
+
+#### Setup Process
+The script executes these steps in order:
+1. **Homebrew Setup** - Installs Homebrew and essential packages
+2. **Dotfiles Linking** - Creates symlinks for all configuration files
+3. **SSH Configuration** - Sets up SSH keys and GitHub access
+4. **Cloud Storage** - Creates shortcuts to cloud storage folders
+
+#### Options
+- `--dry-run` - Show what would be done without making changes
+- `--skip-brew` - Skip Homebrew setup (useful if already installed)
+- `--skip-ssh` - Skip SSH setup
+- `--skip-cloud` - Skip cloud storage linking
+- `--help` - Show detailed help and usage information
+
+**Estimated Time:**
+- First run: 10-20 minutes (depending on Homebrew installations)
+- Subsequent runs: 2-5 minutes
+
 ### brewSetup.sh - Package Management
 
 A comprehensive Homebrew management tool with the following capabilities:
@@ -376,7 +433,7 @@ A comprehensive Homebrew management tool with the following capabilities:
 ./brewSetup.sh --update
 ```
 
-### linkShellConfigFiles.sh - Configuration Management
+### linkFilesv3.sh - Configuration Management
 
 Intelligent symlink management with robust error handling:
 
@@ -592,10 +649,10 @@ ssh-add -l
 #### Symlink Issues
 ```bash
 # Check current symlink status
-./linkShellConfigFiles.sh --check
+./linkFilesv3.sh --check
 
 # Fix broken symlinks
-./linkShellConfigFiles.sh --verbose
+./linkFilesv3.sh --verbose
 ```
 
 #### Homebrew Problems
@@ -646,15 +703,17 @@ cp ~/20231015_120000_backup_.zshrc ~/.zshrc
 #### Verbose Modes
 All scripts support verbose output for debugging:
 ```bash
-./linkShellConfigFiles.sh --verbose
+./linkFilesv3.sh --verbose
 ./brewSetup.sh --verbose
+./go.sh --dry-run  # Shows what would be done
 ```
 
 #### Dry-run Modes
 Test operations without making changes:
 ```bash
-./linkShellConfigFiles.sh --dry-run
+./linkFilesv3.sh --dry-run
 ./brewSetup.sh --dry-run
+./go.sh --dry-run  # Preview entire setup process
 ```
 
 #### Log Files
@@ -675,7 +734,7 @@ tail -f logs-backups/homebrew_install_*.log
 ./brewSetup.sh --update
 
 # Check system status
-./linkShellConfigFiles.sh --check
+./linkFilesv3.sh --check
 ```
 
 #### Monthly Maintenance
@@ -709,11 +768,11 @@ To add a new application to the dotfiles:
    ```
 
 3. **Update linking script:**
-   Add `newapp` to the `programs` array in `linkShellConfigFiles.sh`
+   Add `newapp` to the `programs` array in `linkFilesv3.sh`
 
 4. **Test the setup:**
    ```bash
-   ./linkShellConfigFiles.sh --dry-run
+   ./linkFilesv3.sh --dry-run
    ```
 
 ### Updating Configurations
