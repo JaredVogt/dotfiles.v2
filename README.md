@@ -298,12 +298,13 @@ Link cloud storage directories for easy access:
 
 #### Atuin
 - **Location**: `atuin/`
-- **File**: `config.toml`
+- **Files**: `config.toml`, `install_atuin.sh`
 - **Features**:
   - Enhanced shell history
   - Sync across machines
   - Fuzzy search
   - Statistics and insights
+- **Installation**: Run `./atuin/install_atuin.sh` for automated setup
 
 #### Starship
 - **Location**: `starship/`
