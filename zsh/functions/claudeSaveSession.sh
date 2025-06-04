@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# FIXME: This script is broken
 # Script to run Claude and save output to a specified file
 # Usage: Create an alias 'cc' to this script in your .bashrc or .zshrc file
 # Example: alias cc='/path/to/this/script.sh'

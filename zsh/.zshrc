@@ -100,4 +100,3 @@ export PATH="/Users/jaredvogt/.codeium/windsurf/bin:$PATH"
 
 # Added by Windsurf - Next
 export PATH="/Users/jaredvogt/.codeium/windsurf/bin:$PATH"
-alias claude="~/.claude/local/claude"

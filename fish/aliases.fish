@@ -48,6 +48,7 @@ abbr -a imgcat '~/.iterm2/imgcat'
 abbr -a ipm '/Applications/Inkdrop.app/Contents/Resources/app/ipm/bin/ipm'
 abbr -a ks 'ksc -ms -p'
 abbr -a claudec '~/.config/zsh/functions/claudeSaveSession.sh'
+abbr -a claude '~/.claude/local/claude'
 # abbr -a jv 'nvim -u ~/.config/nvim/jaredv.init.lua'
 
 # nvim session shortcuts

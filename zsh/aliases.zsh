@@ -4,6 +4,8 @@ alias reload="source ~/.zshrc && source ~/.zshenv"
 # alias reload="source ~/.zprofile"
 alias proj="cd ~/projects"
 alias cellar="cd /opt/homebrew/Cellar && lla"
+alias rm="trash"
+alias claude="~/.claude/local/claude"
 
 function nf() {
     local original_dir=$(pwd)
@@ -14,6 +16,10 @@ function nf() {
     file=$(fzf) && [ -n "$file" ] && nvim "$file"
     
     cd "$original_dir"
+}
+
+function mr() {
+    rich "$1" --theme monokai --line-numbers --pager
 }
 
 
