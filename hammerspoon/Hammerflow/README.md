@@ -110,11 +110,35 @@ h = "code: ~/.hammerspoon"      # Open in VS Code
 d = "code: ~/Documents"
 ```
 
-#### Raycast Integration
+#### Deep Links and URL Schemes
 ```toml
+# Raycast (built-in support)
 c = "raycast://extensions/raycast/raycast/confetti"
 e = "raycast://extensions/raycast/emoji-symbols/search-emoji-symbols"
+
+# Linear (built-in support)  
+l = "linear://wolffaudio/view/b8ff72ac-1c48-4955-9fda-74870f1d6130"
+
+# Other app deep links - requires adding to init.lua
+# See "Adding New Deep Link Support" section below
 ```
+
+**Adding New Deep Link Support**
+
+To support new URL schemes (like `notion://`, `slack://`, etc.), you need to add them to the `getActionAndLabel` function in `init.lua`:
+
+```lua
+-- In init.lua, around line 179-182, add new URL schemes:
+elseif startswith(s, "notion://") then
+  return open(s), s
+elseif startswith(s, "slack://") then
+  return open(s), s
+```
+
+Currently supported URL schemes:
+- `http://` and `https://` (web URLs)
+- `raycast://` (Raycast deep links)
+- `linear://` (Linear app deep links)
 
 #### Custom Hammerspoon Code
 ```toml

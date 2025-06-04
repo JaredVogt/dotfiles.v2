@@ -178,6 +178,8 @@ local function getActionAndLabel(s)
     end, s
   elseif startswith(s, "raycast://") then
     return raycast(s), s
+  elseif startswith(s, "linear://") then
+    return open(s), s
   elseif startswith(s, "hs:") then
     return hs_run(postfix(s)), s
   elseif startswith(s, "cmd:") then

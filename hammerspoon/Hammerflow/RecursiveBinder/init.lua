@@ -350,6 +350,13 @@ local function showWebviewGrid(keymap)
    
    if #items == 0 then return end
    
+   -- Find the longest label to calculate dynamic width
+   local maxLabelLength = 0
+   for _, item in ipairs(items) do
+      local fullText = item.key .. " : " .. item.label
+      maxLabelLength = math.max(maxLabelLength, string.len(fullText))
+   end
+   
    -- Calculate grid dimensions
    local numCols = math.min(#items, MAX_COLS)
    local numRows = math.ceil(#items / numCols)
@@ -430,13 +437,13 @@ local function showWebviewGrid(keymap)
        </div>
        <script>
            function executeAction(key) {
-               window.webkit.messageHandlers.keyPressed.postMessage(key);
+               window.location.href = 'hammerflow://key/' + key;
            }
            
            // Close on escape key
            document.addEventListener('keydown', function(e) {
                if (e.key === 'Escape') {
-                   window.webkit.messageHandlers.closeGrid.postMessage('close');
+                   window.close();
                } else {
                    executeAction(e.key);
                }
@@ -454,18 +461,20 @@ local function showWebviewGrid(keymap)
    local screenFrame = screen:frame()
    
    -- Calculate size based on content - ensure it fits everything
-   local cellWidth = 280  -- Base width per cell
-   local cellHeight = 80  -- Base height per cell
-   local padding = 40     -- Padding around content
-   local gapWidth = 60    -- Gap between columns
-   local gapHeight = 30   -- Gap between rows
+   local baseCharWidth = 18  -- Increased character width for Menlo 48px font
+   local cellWidth = math.max(300, maxLabelLength * baseCharWidth + 100)  -- Dynamic width with higher minimum
+   local cellHeight = 100  -- Height per cell
+   local padding = 60     -- Padding around content
+   local gapWidth = 80    -- Gap between columns
+   local gapHeight = 40   -- Gap between rows
    
    local webviewWidth = (numCols * cellWidth) + ((numCols - 1) * gapWidth) + (padding * 2)
    local webviewHeight = (numRows * cellHeight) + ((numRows - 1) * gapHeight) + (padding * 2)
    
+   
    -- Ensure it doesn't exceed screen bounds, but prioritize showing all content
    webviewWidth = math.min(webviewWidth, screenFrame.w * 0.95)
-   webviewHeight = math.min(webviewHeight, screenFrame.h * 0.8)
+   webviewHeight = math.min(webviewHeight, screenFrame.h * 0.9)
    
    local webviewFrame = {
       x = screenFrame.x + (screenFrame.w - webviewWidth) / 2,
@@ -483,27 +492,35 @@ local function showWebviewGrid(keymap)
       :show()
       :bringToFront(true)
    
-   -- Add message handlers for JavaScript communication
-   gridWebview:userContentController():addScriptMessageHandler("keyPressed", function(message)
-      gridWebview:delete()
-      gridWebview = nil
-      modalActive = false
-      
-      -- Find and execute the corresponding action
-      for key, binding in pairs(keymap) do
-         if key[2] == message.body then
-            local modal = hs.hotkey.modal.new()
-            local func = obj.recursiveBind(binding, {modal})
-            func()
-            break
-         end
+   -- Set up keyboard event handler using windowCallback
+   gridWebview:windowCallback(function(action, webview, ...)
+      if action == "closing" then
+         modalActive = false
       end
    end)
    
-   gridWebview:userContentController():addScriptMessageHandler("closeGrid", function(message)
-      gridWebview:delete()
-      gridWebview = nil
-      modalActive = false
+   -- Set up navigation to handle key presses via URL changes
+   gridWebview:navigationCallback(function(action, webview, navID, url)
+      if action == "didReceiveServerRedirect" or action == "didCommit" then
+         local keyPressed = url:match("hammerflow://key/(.)")
+         if keyPressed then
+            gridWebview:delete()
+            gridWebview = nil
+            modalActive = false
+            
+            -- Find and execute the corresponding action
+            for key, binding in pairs(keymap) do
+               if key[2] == keyPressed then
+                  local modal = hs.hotkey.modal.new()
+                  local func = obj.recursiveBind(binding, {modal})
+                  func()
+                  break
+               end
+            end
+            return false  -- Don't actually navigate
+         end
+      end
+      return true
    end)
 end
 

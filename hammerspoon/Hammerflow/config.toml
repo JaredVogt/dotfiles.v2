@@ -36,6 +36,10 @@ v = ["Visual Studio Code", "VS Code"]
 
 # create groups to nest actions
 [l]
+label = "[linear]"
+b = ["linear://wolffaudio/view/b8ff72ac-1c48-4955-9fda-74870f1d6130", "bryce"]
+
+[b]
 label = "[links]" # the "label" key is reserved to change the label of the group
 g = "https://github.com"
 b = "https://bsky.app"
@@ -43,7 +47,7 @@ t = "https://twitter.com"
 
 
 # groups can be nested too!
-[l.m]
+[b.m]
 label = "[me]"
 g = ["https://github.com/saml-dev", "my github"]
 b = ["https://bsky.app/profile/saml.dev", "my bluesky"]
@@ -93,9 +97,9 @@ r = "reload" # reserved for reloading your hammerspoon config (helpful when auto
 
 
 # glhf :) share your cool ideas with me on
-# twitter @saml_dev - <leader> l m t
-# bluesky @saml.dev - <leader> l m b
-# github saml-dev   - <leader> l m g
+# twitter @saml_dev - <leader> b m t
+# bluesky @saml.dev - <leader> b m b
+# github saml-dev   - <leader> b m g
 
 
 # for advanced hammerspoon users, you can use
