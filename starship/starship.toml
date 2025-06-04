@@ -156,7 +156,7 @@ format = '[ $time ]($style)'
 
 # Everything for the zsh vim_mode state
 [character]
-success_symbol = "[ I ](bg:#FDFD96 fg:#000000)"    # Black text on yellow bg for insert
+success_symbol = "[ I ](bg:#00FF00 fg:#FF0000)"    # Red text on bright green bg for insert
 error_symbol = "[ I ](bg:#FFFF00 fg:#FF0000)"      # Red text on yellow bg for insert error
 vimcmd_symbol = "[ N ](bg:#FFFFFF fg:#000000)"     # Black text on white bg for normal
 vimcmd_replace_symbol = "[ R ](bg:#FFFFFF fg:#000000)"  # Black text on white bg for replace
