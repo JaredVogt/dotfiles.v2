@@ -90,6 +90,8 @@ eval "$(atuin init zsh)"
 # fish
 
 
+# FZF configuration with vim keybindings
+export FZF_DEFAULT_OPTS="--layout=reverse --height 90% --bind 'tab:toggle-search,shift-tab:toggle-search,J:down,K:up,ctrl-j:preview-down,ctrl-k:preview-up'"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 

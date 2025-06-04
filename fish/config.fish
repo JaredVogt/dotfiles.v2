@@ -39,4 +39,4 @@ bind \ef accept-autosuggestion
 
 # FZF
 bind -M default f _fzf_search_directory
-set -gx FZF_DEFAULT_OPTS "--layout=reverse --height 90% --bind 'tab:toggle-search,shift-tab:toggle-search,J:down,K:up'"
+set -gx FZF_DEFAULT_OPTS "--layout=reverse --height 90% --bind 'tab:toggle-search,shift-tab:toggle-search,J:down,K:up,ctrl-j:preview-down,ctrl-k:preview-up'"

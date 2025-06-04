@@ -5,4 +5,15 @@ alias reload="source ~/.zshrc && source ~/.zshenv"
 alias proj="cd ~/projects"
 alias cellar="cd /opt/homebrew/Cellar && lla"
 
+function nf() {
+    local original_dir=$(pwd)
+    local file
+    
+    cd ~/projects/dotfiles.v2
+    
+    file=$(fzf) && [ -n "$file" ] && nvim "$file"
+    
+    cd "$original_dir"
+}
+
 

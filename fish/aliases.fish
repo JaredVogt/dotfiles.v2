@@ -1,6 +1,7 @@
 #!/opt/homebrew/bin/fish
 
 abbr -a n 'nvim'
+abbr -a dot '~/projects/dotfiles.v2/edit-dotfiles.sh'
 abbr -a y 'yazi'
 abbr -a mess 'mdless'  # less for markdown
 abbr -a more 'less'  # less is better than more 
@@ -71,3 +72,6 @@ abbr -a theme-tide 'fisher install IlanCosman/tide@v5'
 # Wolffhound shortcuts
 abbr -a whclear 'rm -rf ~/Library/Application\ Support/Wolffhound/wolff_data/config.json'
 abbr -a whedit 'nvim ~/Library/Application\ Support/Wolffhound/wolff_data/config.json'
+
+# MIDI Testing shortcuts
+abbr -a key '~/projects/miditools/key.sh'
