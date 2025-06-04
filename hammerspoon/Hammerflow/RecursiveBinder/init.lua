@@ -222,7 +222,11 @@ local function formatBindingsAsGrid(keymap)
     -- Based on Hammerflow's singleKey structure: key = {mode, keyChar, label}
     local keyChar = key[2] or "?"
     local label = key[3] or keyChar
-    table.insert(items, {key = keyChar, label = label})
+    local icon = nil
+    if type(binding) == "table" and binding.icon then
+      icon = binding.icon
+    end
+    table.insert(items, {key = keyChar, label = label, icon = icon})
   end
   
   -- Sort alphabetically by key
@@ -342,7 +346,11 @@ local function showWebviewGrid(keymap)
    for key, binding in pairs(keymap) do
       local keyChar = key[2] or "?"
       local label = key[3] or keyChar
-      table.insert(items, {key = keyChar, label = label})
+      local icon = nil
+      if type(binding) == "table" and binding.icon then
+        icon = binding.icon
+      end
+      table.insert(items, {key = keyChar, label = label, icon = icon})
    end
    
    -- Sort alphabetically by key
@@ -385,7 +393,7 @@ local function showWebviewGrid(keymap)
                gap: 30px 60px;
                justify-items: start;
                align-items: center;
-               background: rgba(0, 0, 0, 0.4);
+               background: rgba(0, 0, 0, 0.6);
                border-radius: 12px;
                backdrop-filter: blur(5px);
                padding: 20px;
@@ -399,6 +407,12 @@ local function showWebviewGrid(keymap)
                border-radius: 8px;
                transition: all 0.2s ease;
                background: transparent;
+           }
+           .icon {
+               width: 48px;
+               height: 48px;
+               margin-right: 12px;
+               object-fit: contain;
            }
            .grid-cell:hover {
                background: rgba(255, 255, 255, 0.1);
@@ -424,13 +438,30 @@ local function showWebviewGrid(keymap)
    
    -- Add grid items
    for i, item in ipairs(items) do
+      local iconHtml = ""
+      if item.icon then
+         local home = os.getenv("HOME")
+         local iconFilePath = home .. "/projects/dotfiles.v2/hammerspoon/Hammerflow/images/" .. item.icon
+         
+         -- Try to read and encode image as base64
+         local file = io.open(iconFilePath, "rb")
+         if file then
+            local imageData = file:read("*all")
+            file:close()
+            local base64 = hs.base64.encode(imageData)
+            local mimeType = item.icon:match("%.(%w+)$") == "png" and "image/png" or "image/jpeg"
+            iconHtml = string.format('<img src="data:%s;base64,%s" class="icon">', mimeType, base64)
+         else
+            print("Could not read image file: " .. iconFilePath)
+         end
+      end
       html = html .. string.format([[
            <div class="grid-cell" onclick="executeAction('%s')">
-               <span class="key">%s</span>
+               %s<span class="key">%s</span>
                <span class="separator">:</span>
                <span class="label">%s</span>
            </div>
-      ]], item.key, item.key, item.label)
+      ]], item.key, iconHtml, item.key, item.label)
    end
    
    html = html .. [[
@@ -512,7 +543,11 @@ local function showWebviewGrid(keymap)
             for key, binding in pairs(keymap) do
                if key[2] == keyPressed then
                   local modal = hs.hotkey.modal.new()
-                  local func = obj.recursiveBind(binding, {modal})
+                  local actionBinding = binding
+                  if type(binding) == "table" and binding.action then
+                     actionBinding = binding.action
+                  end
+                  local func = obj.recursiveBind(actionBinding, {modal})
                   func()
                   break
                end
@@ -555,7 +590,11 @@ function obj.recursiveBind(keymap, modals)
    table.insert(modals, modal)
    local keyFuncNameTable = {}
    for key, map in pairs(keymap) do
-      local func = obj.recursiveBind(map, modals)
+      local actualMap = map
+      if type(map) == "table" and map.action then
+         actualMap = map.action
+      end
+      local func = obj.recursiveBind(actualMap, modals)
       -- key[1] is modifiers, i.e. {'shift'}, key[2] is key, i.e. 'f' 
       modal:bind(key[1], key[2], function() modal:exit() killHelper() modalActive = false func() end)
       modal:bind(obj.escapeKey[1], obj.escapeKey[2], function() modal:exit() killHelper() modalActive = false end)

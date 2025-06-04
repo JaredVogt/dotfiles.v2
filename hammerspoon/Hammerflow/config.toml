@@ -37,7 +37,7 @@ v = ["Visual Studio Code", "VS Code"]
 # create groups to nest actions
 [l]
 label = "[linear]"
-b = ["linear://wolffaudio/view/b8ff72ac-1c48-4955-9fda-74870f1d6130", "bryce"]
+b = ["linear://wolffaudio/view/b8ff72ac-1c48-4955-9fda-74870f1d6130", "bryce", "bryce2.png"]
 
 [b]
 label = "[links]" # the "label" key is reserved to change the label of the group

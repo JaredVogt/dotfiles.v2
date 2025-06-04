@@ -3,6 +3,11 @@
 local obj = {}
 obj.__index = obj
 
+-- URL event handler for reload
+hs.urlevent.bind("reload", function(eventName, params)
+    hs.reload()
+end)
+
 -- Metadata
 obj.name = "Hammerflow"
 obj.version = "1.0"
@@ -170,21 +175,21 @@ end
 
 local function getActionAndLabel(s)
   if s:find("^http[s]?://") then
-    return open(s), s:sub(5, 5) == "s" and s:sub(9) or s:sub(8)
+    return open(s), s:sub(5, 5) == "s" and s:sub(9) or s:sub(8), nil
   elseif s == "reload" then
     return function()
       hs.reload()
       hs.console.clearConsole()
-    end, s
+    end, s, nil
   elseif startswith(s, "raycast://") then
-    return raycast(s), s
+    return raycast(s), s, nil
   elseif startswith(s, "linear://") then
-    return open(s), s
+    return open(s), s, nil
   elseif startswith(s, "hs:") then
-    return hs_run(postfix(s)), s
+    return hs_run(postfix(s)), s, nil
   elseif startswith(s, "cmd:") then
     local arg = postfix(s)
-    return cmd(arg), arg
+    return cmd(arg), arg, nil
   elseif startswith(s, "input:") then
     local remaining = postfix(s)
     local _, label = getActionAndLabel(remaining)
@@ -201,23 +206,23 @@ local function getActionAndLabel(s)
       local replaced = string.gsub(remaining, "{input}", userInput)
       local action, _ = getActionAndLabel(replaced)
       action()
-    end, label
+    end, label, nil
   elseif startswith(s, "shortcut:") then
     local arg = postfix(s)
-    return keystroke(arg), arg
+    return keystroke(arg), arg, nil
   elseif startswith(s, "function:") then
     local funcKey = postfix(s)
-    return userFunc(funcKey), funcKey .. "()"
+    return userFunc(funcKey), funcKey .. "()", nil
   elseif startswith(s, "code:") then
     local arg = postfix(s)
-    return code(arg), "code " .. arg
+    return code(arg), "code " .. arg, nil
   elseif startswith(s, "text:") then
     local arg = postfix(s)
-    return text(arg), arg
+    return text(arg), arg, nil
   elseif startswith(s, "window:") then
     local loc = postfix(s)
     if windowLocations[loc] then
-      return windowLocations[loc], s
+      return windowLocations[loc], s, nil
     else
       -- regex to parse e.g. 0,0,.5,1 for left half of screen
       local x, y, w, h = loc:match("^([%.%d]+),%s*([%.%d]+),%s*([%.%d]+),%s*([%.%d]+)$")
@@ -225,11 +230,11 @@ local function getActionAndLabel(s)
         hs.alert('Invalid window location: "' .. loc .. '"', nil, nil, 5)
         return
       end
-      return move(rect(tonumber(x), tonumber(y), tonumber(w), tonumber(h))), s
+      return move(rect(tonumber(x), tonumber(y), tonumber(w), tonumber(h))), s, nil
     end
     return
   else
-    return launch(s), s
+    return launch(s), s, nil
   end
 end
 
@@ -332,11 +337,12 @@ function obj.loadFirstValidTomlFile(paths)
           conditionalActions[key] = { [cond] = getActionAndLabel(actionString) }
         end
       elseif type(v) == "string" then
-        local action, label = getActionAndLabel(v)
-        keyMap[singleKey(k, label)] = action
+        local action, label, icon = getActionAndLabel(v)
+        keyMap[singleKey(k, label)] = {action = action, icon = icon}
       elseif type(v) == "table" and v[1] then
-        local action, defaultLabel = getActionAndLabel(v[1])
-        keyMap[singleKey(k, v[2] or defaultLabel)] = action
+        local action, defaultLabel, icon = getActionAndLabel(v[1])
+        local customIcon = v[3] or icon
+        keyMap[singleKey(k, v[2] or defaultLabel)] = {action = action, icon = customIcon}
       else
         keyMap[singleKey(k, v.label or k)] = parseKeyMap(v)
       end
@@ -355,21 +361,24 @@ function obj.loadFirstValidTomlFile(paths)
       end
       -- add conditionalActions to keyMap
       for key_, value_ in pairs(conditionalActions) do
-        keyMap[singleKey(key_, conditionalLabels[key_] or "conditional")] = function()
-          local fallback = true
-          for cond, fn in pairs(value_) do
-            if (obj._userFunctions[cond] and obj._userFunctions[cond]())
-                or (obj._userFunctions[cond] == nil and isApp(cond)())
-            then
-              fn()
-              fallback = false
-              break
+        keyMap[singleKey(key_, conditionalLabels[key_] or "conditional")] = {
+          action = function()
+            local fallback = true
+            for cond, fn in pairs(value_) do
+              if (obj._userFunctions[cond] and obj._userFunctions[cond]())
+                  or (obj._userFunctions[cond] == nil and isApp(cond)())
+              then
+                fn()
+                fallback = false
+                break
+              end
             end
-          end
-          if fallback and value_["_"] then
-            value_["_"]()
-          end
-        end
+            if fallback and value_["_"] then
+              value_["_"]()
+            end
+          end,
+          icon = nil
+        }
       end
     end
 

@@ -14,6 +14,7 @@ Hammerflow consists of three main components:
 
 - **Leader Key System**: Use a dedicated key (like F17/F18) to trigger sequential key combinations
 - **Visual Grid Interface**: Modern, translucent grid showing available keys and actions
+- **Icon Support**: Display custom icons alongside menu items for visual identification
 - **TOML Configuration**: Human-readable configuration format with support for nested groups
 - **Multiple Action Types**: Support for apps, URLs, commands, text input, window management, and more
 - **Conditional Actions**: Different actions based on current application context
@@ -68,6 +69,7 @@ grid_separator = " ▸ "          # Separator between key and label (default: " 
 k = "Kitty"                     # Launch by name
 s = "Safari"
 v = ["Visual Studio Code", "VS Code"]  # With custom label
+v = ["Visual Studio Code", "VS Code", "vscode.png"]  # With custom label and icon
 ```
 
 #### URLs and Links
@@ -231,12 +233,59 @@ d = "function:toggleDarkMode"
 p = "function:openProject|my-project"
 ```
 
+## Icon Support
+
+Hammerflow supports displaying custom icons alongside menu items for better visual identification.
+
+### Adding Icons
+
+Icons can be added to any action using the array format with a third parameter:
+
+```toml
+# Format: [action, label, icon_filename]
+k = ["Kitty", "Terminal", "kitty.png"]
+g = ["https://github.com", "GitHub", "github.png"]
+c = ["code ~/.hammerspoon", "Config", "gear.png"]
+
+# Icons work in groups too
+[l]
+label = "[linear]"
+b = ["linear://project/view/task-id", "Bryce Task", "bryce.png"]
+```
+
+### Icon Requirements
+
+- **Location**: Place images in the `images/` directory within your Hammerflow folder
+- **Size**: 48x48 pixels recommended (any size works, will be scaled to 48x48)
+- **Format**: PNG recommended, JPEG also supported
+- **Encoding**: Images are automatically base64-encoded for webview display
+
+### Icon Directory Structure
+
+```
+Hammerflow/
+├── init.lua
+├── config.toml
+├── images/              # Icon directory
+│   ├── kitty.png       # Terminal icon
+│   ├── github.png      # GitHub icon
+│   ├── bryce.png       # Custom task icon
+│   └── gear.png        # Settings icon
+├── RecursiveBinder/
+│   └── init.lua
+└── lib/
+    └── tinytoml.lua
+```
+
 ## File Structure
 
 ```
 Hammerflow/
 ├── init.lua              # Main framework
 ├── config.toml           # Your configuration
+├── images/               # Icon directory (optional)
+│   ├── app1.png         # 48x48px icons
+│   └── app2.png
 ├── RecursiveBinder/
 │   └── init.lua         # Enhanced RecursiveBinder spoon
 └── lib/
