@@ -347,14 +347,27 @@ local function showWebviewGrid(keymap)
       local keyChar = key[2] or "?"
       local label = key[3] or keyChar
       local icon = nil
-      if type(binding) == "table" and binding.icon then
-        icon = binding.icon
+      local sortKey = keyChar  -- default to the display key
+      
+      if type(binding) == "table" then
+        if binding.icon then
+          icon = binding.icon
+        end
+        if binding.sortKey then
+          sortKey = binding.sortKey  -- use explicit sort key if provided
+        end
       end
-      table.insert(items, {key = keyChar, label = label, icon = icon})
+      
+      table.insert(items, {
+        key = keyChar, 
+        label = label, 
+        icon = icon,
+        sortKey = sortKey  -- add sort key to item
+      })
    end
    
-   -- Sort alphabetically by key
-   table.sort(items, function(a, b) return a.key < b.key end)
+   -- Sort by sortKey instead of key
+   table.sort(items, function(a, b) return a.sortKey < b.sortKey end)
    
    if #items == 0 then return end
    

@@ -316,6 +316,7 @@ function obj.loadFirstValidTomlFile(paths)
   local function parseKeyMap(config)
     local keyMap = {}
     local conditionalActions = nil
+    
     for k, v in pairs(config) do
       if k == "label" then
         -- continue
@@ -324,25 +325,47 @@ function obj.loadFirstValidTomlFile(paths)
           obj._apps[shortName] = app
         end
       elseif string.find(k, "_") then
-        local key = k:sub(1, 1)
-        local cond = k:sub(3)
-        if conditionalActions == nil then conditionalActions = {} end
-        local actionString = v
-        if type(v) == "table" then
-          actionString = v[1]
-        end
-        if conditionalActions[key] then
-          conditionalActions[key][cond] = getActionAndLabel(actionString)
+        -- Check if this is a sort key (prefix + single char) or conditional
+        local prefix, suffix = k:match("^(.+)_(.+)$")
+        if prefix and suffix and #suffix == 1 then
+          -- This is a sort key like "01_w" or "z_k"
+          local displayKey = suffix  -- "w" or "k"
+          local sortKey = k          -- "01_w" or "z_k"
+          
+          -- Process the value same as regular keys
+          if type(v) == "string" then
+            local action, label, icon = getActionAndLabel(v)
+            keyMap[singleKey(displayKey, label)] = {action = action, icon = icon, sortKey = sortKey}
+          elseif type(v) == "table" and v[1] then
+            local action, defaultLabel, icon = getActionAndLabel(v[1])
+            local customIcon = v[3] or icon
+            keyMap[singleKey(displayKey, v[2] or defaultLabel)] = {action = action, icon = customIcon, sortKey = sortKey}
+          else
+            -- Nested submenu
+            keyMap[singleKey(displayKey, v.label or displayKey)] = parseKeyMap(v)
+          end
         else
-          conditionalActions[key] = { [cond] = getActionAndLabel(actionString) }
+          -- This is a conditional like "w_chrome"
+          local key = k:sub(1, 1)
+          local cond = k:sub(3)
+          if conditionalActions == nil then conditionalActions = {} end
+          local actionString = v
+          if type(v) == "table" then
+            actionString = v[1]
+          end
+          if conditionalActions[key] then
+            conditionalActions[key][cond] = getActionAndLabel(actionString)
+          else
+            conditionalActions[key] = { [cond] = getActionAndLabel(actionString) }
+          end
         end
       elseif type(v) == "string" then
         local action, label, icon = getActionAndLabel(v)
-        keyMap[singleKey(k, label)] = {action = action, icon = icon}
+        keyMap[singleKey(k, label)] = {action = action, icon = icon, sortKey = k}
       elseif type(v) == "table" and v[1] then
         local action, defaultLabel, icon = getActionAndLabel(v[1])
         local customIcon = v[3] or icon
-        keyMap[singleKey(k, v[2] or defaultLabel)] = {action = action, icon = customIcon}
+        keyMap[singleKey(k, v[2] or defaultLabel)] = {action = action, icon = customIcon, sortKey = k}
       else
         keyMap[singleKey(k, v.label or k)] = parseKeyMap(v)
       end

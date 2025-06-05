@@ -23,9 +23,10 @@ grid_separator = " ▸ "      # Separator between key and label
 
 
 # keys to open apps 
-k = "Kitty"
+z_k = "Kitty"  # This will sort to the end (z_k) but display as 'k'
 p = "Claude" 
 o = ["cmd: osascript -e 'tell application \"Keyboard Maestro Engine\" to do script \"Wolff_email\"'", "Run Wolff email"]  # do script "MacroName" with parameter "value"
+z = "reload" # reserved for reloading your hammerspoon config (helpful when auto_reload is false)
 
 # or a url
 g = "https://google.com"
@@ -91,10 +92,10 @@ c = ["raycast://extensions/raycast/window-management/center-half", "center half"
 
 # this group is handy to copy over
 # for quick access to your config
-[h]
-label = "[hammerspoon]"
-c = "code: ~/.hammerspoon"
-r = "reload" # reserved for reloading your hammerspoon config (helpful when auto_reload is false)
+# [h]
+# label = "[hammerspoon]"
+# c = "code: ~/.hammerspoon"
+# r = "reload" # reserved for reloading your hammerspoon config (helpful when auto_reload is false)
 
 
 # glhf :) share your cool ideas with me on
@@ -106,5 +107,5 @@ r = "reload" # reserved for reloading your hammerspoon config (helpful when auto
 # for advanced hammerspoon users, you can use
 # the hs: prefix as an escape hatch to run any
 # hammerspoon command you want.
-[z]
-z = "hs:hs.alert('Hello, world!')"
+# [z]
+# z = "hs:hs.alert('Hello, world!')"
