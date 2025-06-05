@@ -22,9 +22,10 @@ grid_spacing = " | "        # Spacing between columns
 grid_separator = " ▸ "      # Separator between key and label
 
 
-# set a key to open an app
+# keys to open apps 
 k = "Kitty"
-
+p = "Claude" 
+o = ["cmd: osascript -e 'tell application \"Keyboard Maestro Engine\" to do script \"Wolff_email\"'", "Run Wolff email"]  # do script "MacroName" with parameter "value"
 
 # or a url
 g = "https://google.com"
@@ -62,7 +63,7 @@ e = ["raycast://extensions/raycast/emoji-symbols/search-emoji-symbols", "emoji"]
 
 
 # use prefixes for special actions
-[p]
+[x]
 label = "[prefixes]"
 t = "text:sam@saml.dev"       # types "sam@saml.dev"
 z = "cmd:code ~/.zshrc"       # run any terminal command

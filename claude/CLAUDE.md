@@ -1,0 +1,1 @@
+- when writing commit messages, only reference claude by saying Message by Claude

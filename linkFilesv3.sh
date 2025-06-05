@@ -274,6 +274,7 @@ setup_application_support() {
     echo -e "\n${GREEN}Setting up Application Support (~/Library/Application Support/)${NC}"
     
     handle_link "$REPOPATH/claude/claude_desktop_config.json" ~/Library/Application\ Support/Claude/claude_desktop_config.json
+    handle_link "$REPOPATH/claude/CLAUDE.md" ~/.claude/CLAUDE.md
 }
 
 # Function to setup config directories and symlinks
