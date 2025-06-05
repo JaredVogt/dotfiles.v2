@@ -375,15 +375,15 @@ local function showWebviewGrid(keymap)
    <html>
    <head>
        <style>
-           html {
-               background: transparent;
+           html, body {
+               background: transparent !important;
+               background-color: transparent !important;
            }
            body {
                font-family: 'Menlo', monospace;
                font-size: 48px;
                margin: 0;
                padding: 20px;
-               background: transparent;
                color: white;
                overflow: hidden;
            }
@@ -393,10 +393,28 @@ local function showWebviewGrid(keymap)
                gap: 30px 60px;
                justify-items: start;
                align-items: center;
-               background: rgba(0, 0, 0, 0.6);
+               background-color: rgba(0, 0, 0, 0.6);
                border-radius: 12px;
-               backdrop-filter: blur(5px);
                padding: 20px;
+               border: 5px solid #00ff00;
+               box-sizing: border-box;
+               position: relative;
+               overflow: hidden;
+           }
+           .grid-container::before {
+               content: '';
+               position: absolute;
+               top: 0;
+               left: 0;
+               right: 0;
+               bottom: 0;
+               background-image: url('BACKGROUND_IMAGE_URL');
+               background-position: center center;
+               background-size: cover;
+               background-repeat: no-repeat;
+               opacity: 0.6;
+               z-index: -1;
+               border-radius: 12px;
            }
            .grid-cell {
                display: flex;
@@ -435,6 +453,23 @@ local function showWebviewGrid(keymap)
    <body>
        <div class="grid-container">
    ]]
+   
+   -- Load background image if it exists
+   local backgroundImageData = ""
+   local home = os.getenv("HOME")
+   local backgroundPath = home .. "/projects/dotfiles.v2/hammerspoon/Hammerflow/images/background.png"
+   local bgFile = io.open(backgroundPath, "rb")
+   if bgFile then
+      local imageData = bgFile:read("*all")
+      bgFile:close()
+      local base64 = hs.base64.encode(imageData)
+      backgroundImageData = "data:image/png;base64," .. base64
+   else
+      backgroundImageData = "none"
+   end
+   
+   -- Replace placeholder with actual background image
+   html = html:gsub("BACKGROUND_IMAGE_URL", backgroundImageData)
    
    -- Add grid items
    for i, item in ipairs(items) do
