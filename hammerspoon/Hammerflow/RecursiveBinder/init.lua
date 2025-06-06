@@ -49,6 +49,12 @@ obj.helperFormat = {atScreenEdge=2,
 --- whether to show helper, can be true of false
 obj.showBindHelper = true
 
+--- RecursiveBinder.displayMode
+--- Variable
+--- Display mode for the helper: "webview" or "text"
+--- Default to "webview"
+obj.displayMode = "webview"
+
 --- RecursiveBinder.helperModifierMapping()
 --- Variable
 --- The mapping used to display modifiers on helper.
@@ -286,8 +292,9 @@ local function formatBindingsAsGrid(keymap)
 end
 
 -- show helper of available keys of current layer
-local function showHelper(keyFuncNameTable)
+local function showHelper(keyFuncNameTable, keyFuncSortTable)
    -- keyFuncNameTable is a table that key is key name and value is description
+   -- keyFuncSortTable is a table that maps key names to sort keys
    local helper = ''
    local separator = '' -- first loop doesn't need to add a separator, because it is in the very front. 
    local lastLine = ''
@@ -295,9 +302,16 @@ local function showHelper(keyFuncNameTable)
 
    local sortedKeyFuncNameTable = {}
    for keyName, funcName in pairs(keyFuncNameTable) do
-       table.insert(sortedKeyFuncNameTable, {keyName = keyName, funcName = funcName})
+       local sortKey = keyFuncSortTable and keyFuncSortTable[keyName] or keyName
+       table.insert(sortedKeyFuncNameTable, {keyName = keyName, funcName = funcName, sortKey = sortKey})
    end
-   table.sort(sortedKeyFuncNameTable, function(a, b) return compareLetters(a.keyName, b.keyName) end)
+   
+   -- Sort by sortKey if available, otherwise use compareLetters for backward compatibility
+   if keyFuncSortTable then
+      table.sort(sortedKeyFuncNameTable, function(a, b) return a.sortKey < b.sortKey end)
+   else
+      table.sort(sortedKeyFuncNameTable, function(a, b) return compareLetters(a.keyName, b.keyName) end)
+   end
 
    for _, value in ipairs(sortedKeyFuncNameTable) do
       local keyName = value.keyName
@@ -637,17 +651,26 @@ function obj.recursiveBind(keymap, modals)
    local modal = hs.hotkey.modal.new()
    table.insert(modals, modal)
    local keyFuncNameTable = {}
+   local keyFuncSortTable = {}  -- For sorting in text mode
    for key, map in pairs(keymap) do
       local actualMap = map
-      if type(map) == "table" and map.action then
-         actualMap = map.action
+      local sortKey = nil
+      if type(map) == "table" then
+         if map.action then
+            actualMap = map.action
+         end
+         if map.sortKey then
+            sortKey = map.sortKey
+         end
       end
       local func = obj.recursiveBind(actualMap, modals)
       -- key[1] is modifiers, i.e. {'shift'}, key[2] is key, i.e. 'f' 
       modal:bind(key[1], key[2], function() modal:exit() killHelper() modalActive = false func() end)
       modal:bind(obj.escapeKey[1], obj.escapeKey[2], function() modal:exit() killHelper() modalActive = false end)
       if #key >= 3 then
-         keyFuncNameTable[createKeyName(key)] = key[3]
+         local keyName = createKeyName(key)
+         keyFuncNameTable[keyName] = key[3]
+         keyFuncSortTable[keyName] = sortKey or keyName  -- Use sortKey if available, otherwise keyName
       end
    end
    return function()
@@ -667,7 +690,11 @@ function obj.recursiveBind(keymap, modals)
          modalActive = true
          killHelper()
          if obj.showBindHelper then
-            showWebviewGrid(keymap)
+            if obj.displayMode == "text" then
+               showHelper(keyFuncNameTable, keyFuncSortTable)
+            else
+               showWebviewGrid(keymap)
+            end
          end
       end
    end

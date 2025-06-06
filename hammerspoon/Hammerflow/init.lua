@@ -280,6 +280,10 @@ function obj.loadFirstValidTomlFile(paths)
   if configFile.show_ui == false then
     spoon.RecursiveBinder.showBindHelper = false
   end
+  
+  -- Set display mode (default to webview)
+  local display_mode = configFile.display_mode or "webview"
+  spoon.RecursiveBinder.displayMode = display_mode
 
   spoon.RecursiveBinder.helperFormat = {
     atScreenEdge = 0,
@@ -309,6 +313,7 @@ function obj.loadFirstValidTomlFile(paths)
   configFile.auto_reload = nil
   configFile.toast_on_reload = nil
   configFile.show_ui = nil
+  configFile.display_mode = nil
   configFile.max_grid_columns = nil
   configFile.grid_spacing = nil
   configFile.grid_separator = nil

@@ -15,6 +15,7 @@ leader_key_mods = ""      # optional, default "", not recommended - a dedicated 
 auto_reload = true        # optional, default true, reload when any file in this directory is saved
 toast_on_reload = true    # optional, default false, show a toast when the config is reloaded
 show_ui = true            # optional, default true, show the ui with your key maps
+display_mode = "webview"  # optional, default "webview", options: "webview" or "text"
 
 # Grid layout options (optional - these are the defaults)
 max_grid_columns = 5        # Maximum columns (1-10 recommended)
