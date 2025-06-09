@@ -658,6 +658,8 @@ function obj.recursiveBind(keymap, modals)
       if type(map) == "table" then
          if map.action then
             actualMap = map.action
+         elseif map.keyMap then
+            actualMap = map.keyMap
          end
          if map.sortKey then
             sortKey = map.sortKey

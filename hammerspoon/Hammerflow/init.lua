@@ -329,6 +329,8 @@ function obj.loadFirstValidTomlFile(paths)
     for k, v in pairs(config) do
       if k == "label" then
         -- continue
+      elseif k == "icon" then
+        -- continue
       elseif k == "apps" then
         for shortName, app in pairs(v) do
           obj._apps[shortName] = app
@@ -376,7 +378,8 @@ function obj.loadFirstValidTomlFile(paths)
         local customIcon = v[3] or icon
         keyMap[singleKey(k, v[2] or defaultLabel)] = {action = action, icon = customIcon, sortKey = k}
       else
-        keyMap[singleKey(k, v.label or k)] = parseKeyMap(v)
+        local nestedKeyMap = parseKeyMap(v)
+        keyMap[singleKey(k, v.label or k)] = {keyMap = nestedKeyMap, icon = v.icon, sortKey = k}
       end
     end
 

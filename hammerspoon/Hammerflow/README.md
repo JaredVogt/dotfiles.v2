@@ -40,6 +40,7 @@ Hammerflow consists of three main components:
    ```toml
    [w]
    label = "[window]"
+   icon = "window.png"            # Optional group icon
    h = "window:left-half"         # Move window to left half
    l = "window:right-half"        # Move window to right half
    f = "window:fullscreen"        # Toggle fullscreen
@@ -148,6 +149,12 @@ Currently supported URL schemes:
 a = "hs:hs.alert('Hello, world!')"  # Run any Hammerspoon Lua code
 ```
 
+#### Keyboard Maestro Macros
+```toml
+g = "km:Google_meet"                # Execute Keyboard Maestro macro
+m = ["km:My_Macro", "Custom Label"] # With custom label
+```
+
 #### Custom Functions
 ```toml
 f = "function:myFunction"       # Call registered function
@@ -161,12 +168,14 @@ Create organized groups of actions:
 ```toml
 [l]
 label = "[links]"               # Optional group label
+icon = "links.png"              # Optional group icon
 g = "https://github.com"
 t = "https://twitter.com"
 
 # Nested groups
 [l.m]
 label = "[my links]"
+icon = "personal.png"           # Icons work on nested groups too
 g = ["https://github.com/myuser", "my github"]
 t = ["https://twitter.com/myuser", "my twitter"]
 ```
@@ -240,18 +249,23 @@ Hammerflow supports displaying custom icons alongside menu items for better visu
 
 ### Adding Icons
 
-Icons can be added to any action using the array format with a third parameter:
+Icons can be added to actions using the array format with a third parameter:
 
 ```toml
 # Format: [action, label, icon_filename]
 k = ["Kitty", "Terminal", "kitty.png"]
 g = ["https://github.com", "GitHub", "github.png"]
 c = ["code ~/.hammerspoon", "Config", "gear.png"]
+```
 
-# Icons work in groups too
+Icons can also be added to groups using the `icon` property:
+
+```toml
 [l]
 label = "[linear]"
+icon = "linear.png"              # Group icon
 b = ["linear://project/view/task-id", "Bryce Task", "bryce.png"]
+c = ["linear://project/view/other-task", "Other Task", "task.png"]
 ```
 
 ### Icon Requirements
