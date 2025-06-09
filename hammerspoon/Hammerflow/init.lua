@@ -213,6 +213,10 @@ local function getActionAndLabel(s)
   elseif startswith(s, "function:") then
     local funcKey = postfix(s)
     return userFunc(funcKey), funcKey .. "()", nil
+  elseif startswith(s, "km:") then
+    local macroName = postfix(s)
+    local kmCmd = string.format('osascript -e \'tell application "Keyboard Maestro Engine" to do script "%s"\'', macroName)
+    return cmd(kmCmd), "km: " .. macroName, nil
   elseif startswith(s, "code:") then
     local arg = postfix(s)
     return code(arg), "code " .. arg, nil
