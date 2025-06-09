@@ -23,18 +23,23 @@ grid_spacing = " | "        # Spacing between columns
 grid_separator = " ▸ "      # Separator between key and label
 
 
-# keys to open apps 
-z_k = "Kitty"  # This will sort to the end (z_k) but display as 'k'
-p = "Claude" 
+# single keys to open apps 
+# z_k = "Kitty"  # This will sort to the end (z_k) but display as 'k'
+p = "Claude"
+# c = "Cursor"
 o = ["cmd: osascript -e 'tell application \"Keyboard Maestro Engine\" to do script \"Wolff_email\"'", "Run Wolff email"]  # do script "MacroName" with parameter "value"
 z = "reload" # reserved for reloading your hammerspoon config (helpful when auto_reload is false)
+# g = ["km:Google_meet", "Google Meet"]
+g = ["cmd: osascript -e 'tell application \"Keyboard Maestro Engine\" to do script \"Google_meet\"'", "Google Meet"]  # do script "MacroName" with parameter "value"
+# TODO make handler for KM - so km:script_name triggers it
 
 # or a url
-g = "https://google.com"
+s = "https://google.com"
+# TODO add support for other keys like / to be used for search
 
 
 # use an array to change the label in the popup
-v = ["Visual Studio Code", "VS Code"]
+c = ["Cursor", "Cursor", "cursor.png"]
 
 
 # create groups to nest actions

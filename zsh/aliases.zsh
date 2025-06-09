@@ -6,6 +6,7 @@ alias proj="cd ~/projects"
 alias cellar="cd /opt/homebrew/Cellar && lla"
 alias rm="trash"
 alias claude="~/.claude/local/claude"
+alias dot='nf'
 
 function nf() {
     local original_dir=$(pwd)

@@ -1,1 +1,3 @@
-- when writing commit messages, only reference claude by saying Message by Claude
+- when writing commit messages, only reference claude by saying "Message by Claude" at the end
+- NEVER include "Co-Authored-By: Claude <noreply@anthropic.com>" in commit messages
+- The commit message should end with just "Message by Claude" and nothing else after that

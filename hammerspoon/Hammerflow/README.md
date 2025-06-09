@@ -55,8 +55,9 @@ leader_key_mods = ""            # Optional: Modifiers for leader key (cmd, ctrl,
 auto_reload = true              # Optional: Auto-reload on file changes (default: true)
 toast_on_reload = true          # Optional: Show reload notification (default: false)
 show_ui = true                  # Optional: Show visual interface (default: true)
+display_mode = "webview"        # Optional: "webview" or "text" (default: "webview")
 
-# Grid layout options
+# Grid layout options (for webview mode)
 max_grid_columns = 5            # Maximum columns in grid (default: 5)
 grid_spacing = " | "            # Spacing between columns (default: " | ")
 grid_separator = " ▸ "          # Separator between key and label (default: " : ")
@@ -301,6 +302,54 @@ Hammerflow/
 5. Press the leader key again while the grid is open to close it
 
 ## Advanced Features
+
+### Display Modes
+
+Hammerflow supports two display modes for showing available shortcuts:
+
+#### Webview Mode (default)
+The modern visual interface with:
+- Grid layout with customizable columns
+- Visual icons support
+- Click-to-execute functionality
+- Translucent background with optional custom image
+- Configurable spacing and separators
+
+```toml
+display_mode = "webview"  # Modern visual grid
+```
+
+#### Text Mode
+The classic lightweight display with:
+- Traditional text-based interface
+- Fast and minimal resource usage
+- Special sorting for mixed case (a, A, b, B, c, C...)
+- Works in all environments
+- No dependencies on webview
+
+```toml
+display_mode = "text"     # Classic text display
+```
+
+### Custom Sort Order
+
+Control the display order of shortcuts using prefixed keys:
+
+```toml
+# Numeric prefixes
+10_k = "Kitty"           # Displays as 'k', sorts as '10_k'
+20_c = "Chrome"          # Displays as 'c', sorts as '20_c'
+99_z = "reload"          # Displays as 'z', sorts last
+
+# Alphabetic prefixes  
+a_w = "window:left-half"  # Displays as 'w', sorts as 'a_w'
+z_r = "reload"           # Displays as 'r', sorts as 'z_r'
+
+# Regular keys still work
+g = "Google"             # Displays and sorts as 'g'
+```
+
+This allows complete control over the order items appear in the menu while keeping the actual hotkey simple.
 
 ### Auto-reload
 When `auto_reload = true`, Hammerflow watches for changes to configuration files and automatically reloads, making development and tweaking very fast.

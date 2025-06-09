@@ -1,7 +1,8 @@
 #!/opt/homebrew/bin/fish
 
 abbr -a n 'nvim'
-abbr -a dot '~/projects/dotfiles.v2/edit-dotfiles.sh'
+abbr -a dots '~/projects/dotfiles.v2/edit-dotfiles.sh'
+abbr -a dot nf 
 abbr -a y 'yazi'
 abbr -a mess 'mdless'  # less for markdown
 abbr -a more 'less'  # less is better than more 
