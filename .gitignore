@@ -1,5 +1,6 @@
 *.log
 *.bak
+*.psd
 logs-backups/
 .DS_Store
 hammerspoon/backups/

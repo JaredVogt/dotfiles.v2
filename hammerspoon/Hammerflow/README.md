@@ -64,6 +64,13 @@ grid_spacing = " | "            # Spacing between columns (default: " | ")
 grid_separator = " ▸ "          # Separator between key and label (default: " : ")
 ```
 
+### Key Naming Rules
+
+- **Letters and numbers**: Can be used directly: `a`, `Z`, `1`, `9`
+- **Special characters**: Must be quoted in TOML: `"/"`, `"."`, `"?"`, `";"`, `"'"`
+- **Uppercase letters**: Automatically include shift modifier
+- **All printable characters are supported** as shortcut keys
+
 ### Action Types
 
 #### Application Launching
@@ -72,6 +79,10 @@ k = "Kitty"                     # Launch by name
 s = "Safari"
 v = ["Visual Studio Code", "VS Code"]  # With custom label
 v = ["Visual Studio Code", "VS Code", "vscode.png"]  # With custom label and icon
+
+# Special characters must be quoted
+"/" = "Safari"                  # Forward slash requires quotes
+"." = "Finder"                  # Period requires quotes
 ```
 
 #### URLs and Links
