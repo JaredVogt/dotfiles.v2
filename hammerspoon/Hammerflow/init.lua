@@ -19,6 +19,7 @@ obj.license = "MIT - https://opensource.org/licenses/MIT"
 obj.auto_reload = false
 obj._userFunctions = {}
 obj._apps = {}
+obj._inputWebview = nil
 
 -- lets us package RecursiveBinder with Hammerflow to include
 -- sorting and a bug fix that hasn't been merged upstream yet
@@ -173,6 +174,282 @@ local function postfix(s)
   return s:sub(s:find(":") + 1)
 end
 
+-- Custom input dialog with aggressive focus handling
+local function showCustomInputDialog(prompt, callback)
+  -- Close existing input dialog if present and clean up ALL handlers
+  if obj._inputWebview then
+    if obj._inputWebview.modal then
+      obj._inputWebview.modal:exit()
+      obj._inputWebview.modal = nil
+    end
+    obj._inputWebview:delete()
+    obj._inputWebview = nil
+  end
+  
+  local html = [[
+  <!DOCTYPE html>
+  <html>
+  <head>
+      <style>
+          html, body {
+              background: transparent !important;
+              margin: 0;
+              padding: 0;
+              height: 100vh;
+              width: 100vw;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              overflow: hidden;
+          }
+          .input-container {
+              background-color: rgba(0, 0, 0, 0.9);
+              border: 3px solid #00ff00;
+              border-radius: 12px;
+              padding: 25px;
+              text-align: center;
+              font-family: 'Menlo', monospace;
+              color: white;
+              min-width: 400px;
+              max-width: 450px;
+              box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+              box-sizing: border-box;
+          }
+          .prompt-text {
+              font-size: 18px;
+              margin-bottom: 20px;
+              color: #00ff00;
+              text-shadow: 0 0 5px #00ff00;
+          }
+          .input-field {
+              width: 100%;
+              padding: 12px;
+              font-size: 16px;
+              font-family: 'Menlo', monospace;
+              background-color: rgba(255, 255, 255, 0.1);
+              border: 2px solid #00ff00;
+              border-radius: 6px;
+              color: white;
+              outline: none;
+              margin-bottom: 20px;
+              box-sizing: border-box;
+          }
+          .input-field:focus {
+              border-color: #00ff00;
+              box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+          }
+          .button-container {
+              display: flex;
+              gap: 15px;
+              justify-content: center;
+          }
+          .btn {
+              padding: 10px 20px;
+              font-size: 14px;
+              font-family: 'Menlo', monospace;
+              border: 2px solid #00ff00;
+              border-radius: 6px;
+              background-color: rgba(0, 255, 0, 0.1);
+              color: #00ff00;
+              cursor: pointer;
+              transition: all 0.2s ease;
+              min-width: 80px;
+          }
+          .btn:hover {
+              background-color: rgba(0, 255, 0, 0.2);
+              transform: scale(1.05);
+          }
+          .btn-primary {
+              background-color: rgba(0, 255, 0, 0.2);
+          }
+      </style>
+  </head>
+  <body>
+      <div class="input-container">
+          <div class="prompt-text">]] .. (prompt or "Enter text:") .. [[</div>
+          <input type="text" class="input-field" id="userInput" placeholder="Click here and type...">
+          <div class="button-container">
+              <button class="btn btn-primary" onclick="submit()">Submit</button>
+              <button class="btn" onclick="cancel()">Cancel</button>
+          </div>
+      </div>
+      <script>
+          function submit() {
+              const input = document.getElementById('userInput').value;
+              window.location.href = 'hammerflow://input/submit/' + encodeURIComponent(input);
+          }
+          
+          function cancel() {
+              window.location.href = 'hammerflow://input/cancel';
+          }
+          
+          // Submit on Enter key - multiple event handlers for reliability
+          document.getElementById('userInput').addEventListener('keydown', function(e) {
+              console.log('debug: Input keydown:', e.key, e.keyCode);
+              if (e.key === 'Enter' || e.keyCode === 13) {
+                  console.log('debug: Enter detected on input - submitting');
+                  e.preventDefault();
+                  e.stopPropagation();
+                  submit();
+                  return false;
+              }
+          });
+          
+          document.getElementById('userInput').addEventListener('keypress', function(e) {
+              console.log('debug: Input keypress:', e.key, e.keyCode);
+              if (e.key === 'Enter' || e.keyCode === 13) {
+                  console.log('debug: Enter keypress detected - submitting');
+                  e.preventDefault();
+                  e.stopPropagation();
+                  submit();
+                  return false;
+              }
+          });
+          
+          // Global keyboard handlers
+          document.addEventListener('keydown', function(e) {
+              console.log('debug: Document keydown:', e.key, e.keyCode);
+              if (e.key === 'Enter' || e.keyCode === 13) {
+                  console.log('debug: Global Enter detected - submitting');
+                  e.preventDefault();
+                  e.stopPropagation();
+                  submit();
+                  return false;
+              } else if (e.key === 'Escape' || e.keyCode === 27) {
+                  console.log('debug: Escape detected - cancelling');
+                  e.preventDefault();
+                  e.stopPropagation();
+                  cancel();
+                  return false;
+              }
+          });
+          
+          // Focus input field when clicking anywhere
+          document.addEventListener('click', function() {
+              document.getElementById('userInput').focus();
+          });
+          
+          // Auto-focus on load
+          window.addEventListener('load', function() {
+              document.getElementById('userInput').focus();
+          });
+      </script>
+  </body>
+  </html>
+  ]]
+  
+  -- Create webview
+  local screen = hs.screen.mainScreen()
+  local screenFrame = screen:frame()
+  
+  local dialogWidth = 500
+  local dialogHeight = 250
+  local webviewFrame = {
+    x = screenFrame.x + (screenFrame.w - dialogWidth) / 2,
+    y = screenFrame.y + (screenFrame.h - dialogHeight) / 2,
+    w = dialogWidth,
+    h = dialogHeight
+  }
+  
+  obj._inputWebview = hs.webview.new(webviewFrame)
+    :windowStyle({})
+    :allowTextEntry(true)
+    :level(hs.drawing.windowLevels.modalPanel)
+    :transparent(true)
+    :html(html)
+    :show()
+    :bringToFront(true)
+  
+  -- Force focus with click simulation
+  hs.timer.doAfter(0.2, function()
+    if obj._inputWebview then
+      local center = {
+        x = webviewFrame.x + webviewFrame.w / 2,
+        y = webviewFrame.y + webviewFrame.h / 2
+      }
+      -- Simulate a click in the center of the dialog
+      hs.eventtap.leftClick(center)
+    end
+  end)
+  
+  -- Set up navigation callback
+  obj._inputWebview:navigationCallback(function(action, webview, navID, url)
+    if action == "didStartProvisionalNavigation" then
+      if url:match("hammerflow://input/submit/(.*)") then
+        local userInput = url:match("hammerflow://input/submit/(.*)")
+        userInput = hs.http.urlDecode(userInput) or ""
+        -- Clean up ALL handlers
+        if obj._inputWebview.modal then
+          obj._inputWebview.modal:exit()
+          obj._inputWebview.modal = nil
+        end
+        obj._inputWebview:delete()
+        obj._inputWebview = nil
+        callback(userInput)
+        return false
+      elseif url:match("hammerflow://input/cancel") then
+        -- Clean up ALL handlers
+        if obj._inputWebview.escapeHandler then
+          obj._inputWebview.escapeHandler:delete()
+        end
+        if obj._inputWebview.enterHandler then
+          obj._inputWebview.enterHandler:delete()
+        end
+        obj._inputWebview:delete()
+        obj._inputWebview = nil
+        callback(nil)
+        return false
+      end
+    end
+    return true
+  end)
+  
+  -- Create a modal that captures keys only when dialog is active
+  local modal = hs.hotkey.modal.new()
+  
+  -- Enter key handler
+  modal:bind({}, "return", function()
+    -- Immediately exit modal to release keys
+    modal:exit()
+    
+    if obj._inputWebview then
+      -- Get the input value using JavaScript
+      obj._inputWebview:evaluateJavaScript("document.getElementById('userInput').value", function(result)
+        local userInput = result or ""
+        obj._inputWebview:delete()
+        obj._inputWebview = nil
+        callback(userInput)
+      end)
+    end
+  end)
+  
+  -- Escape key handler
+  modal:bind({}, "escape", function()
+    -- Immediately exit modal to release keys
+    modal:exit()
+    
+    if obj._inputWebview then
+      obj._inputWebview:delete()
+      obj._inputWebview = nil
+      callback(nil)
+    end
+  end)
+  
+  -- Enter the modal
+  modal:enter()
+  obj._inputWebview.modal = modal
+  
+  -- Focus on the webview
+  hs.timer.doAfter(0.3, function()
+    if obj._inputWebview then
+      obj._inputWebview:evaluateJavaScript([[
+        document.getElementById('userInput').focus();
+        document.getElementById('userInput').select();
+      ]])
+    end
+  end)
+end
+
 local function getActionAndLabel(s)
   if s:find("^http[s]?://") then
     return open(s), s:sub(5, 5) == "s" and s:sub(9) or s:sub(8), nil
@@ -196,16 +473,18 @@ local function getActionAndLabel(s)
     return function()
       -- user input takes focus and doesn't return it
       local focusedWindow = hs.window.focusedWindow()
-      local button, userInput = hs.dialog.textPrompt("", "", "", "Submit", "Cancel")
-      -- restore focus
-      focusedWindow:focus()
-
-      if button == "Cancel" then return end
-
-      -- replace text and execute remaining action
-      local replaced = string.gsub(remaining, "{input}", userInput)
-      local action, _ = getActionAndLabel(replaced)
-      action()
+      
+      showCustomInputDialog("Enter text:", function(userInput)
+        -- restore focus
+        focusedWindow:focus()
+        
+        if userInput == nil then return end -- User cancelled
+        
+        -- replace text and execute remaining action
+        local replaced = string.gsub(remaining, "{input}", userInput)
+        local action, _ = getActionAndLabel(replaced)
+        action()
+      end)
     end, label, nil
   elseif startswith(s, "shortcut:") then
     local arg = postfix(s)

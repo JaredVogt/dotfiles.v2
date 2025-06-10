@@ -385,11 +385,15 @@ local function showWebviewGrid(keymap)
    
    if #items == 0 then return end
    
-   -- Find the longest label to calculate dynamic width
+   -- Find the longest label and check for icons to calculate dynamic width
    local maxLabelLength = 0
+   local hasIcons = false
    for _, item in ipairs(items) do
       local fullText = item.key .. " : " .. item.label
       maxLabelLength = math.max(maxLabelLength, string.len(fullText))
+      if item.icon then
+         hasIcons = true
+      end
    end
    
    -- Calculate grid dimensions
@@ -555,7 +559,8 @@ local function showWebviewGrid(keymap)
    
    -- Calculate size based on content - ensure it fits everything
    local baseCharWidth = 18  -- Increased character width for Menlo 48px font
-   local cellWidth = math.max(300, maxLabelLength * baseCharWidth + 100)  -- Dynamic width with higher minimum
+   local iconWidth = hasIcons and 60 or 0  -- 48px icon + 12px margin if icons present
+   local cellWidth = math.max(300, maxLabelLength * baseCharWidth + 100 + iconWidth)  -- Dynamic width with icon consideration
    local cellHeight = 100  -- Height per cell
    local padding = 60     -- Padding around content
    local gapWidth = 80    -- Gap between columns
