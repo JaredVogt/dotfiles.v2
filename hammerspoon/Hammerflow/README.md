@@ -14,12 +14,15 @@ Hammerflow consists of three main components:
 
 - **Leader Key System**: Use a dedicated key (like F17/F18) to trigger sequential key combinations
 - **Visual Grid Interface**: Modern, translucent grid showing available keys and actions
+- **Custom Backgrounds**: Support for animated GIFs and static images with configurable opacity and positioning
 - **Icon Support**: Display custom icons alongside menu items for visual identification
 - **TOML Configuration**: Human-readable configuration format with support for nested groups
 - **Multiple Action Types**: Support for apps, URLs, commands, text input, window management, and more
 - **Conditional Actions**: Different actions based on current application context
 - **Auto-reload**: Automatically reload configuration when files change
 - **Window Management**: Built-in presets and custom positioning
+- **Custom Sort Order**: Control display order with prefixed keys while keeping simple hotkeys
+- **Display Modes**: Choose between modern webview interface or classic text display
 - **Extensible**: Support for custom Lua functions and Hammerspoon commands
 
 ## Quick Start
@@ -62,6 +65,13 @@ display_mode = "webview"        # Optional: "webview" or "text" (default: "webvi
 max_grid_columns = 5            # Maximum columns in grid (default: 5)
 grid_spacing = " | "            # Spacing between columns (default: " | ")
 grid_separator = " ▸ "          # Separator between key and label (default: " : ")
+
+# Background image configuration (optional)
+[background]
+image = "background.gif"        # Image filename in images/ directory
+opacity = 0.6                  # Transparency: 0.0 (invisible) to 1.0 (opaque)
+position = "center center"     # Position: "center center", "top left", "bottom right", etc.
+size = "cover"                 # Size behavior: "cover", "contain", "auto", "100% 100%", "200px", etc.
 ```
 
 ### Key Naming Rules
@@ -342,6 +352,19 @@ The modern visual interface with:
 
 ```toml
 display_mode = "webview"  # Modern visual grid
+
+# Background image configuration (optional)
+[background]
+image = "background.gif"        # Image filename in images/ directory
+opacity = 0.6                  # Transparency: 0.0 (invisible) to 1.0 (opaque)
+position = "center center"     # Position: "center center", "top left", "bottom right", etc.
+size = "cover"                 # Size behavior options:
+# "cover"     - Scale to fill container, may crop edges (good for full backgrounds)
+# "contain"   - Scale to fit inside container, shows whole image (good for logos)
+# "auto"      - Natural size, excess clipped outside container (good for large images)
+# "100% 100%" - Stretch to fill exactly (may distort image)
+# "200px"     - Fixed width, height scales proportionally
+# "200px 150px" - Fixed width and height
 ```
 
 #### Text Mode
@@ -361,20 +384,24 @@ display_mode = "text"     # Classic text display
 Control the display order of shortcuts using prefixed keys:
 
 ```toml
-# Numeric prefixes
+# Numeric prefixes for precise ordering
 10_k = "Kitty"           # Displays as 'k', sorts as '10_k'
 20_c = "Chrome"          # Displays as 'c', sorts as '20_c'
 99_z = "reload"          # Displays as 'z', sorts last
 
-# Alphabetic prefixes  
+# Alphabetic prefixes for general ordering
 a_w = "window:left-half"  # Displays as 'w', sorts as 'a_w'
 z_r = "reload"           # Displays as 'r', sorts as 'z_r'
 
-# Regular keys still work
+# Regular keys work normally
 g = "Google"             # Displays and sorts as 'g'
+
+# Examples from config.toml:
+"z_." = "reload"         # Period key, sorted to end
+"y_/" = ["input:https://google.com/search?q={input}", "Search"]  # Slash key with prefix
 ```
 
-This allows complete control over the order items appear in the menu while keeping the actual hotkey simple.
+This system allows complete control over the order items appear in the menu while keeping the actual hotkey simple. The prefix is stripped from the display but used for sorting. This is especially useful for organizing special characters and controlling which items appear first or last.
 
 ### Auto-reload
 When `auto_reload = true`, Hammerflow watches for changes to configuration files and automatically reloads, making development and tweaking very fast.
