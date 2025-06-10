@@ -584,10 +584,21 @@ function obj.loadFirstValidTomlFile(paths)
   local gridSpacing = configFile.grid_spacing or " | "
   local gridSeparator = configFile.grid_separator or " : "
 
+  -- Background configuration
+  local backgroundConfig = configFile.background or {}
+  local backgroundImage = backgroundConfig.image or nil
+  local backgroundOpacity = backgroundConfig.opacity or 0.6
+  local backgroundPosition = backgroundConfig.position or "center center"
+  local backgroundSize = backgroundConfig.size or "cover"
+
   -- Pass to RecursiveBinder
   spoon.RecursiveBinder.maxColumns = maxCols
   spoon.RecursiveBinder.gridSpacing = gridSpacing
   spoon.RecursiveBinder.gridSeparator = gridSeparator
+  spoon.RecursiveBinder.backgroundImage = backgroundImage
+  spoon.RecursiveBinder.backgroundOpacity = backgroundOpacity
+  spoon.RecursiveBinder.backgroundPosition = backgroundPosition
+  spoon.RecursiveBinder.backgroundSize = backgroundSize
 
   -- clear settings from table so we don't have to account
   -- for them in the recursive processing function
@@ -600,6 +611,7 @@ function obj.loadFirstValidTomlFile(paths)
   configFile.max_grid_columns = nil
   configFile.grid_spacing = nil
   configFile.grid_separator = nil
+  configFile.background = nil
 
   local function parseKeyMap(config)
     local keyMap = {}

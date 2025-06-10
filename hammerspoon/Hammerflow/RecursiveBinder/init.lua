@@ -440,10 +440,10 @@ local function showWebviewGrid(keymap)
                right: 0;
                bottom: 0;
                background-image: url('BACKGROUND_IMAGE_URL');
-               background-position: center center;
-               background-size: cover;
+               background-position: BACKGROUND_POSITION;
+               background-size: BACKGROUND_SIZE;
                background-repeat: no-repeat;
-               opacity: 0.6;
+               opacity: BACKGROUND_OPACITY;
                z-index: -1;
                border-radius: 12px;
            }
@@ -485,22 +485,70 @@ local function showWebviewGrid(keymap)
        <div class="grid-container">
    ]]
    
-   -- Load background image if it exists
-   local backgroundImageData = ""
-   local home = os.getenv("HOME")
-   local backgroundPath = home .. "/projects/dotfiles.v2/hammerspoon/Hammerflow/images/background.png"
-   local bgFile = io.open(backgroundPath, "rb")
-   if bgFile then
-      local imageData = bgFile:read("*all")
-      bgFile:close()
-      local base64 = hs.base64.encode(imageData)
-      backgroundImageData = "data:image/png;base64," .. base64
+   -- Load background image using config settings
+   local backgroundImageData = "none"
+   local backgroundOpacity = obj.backgroundOpacity or 0.6
+   local backgroundPosition = obj.backgroundPosition or "center center"
+   local backgroundSize = obj.backgroundSize or "cover"
+   
+   if obj.backgroundImage then
+      -- Use configured image filename
+      local home = os.getenv("HOME")
+      local backgroundPath = home .. "/projects/dotfiles.v2/hammerspoon/Hammerflow/images/" .. obj.backgroundImage
+      local bgFile = io.open(backgroundPath, "rb")
+      if bgFile then
+         local imageData = bgFile:read("*all")
+         bgFile:close()
+         local base64 = hs.base64.encode(imageData)
+         
+         -- Get proper MIME type
+         local extension = obj.backgroundImage:match("%.(%w+)$"):lower()
+         local mimeType = "image/jpeg" -- default
+         if extension == "png" then
+            mimeType = "image/png"
+         elseif extension == "gif" then
+            mimeType = "image/gif"
+         elseif extension == "webp" then
+            mimeType = "image/webp"
+         end
+         
+         backgroundImageData = "data:" .. mimeType .. ";base64," .. base64
+      end
    else
-      backgroundImageData = "none"
+      -- Fallback: try default filenames (for backward compatibility)
+      local home = os.getenv("HOME")
+      local backgroundFormats = {"background.gif", "background.png", "background.jpg", "background.jpeg", "background.webp"}
+      
+      for _, filename in ipairs(backgroundFormats) do
+         local backgroundPath = home .. "/projects/dotfiles.v2/hammerspoon/Hammerflow/images/" .. filename
+         local bgFile = io.open(backgroundPath, "rb")
+         if bgFile then
+            local imageData = bgFile:read("*all")
+            bgFile:close()
+            local base64 = hs.base64.encode(imageData)
+            
+            -- Get proper MIME type
+            local extension = filename:match("%.(%w+)$"):lower()
+            local mimeType = "image/jpeg" -- default
+            if extension == "png" then
+               mimeType = "image/png"
+            elseif extension == "gif" then
+               mimeType = "image/gif"
+            elseif extension == "webp" then
+               mimeType = "image/webp"
+            end
+            
+            backgroundImageData = "data:" .. mimeType .. ";base64," .. base64
+            break -- Use the first one found
+         end
+      end
    end
    
-   -- Replace placeholder with actual background image
+   -- Replace placeholders with actual background settings
    html = html:gsub("BACKGROUND_IMAGE_URL", backgroundImageData)
+   html = html:gsub("BACKGROUND_POSITION", backgroundPosition)
+   html = html:gsub("BACKGROUND_SIZE", backgroundSize)
+   html = html:gsub("BACKGROUND_OPACITY", tostring(backgroundOpacity))
    
    -- Add grid items
    for i, item in ipairs(items) do
@@ -515,7 +563,17 @@ local function showWebviewGrid(keymap)
             local imageData = file:read("*all")
             file:close()
             local base64 = hs.base64.encode(imageData)
-            local mimeType = item.icon:match("%.(%w+)$") == "png" and "image/png" or "image/jpeg"
+            local extension = item.icon:match("%.(%w+)$"):lower()
+            local mimeType = "image/jpeg" -- default
+            if extension == "png" then
+              mimeType = "image/png"
+            elseif extension == "gif" then
+              mimeType = "image/gif"
+            elseif extension == "webp" then
+              mimeType = "image/webp"
+            elseif extension == "svg" then
+              mimeType = "image/svg+xml"
+            end
             iconHtml = string.format('<img src="data:%s;base64,%s" class="icon">', mimeType, base64)
          else
             print("Could not read image file: " .. iconFilePath)
