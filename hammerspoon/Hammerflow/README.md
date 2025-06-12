@@ -81,6 +81,39 @@ size = "cover"                 # Size behavior: "cover", "contain", "auto", "100
 - **Uppercase letters**: Automatically include shift modifier
 - **All printable characters are supported** as shortcut keys
 
+### ⚠️ Important: TOML Key Ordering
+
+**All individual keys must be defined BEFORE any table sections (`[section]`) in your config.toml file.**
+
+```toml
+# ✅ CORRECT: Individual keys first
+leader_key = "f20"
+c = "Cursor"
+p = "Claude"
+g = "Google"
+
+# Then table sections
+[background]
+image = "bg.gif"
+
+[l]
+label = "[linear]"
+```
+
+```toml
+# ❌ WRONG: Individual keys after table sections will be ignored
+leader_key = "f20"
+
+[background]
+image = "bg.gif"
+
+# These keys will NOT work - they're after a table section
+c = "Cursor"  # IGNORED
+p = "Claude"  # IGNORED
+```
+
+If you place individual keys after table sections, Hammerflow will show a warning and those keys will not work.
+
 ### Action Types
 
 #### Application Launching

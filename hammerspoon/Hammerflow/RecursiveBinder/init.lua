@@ -716,13 +716,19 @@ function obj.recursiveBind(keymap, modals)
    local keyFuncNameTable = {}
    local keyFuncSortTable = {}  -- For sorting in text mode
    for key, map in pairs(keymap) do
+      print("[debug] RecursiveBinder processing key:", key[2] or "unknown", "map type:", type(map))
       local actualMap = map
       local sortKey = nil
       if type(map) == "table" then
+         print("[debug] Map is table, checking for action or keyMap")
          if map.action then
+            print("[debug] Found action, type:", type(map.action))
             actualMap = map.action
          elseif map.keyMap then
+            print("[debug] Found keyMap (group)")
             actualMap = map.keyMap
+         else
+            print("[debug] Table has no action or keyMap - keys:", table.concat(hs.fnutils.keys(map), ", "))
          end
          if map.sortKey then
             sortKey = map.sortKey

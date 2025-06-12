@@ -22,21 +22,6 @@ max_grid_columns = 5        # Maximum columns (1-10 recommended)
 grid_spacing = " | "        # Spacing between columns
 grid_separator = " ▸ "      # Separator between key and label
 
-# Background image configuration (optional)
-[background]
-image = "background.gif"       # Image filename in images/ directory
-opacity = 0.6                 # Transparency: 0.0 (invisible) to 1.0 (opaque)
-position = "center center"    # Position: "center center", "top left", "bottom right", etc.
-size = "cover"                # Size behavior (see options below)
-# Size options:
-#   "cover"     - Scale to fill container, may crop edges (good for full backgrounds)
-#   "contain"   - Scale to fit inside container, shows whole image (good for logos)
-#   "auto"      - Natural size, excess clipped outside container (good for large images)
-#   "100% 100%" - Stretch to fill exactly (may distort image)
-#   "200px"     - Fixed width, height scales proportionally
-#   "200px 150px" - Fixed width and height
-
-
 # single keys to open apps 
 # z_k = "Kitty"  # This will sort to the end (z_k) but display as 'k'
 # c = ["Cursor", "Cursor", "cursor.png"]  # icon is 3rd element
@@ -49,6 +34,21 @@ d = ["km:Kitty_dot", "DOTS", "dots.png"]
 
 # or a url (with input)
 "y_/" = ["input:https://google.com/search?q={input}", "Good 'ol G"] # capture input and insert it into any other action
+
+# Background image configuration (optional) 
+# This has to be AFTER individual key definitions
+[background]
+image = "background.gif"       # Image filename in images/ directory
+opacity = 0.6                 # Transparency: 0.0 (invisible) to 1.0 (opaque)
+position = "center center"    # Position: "center center", "top left", "bottom right", etc.
+size = "cover"                # Size behavior (see options below)
+# Size options:
+#   "cover"     - Scale to fill container, may crop edges (good for full backgrounds)
+#   "contain"   - Scale to fit inside container, shows whole image (good for logos)
+#   "auto"      - Natural size, excess clipped outside container (good for large images)
+#   "100% 100%" - Stretch to fill exactly (may distort image)
+#   "200px"     - Fixed width, height scales proportionally
+#   "200px 150px" - Fixed width and height
 
 
 # create groups to nest actions
