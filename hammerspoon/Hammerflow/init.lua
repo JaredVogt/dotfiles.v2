@@ -53,6 +53,7 @@ local function split(inputstr, sep)
 end
 
 local toml = loadfile_relative("lib/tinytoml.lua")
+local validateTomlStructure = loadfile_relative("toml_validator.lua")
 
 local function parseKeystroke(keystroke)
   local parts = {}
@@ -532,6 +533,12 @@ function obj.loadFirstValidTomlFile(paths)
     end
     table.insert(searchedPaths, path)
     if file_exists(path) then
+      -- Validate TOML structure before parsing
+      local success, message = validateTomlStructure(path)
+      if not success then
+        print("TOML validation failed: " .. message)
+      end
+      
       if pcall(function() toml.parse(path) end) then
         configFile = toml.parse(path)
         configFileName = path
@@ -718,25 +725,10 @@ function obj.loadFirstValidTomlFile(paths)
     return keyMap
   end
 
-  -- Validate TOML structure - warn if keys are defined after table sections
-  local foundTableSection = false
-  local keysAfterTables = {}
-  
-  for key, value in pairs(configFile) do
-    if type(value) == "table" and (value.label or value.icon or not value[1]) then
-      foundTableSection = true
-    elseif foundTableSection and (type(value) == "string" or (type(value) == "table" and value[1])) then
-      table.insert(keysAfterTables, key)
-    end
-  end
-  
-  if #keysAfterTables > 0 then
-    local warningMsg = "⚠️ TOML Config Warning: Individual keys found after table sections: " .. 
-                       table.concat(keysAfterTables, ", ") .. 
-                       ". These keys will be ignored. Move all individual keys before any [table] sections."
-    hs.alert(warningMsg, 8)
-    print(warningMsg)
-  end
+  -- Note: TOML parsing validation cannot be done on the parsed table since
+  -- Lua tables don't preserve order. The TOML parser will already ignore
+  -- keys defined after table sections, so we rely on the documentation
+  -- to guide users on proper TOML structure.
 
   local keys = parseKeyMap(configFile)
   hs.hotkey.bind(leader_key_mods, leader_key, spoon.RecursiveBinder.recursiveBind(keys))

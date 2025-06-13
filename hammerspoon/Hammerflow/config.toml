@@ -27,6 +27,7 @@ grid_separator = " ▸ "      # Separator between key and label
 # c = ["Cursor", "Cursor", "cursor.png"]  # icon is 3rd element
 c = ["Cursor", "Cursor", "cursor.png"]
 p = ["Claude", "Claude", "claude.png"]
+# P = ["ChatGPT", "ChatGPT", "claude.png"]
 "z_." = "reload" # reserved for reloading your hammerspoon config (helpful when auto_reload is false)
 g = ["km:Google_meet", "Google Meet", "google_meet.png"]
 o = ["km:Wolff_email", "ffemail", "ffemail.gif"]

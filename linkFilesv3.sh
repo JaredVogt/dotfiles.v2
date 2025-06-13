@@ -267,6 +267,7 @@ setup_custom_links() {
     handle_link "$REPOPATH/hammerspoon/Hammerflow/init.lua" ~/.hammerspoon/Spoons/Hammerflow.spoon/init.lua
     handle_link "$REPOPATH/hammerspoon/Hammerflow/RecursiveBinder/init.lua" ~/.hammerspoon/Spoons/Hammerflow.spoon/Spoons/RecursiveBinder.spoon/init.lua
     handle_link "$REPOPATH/hammerspoon/Hammerflow/config.toml" ~/.hammerspoon/Spoons/Hammerflow.spoon/config.toml
+    handle_link "$REPOPATH/hammerspoon/Hammerflow/toml_validator.lua" ~/.hammerspoon/Spoons/Hammerflow.spoon/toml_validator.lua
 }
 
 # Function to setup Application Support directory
