@@ -2,10 +2,11 @@
 
 abbr -a n 'nvim'
 abbr -a dots '~/projects/dotfiles.v2/edit-dotfiles.sh'
-abbr -a dot nf 
+abbr -a dot 'edit_dotfiles ~/projects/dotfiles.v2'
+abbr -a dotv 'edit_dotfiles ~/.config/nvim' 
 abbr -a y 'yazi'
 abbr -a mess 'mdless'  # less for markdown
-abbr -a more 'less'  # less is better than more 
+abbr -a more 'bat'  # bat is better than more 
 abbr -a cat 'bat'  # bat is better 
 abbr -a h 'history -R -n 75'
 abbr -a hs 'history search'

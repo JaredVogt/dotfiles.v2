@@ -6,14 +6,17 @@ alias proj="cd ~/projects"
 alias cellar="cd /opt/homebrew/Cellar && lla"
 alias rm="trash"
 alias claude="~/.claude/local/claude"
-alias dot='nf'
+alias dot='edit_dotfiles ~/projects/dotfiles.v2'
+alias dotv='edit_dotfiles ~/.config/nvim'
 alias rmd='~/projects/glow/glow -c'
+alias more='bat'  # bat is better than more
 
-function nf() {
+function edit_dotfiles() {
     local original_dir=$(pwd)
+    local target_dir=$1
     local file
     
-    cd ~/projects/dotfiles.v2
+    cd "$target_dir"
     
     file=$(fzf) && [ -n "$file" ] && nvim "$file"
     

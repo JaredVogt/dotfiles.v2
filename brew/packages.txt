@@ -1,4 +1,5 @@
 ## Regular homebrew packages - core utilities, CLI tools, and development dependencies
+# This is here for legacy purposes - brewSetup.sh uses homebrew-packages.json now 
 bash
 bat
 btop

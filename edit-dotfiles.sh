@@ -1,5 +1,10 @@
 #!/usr/bin/env zsh
 
+# Interactive menu system for editing dotfiles configuration files
+# Provides a two-level menu: first select a program/category, then select a specific file
+# Automatically discovers available programs from the dotfiles directory structure
+# Special handling for system files and dynamically scans directories for other programs
+
 # Define base paths
 REPOPATH=~/projects/dotfiles.v2
 
