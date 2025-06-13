@@ -7,6 +7,7 @@ alias cellar="cd /opt/homebrew/Cellar && lla"
 alias rm="trash"
 alias claude="~/.claude/local/claude"
 alias dot='nf'
+alias rmd='~/projects/glow/glow -c'
 
 function nf() {
     local original_dir=$(pwd)
@@ -17,10 +18,6 @@ function nf() {
     file=$(fzf) && [ -n "$file" ] && nvim "$file"
     
     cd "$original_dir"
-}
-
-function mr() {
-    rich "$1" --theme monokai --line-numbers --pager
 }
 
 

@@ -17,6 +17,7 @@ abbr -a lla 'eza --git -l -g --icons -h -a -H --time-style=long-iso'  # https://
 abbr -a llad 'eza --git -l -g -s modified -r --icons -h -a -H --time-style=long-iso' # added reverse date 
 abbr -a l 'eza --git -l -g --icons -h -a -H --time-style=long-iso'  
 abbr -a chx 'chmod +x'
+abbr -a rmd '~/projects/glow/glow -c'
 
 # git, long, group, icons, header, all , links, long-iso date / man exa   
 abbr -a lll 'ls -alhF'
