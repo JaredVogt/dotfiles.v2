@@ -25,9 +25,9 @@ grid_separator = " ▸ "      # Separator between key and label
 # single keys to open apps 
 # z_k = "Kitty"  # This will sort to the end (z_k) but display as 'k'
 # c = ["Cursor", "Cursor", "cursor.png"]  # icon is 3rd element
-c = ["Cursor", "Cursor", "cursor.png"]
-p = ["Claude", "Claude", "claude.png"]
-# P = ["ChatGPT", "ChatGPT", "claude.png"]
+c = ["Cursor", "Cursor", "cursor.png"]    # lowercase 'c' triggers with 'c'
+p = ["Claude", "Claude", "claude.png"]     # lowercase 'p' triggers with 'p'
+P = ["ChatGPT", "ChatGPT", "chatgpt.png"]  # uppercase 'P' triggers with 'Shift+P', displays as 'P'
 "z_." = "reload" # reserved for reloading your hammerspoon config (helpful when auto_reload is false)
 g = ["km:Google_meet", "Google Meet", "google_meet.png"]
 o = ["km:Wolff_email", "ffemail", "ffemail.gif"]

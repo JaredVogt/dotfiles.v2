@@ -177,10 +177,10 @@ local function createKeyName(key)
    local keyString = key[2]
    -- add a little mapping for space
    if keyString == 'space' then keyString = 'SPC' end
+   -- If it's a single letter with only shift modifier, show as uppercase
    if #modifierTable == 1 and modifierTable[1] == 'shift' and string.len(keyString) == 1 then
       -- shift + key map to Uppercase key
       -- shift + d --> D
-      -- if key is not on letter(space), don't do it.
       return keyboardUpper(keyString)
    else
       -- append each modifiers together
@@ -227,6 +227,10 @@ local function formatBindingsAsGrid(keymap)
   for key, binding in pairs(keymap) do
     -- Based on Hammerflow's singleKey structure: key = {mode, keyChar, label}
     local keyChar = key[2] or "?"
+    -- Check if this is an uppercase key (shift modifier with single lowercase letter)
+    if #key[1] == 1 and key[1][1] == 'shift' and string.len(keyChar) == 1 then
+       keyChar = string.upper(keyChar)
+    end
     local label = key[3] or keyChar
     local icon = nil
     if type(binding) == "table" and binding.icon then
@@ -359,6 +363,10 @@ local function showWebviewGrid(keymap)
    -- Collect and sort items
    for key, binding in pairs(keymap) do
       local keyChar = key[2] or "?"
+      -- Check if this is an uppercase key (shift modifier with single lowercase letter)
+      if #key[1] == 1 and key[1][1] == 'shift' and string.len(keyChar) == 1 then
+         keyChar = string.upper(keyChar)
+      end
       local label = key[3] or keyChar
       local icon = nil
       local sortKey = keyChar  -- default to the display key

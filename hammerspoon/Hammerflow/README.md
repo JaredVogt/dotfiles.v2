@@ -34,7 +34,8 @@ Hammerflow consists of three main components:
 
 2. Add some basic shortcuts:
    ```toml
-   k = "Kitty"                    # Launch Kitty terminal
+   k = "Kitty"                    # Launch Kitty terminal (press 'k')
+   K = "Keyboard Maestro"         # Launch Keyboard Maestro (press 'Shift+K', displays as 'K')
    g = "https://google.com"       # Open Google
    v = ["Visual Studio Code", "VS Code"]  # Launch VS Code with custom label
    ```
@@ -78,7 +79,9 @@ size = "cover"                 # Size behavior: "cover", "contain", "auto", "100
 
 - **Letters and numbers**: Can be used directly: `a`, `Z`, `1`, `9`
 - **Special characters**: Must be quoted in TOML: `"/"`, `"."`, `"?"`, `";"`, `"'"`
-- **Uppercase letters**: Automatically include shift modifier
+- **Uppercase letters**: Automatically include shift modifier and display as uppercase
+  - `p = "Application"` displays as `p` and triggers with `p`
+  - `P = "Other App"` displays as `P` and triggers with `Shift+P`
 - **All printable characters are supported** as shortcut keys
 
 ### ⚠️ Important: TOML Key Ordering
@@ -118,8 +121,9 @@ If you place individual keys after table sections, Hammerflow will show a warnin
 
 #### Application Launching
 ```toml
-k = "Kitty"                     # Launch by name
-s = "Safari"
+k = "Kitty"                     # Launch by name (lowercase 'k')
+s = "Safari"                    # Launch Safari (lowercase 's')
+S = "Slack"                     # Launch Slack (uppercase 'S' - Shift+S)
 v = ["Visual Studio Code", "VS Code"]  # With custom label
 v = ["Visual Studio Code", "VS Code", "vscode.png"]  # With custom label and icon
 
