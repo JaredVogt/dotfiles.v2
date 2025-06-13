@@ -508,13 +508,50 @@ local function getActionAndLabel(s)
     if windowLocations[loc] then
       return windowLocations[loc], s, nil
     else
-      -- regex to parse e.g. 0,0,.5,1 for left half of screen
-      local x, y, w, h = loc:match("^([%.%d]+),%s*([%.%d]+),%s*([%.%d]+),%s*([%.%d]+)$")
+      -- Parse values, now supporting negative numbers for pixels
+      local x, y, w, h = loc:match("^([%-%.%d]+),%s*([%-%.%d]+),%s*([%-%.%d]+),%s*([%-%.%d]+)$")
       if not x then
         hs.alert('Invalid window location: "' .. loc .. '"', nil, nil, 5)
         return
       end
-      return move(rect(tonumber(x), tonumber(y), tonumber(w), tonumber(h))), s, nil
+      
+      -- Convert string values to numbers
+      x, y, w, h = tonumber(x), tonumber(y), tonumber(w), tonumber(h)
+      
+      -- Function to convert pixel values to percentages
+      local function convertValue(value, dimension, isPosition)
+        -- Values between -1 and 1 are percentages
+        if value >= -1 and value <= 1 then
+          return value
+        end
+        
+        -- Get screen dimensions
+        local screen = hs.screen.mainScreen()
+        local screenFrame = screen:frame()
+        local screenSize = dimension == "width" and screenFrame.w or screenFrame.h
+        
+        -- Convert pixels to percentage
+        if value < 0 then
+          -- Negative pixels: position from right/bottom edge
+          if isPosition then
+            return 1 + (value / screenSize)  -- e.g., -1000px from right = 1 + (-1000/2560)
+          else
+            -- For width/height, negative doesn't make sense, treat as positive
+            return math.abs(value) / screenSize
+          end
+        else
+          -- Positive pixels: position from left/top edge
+          return value / screenSize
+        end
+      end
+      
+      -- Convert each value
+      x = convertValue(x, "width", true)
+      y = convertValue(y, "height", true)
+      w = convertValue(w, "width", false)
+      h = convertValue(h, "height", false)
+      
+      return move(rect(x, y, w, h)), s, nil
     end
     return
   else
@@ -539,16 +576,23 @@ function obj.loadFirstValidTomlFile(paths)
         print("TOML validation failed: " .. message)
       end
       
-      if pcall(function() toml.parse(path) end) then
-        configFile = toml.parse(path)
+      local success, result = pcall(function() return toml.parse(path) end)
+      if success then
+        configFile = result
         configFileName = path
         break
       else
-        hs.notify.show("Hammerflow", "Parse error", path .. "\nCheck for duplicate keys like s and [s]")
+        print("Parse error in " .. path .. ": " .. tostring(result))
+        hs.notify.show("Hammerflow", "Parse error", path .. "\n" .. tostring(result))
       end
     end
   end
   if not configFile then
+    print("No TOML config found!")
+    print("Searched paths:")
+    for _, path in ipairs(searchedPaths) do
+      print("  - " .. path)
+    end
     hs.alert("No toml config found! Searched for: " .. table.concat(searchedPaths, ', '), 5)
     obj.auto_reload = true
     return

@@ -97,6 +97,7 @@ label = "[window]"
 h = "window:left-half"                    # use presets listed in the README
 c = "window:center-half"                  # use presets listed in the README
 s = ["window:.4,.3,.2,.4","small center"] # or use 4 percentages for x,y,width,height for custom placement - more details in README
+p = ["window:-1000,0,1000,.9", "right 1000px"] # 1000px wide on right side, 80% height (negative = from right edge)
 
 
 # or use raycast for window management if you prefer

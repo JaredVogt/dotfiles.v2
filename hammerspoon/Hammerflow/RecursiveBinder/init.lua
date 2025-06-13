@@ -723,20 +723,17 @@ function obj.recursiveBind(keymap, modals)
    table.insert(modals, modal)
    local keyFuncNameTable = {}
    local keyFuncSortTable = {}  -- For sorting in text mode
+   -- Bind escape key once for this modal
+   modal:bind(obj.escapeKey[1], obj.escapeKey[2], function() modal:exit() killHelper() modalActive = false end)
+   
    for key, map in pairs(keymap) do
-      print("[debug] RecursiveBinder processing key:", key[2] or "unknown", "map type:", type(map))
       local actualMap = map
       local sortKey = nil
       if type(map) == "table" then
-         print("[debug] Map is table, checking for action or keyMap")
          if map.action then
-            print("[debug] Found action, type:", type(map.action))
             actualMap = map.action
          elseif map.keyMap then
-            print("[debug] Found keyMap (group)")
             actualMap = map.keyMap
-         else
-            print("[debug] Table has no action or keyMap - keys:", table.concat(hs.fnutils.keys(map), ", "))
          end
          if map.sortKey then
             sortKey = map.sortKey
@@ -745,7 +742,6 @@ function obj.recursiveBind(keymap, modals)
       local func = obj.recursiveBind(actualMap, modals)
       -- key[1] is modifiers, i.e. {'shift'}, key[2] is key, i.e. 'f' 
       modal:bind(key[1], key[2], function() modal:exit() killHelper() modalActive = false func() end)
-      modal:bind(obj.escapeKey[1], obj.escapeKey[2], function() modal:exit() killHelper() modalActive = false end)
       if #key >= 3 then
          local keyName = createKeyName(key)
          keyFuncNameTable[keyName] = key[3]

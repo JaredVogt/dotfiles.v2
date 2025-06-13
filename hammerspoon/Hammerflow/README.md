@@ -163,7 +163,14 @@ l = "window:right-half"
 c = "window:center-half"
 m = "window:maximized"
 f = "window:fullscreen"
-s = "window:.4,.3,.2,.4"        # Custom: x,y,width,height as percentages
+
+# Custom positioning with percentages (values between -1 and 1)
+s = "window:.4,.3,.2,.4"        # 40% from left, 30% from top, 20% width, 40% height
+
+# Custom positioning with pixels (values > 1 or < -1)
+r = "window:-1000,0,1000,.8"    # 1000px from RIGHT edge, top, 1000px wide, 80% height
+b = "window:100,100,800,600"    # 100px from left, 100px from top, 800x600 window
+c = "window:-400,-300,800,600"  # Center an 800x600 window (negative = from right/bottom)
 ```
 
 #### Code/File Opening
@@ -256,7 +263,9 @@ c = "shortcut:cmd c"            # Default copy for other apps
 
 The `_` condition is the fallback if no other conditions match.
 
-## Window Management Presets
+## Window Management
+
+### Presets
 
 Built-in window positioning presets:
 
@@ -267,11 +276,32 @@ Built-in window positioning presets:
 - `top-left`, `top-right`, `bottom-left`, `bottom-right`
 - `maximized`, `fullscreen`
 
-Custom positioning with percentages:
+### Custom Positioning
+
+You can define custom window positions using the format: `window:x,y,width,height`
+
+**Smart unit detection:**
+- Values between -1 and 1 are treated as **percentages** of screen size
+- Values > 1 or < -1 are treated as **pixels**
+- You can mix pixels and percentages in the same command
+
+**Negative pixel values:**
+- Negative x positions from the **right** edge of screen
+- Negative y positions from the **bottom** edge of screen
+- Useful for consistent positioning regardless of screen size
+
+**Examples:**
 ```toml
-# window:x,y,width,height (all as decimals 0-1)
-small = "window:.4,.3,.2,.4"    # Small centered window
-wide = "window:0,.8,1,.2"       # Wide bar at bottom
+# Percentage positioning (current behavior)
+"window:.5,0,.5,1"              # Right half (50% from left, full height)
+
+# Pixel positioning
+"window:100,100,800,600"        # 100px from left/top, 800x600 window
+"window:-1000,0,1000,.8"        # 1000px wide on right side, 80% height
+"window:-400,-300,800,600"      # Center an 800x600 window
+
+# Mixed units
+"window:-1200,100,1200,.5"      # 1200px from right, 100px from top, 50% height
 ```
 
 ## Custom Functions

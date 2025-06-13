@@ -121,24 +121,31 @@ local function validateTomlStructure(filepath)
     end
     
     -- Check for common syntax errors
-    -- Unclosed quotes
-    local singleQuotes = select(2, line:gsub("'", ""))
-    local doubleQuotes = select(2, line:gsub('"', ''))
-    -- Exclude escaped quotes
-    local escapedSingle = select(2, line:gsub("\\'", ""))
-    local escapedDouble = select(2, line:gsub('\\"', ''))
+    -- Only check for unclosed quotes in simple cases
+    -- Skip lines that have mixed quote types (like "text with 'apostrophe'")
+    local hasSingleInDouble = line:match('"[^"]*\'[^"]*"')
+    local hasDoubleInSingle = line:match("'[^']*\"[^']*'")
     
-    if (singleQuotes - escapedSingle) % 2 ~= 0 then
-      table.insert(warnings, string.format(
-        "Line %d: Possible unclosed single quote",
-        lineNum
-      ))
-    end
-    if (doubleQuotes - escapedDouble) % 2 ~= 0 then
-      table.insert(warnings, string.format(
-        "Line %d: Possible unclosed double quote",
-        lineNum
-      ))
+    if not hasSingleInDouble and not hasDoubleInSingle then
+      -- Unclosed quotes
+      local singleQuotes = select(2, line:gsub("'", ""))
+      local doubleQuotes = select(2, line:gsub('"', ''))
+      -- Exclude escaped quotes
+      local escapedSingle = select(2, line:gsub("\\'", ""))
+      local escapedDouble = select(2, line:gsub('\\"', ''))
+      
+      if (singleQuotes - escapedSingle) % 2 ~= 0 then
+        table.insert(warnings, string.format(
+          "Line %d: Possible unclosed single quote",
+          lineNum
+        ))
+      end
+      if (doubleQuotes - escapedDouble) % 2 ~= 0 then
+        table.insert(warnings, string.format(
+          "Line %d: Possible unclosed double quote",
+          lineNum
+        ))
+      end
     end
     
     -- Check for invalid table names (basic check)
