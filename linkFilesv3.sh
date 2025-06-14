@@ -264,6 +264,7 @@ setup_custom_links() {
     
     # Hammerspoon configuration links
     handle_link "$REPOPATH/hammerspoon/init.lua" ~/.hammerspoon/init.lua
+    handle_link "$REPOPATH/hammerspoon/folderwatcher.lua" ~/.hammerspoon/folderwatcher.lua
     handle_link "$REPOPATH/hammerspoon/Hammerflow/init.lua" ~/.hammerspoon/Spoons/Hammerflow.spoon/init.lua
     handle_link "$REPOPATH/hammerspoon/Hammerflow/RecursiveBinder/init.lua" ~/.hammerspoon/Spoons/Hammerflow.spoon/Spoons/RecursiveBinder.spoon/init.lua
     handle_link "$REPOPATH/hammerspoon/Hammerflow/config.toml" ~/.hammerspoon/Spoons/Hammerflow.spoon/config.toml

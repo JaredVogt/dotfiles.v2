@@ -11,3 +11,7 @@ if spoon.Hammerflow.auto_reload then
     -- spoon.ReloadConfiguration.watch_paths = {hs.configDir, "~/path/to/my/configs/"}
     spoon.ReloadConfiguration:start()
 end
+
+-- Folder watch test
+local folderwatcher = require("folderwatcher")
+folderwatcher.start()
