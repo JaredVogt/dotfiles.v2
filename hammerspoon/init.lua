@@ -15,3 +15,7 @@ end
 -- Folder watch test
 local folderwatcher = require("folderwatcher.folderwatcher")
 folderwatcher.start()
+
+-- Initialize Inyo
+inyo = dofile(hs.configdir .. "/Inyo/init.lua")  -- Make it global by removing 'local'
+inyo:init():start()
