@@ -1,0 +1,38 @@
+# Test configuration for folderwatcher
+# Uses isolated test directories and logging scripts
+
+[[watchers]]
+name = "Test Basic Events"
+path = "~/projects/dotfiles.v2/hammerspoon/folderwatcher/tests/test_workspace"
+enabled = true
+
+  [watchers.scripts]
+  on_created = "~/projects/dotfiles.v2/hammerspoon/folderwatcher/tests/test_scripts/log_event.sh"
+  on_modified = "~/projects/dotfiles.v2/hammerspoon/folderwatcher/tests/test_scripts/log_event.sh"
+  on_deleted = "~/projects/dotfiles.v2/hammerspoon/folderwatcher/tests/test_scripts/log_event.sh"
+
+[[watchers]]
+name = "Test Filters"
+path = "~/projects/dotfiles.v2/hammerspoon/folderwatcher/tests/test_workspace/filtered"
+enabled = true
+
+  [watchers.scripts]
+  on_created = "~/projects/dotfiles.v2/hammerspoon/folderwatcher/tests/test_scripts/verify_args.sh"
+  
+  [watchers.filters]
+  include = ["*.txt", "*.log"]
+  exclude = ["*.tmp", "test_*"]
+
+[[watchers]]
+name = "Test Error Handling"
+path = "~/projects/dotfiles.v2/hammerspoon/folderwatcher/tests/test_workspace/errors"
+enabled = true
+
+  [watchers.scripts]
+  # This script doesn't exist - to test error handling
+  on_created = "~/projects/dotfiles.v2/hammerspoon/folderwatcher/tests/test_scripts/nonexistent.sh"
+
+[settings]
+debug = true
+notification = false  # Disable notifications during tests
+script_timeout = 5    # Short timeout for tests

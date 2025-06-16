@@ -31,7 +31,6 @@ P = ["ChatGPT", "ChatGPT", "chatgpt.png"]  # uppercase 'P' triggers with 'Shift+
 "z_." = "reload" # reserved for reloading your hammerspoon config (helpful when auto_reload is false)
 g = ["km:Google_meet", "Google Meet", "google_meet.png"]
 o = ["km:Wolff_email", "ffemail", "ffemail.gif"]
-d = ["km:Kitty_dot", "DOTS", "dots.png"]
 
 # or a url (with input)
 "y_/" = ["input:https://google.com/search?q={input}", "Good 'ol G"] # capture input and insert it into any other action
@@ -64,6 +63,12 @@ g = "https://github.com"
 b = "https://bsky.app"
 t = "https://twitter.com"
 
+[d]
+label = "[dots]"
+icon = "dots.png"
+d = ["km:Kitty_dot", "DOTS", "dots.png"]
+v = ["km:Nvim_dot", "VIM", "dots.png"]
+p = ["km:Md_dot", "AI MDs", "dots.png"]
 
 # groups can be nested too!
 [b.m]

@@ -30,12 +30,27 @@
         "/Users/jaredvogt/Downloads"
       ]
     },
+    "supabase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--access-token",
+        "sbp_d293acce0a94d786e757f7d8e555a1102edbadf3"
+      ]
+    },
     "mcp-server-firecrawl": {
       "command": "npx",
       "args": ["-y", "firecrawl-mcp"],
       "env": {
         "FIRECRAWL_API_KEY": ""
       }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ]
     }
   }
 }

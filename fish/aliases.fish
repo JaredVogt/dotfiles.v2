@@ -3,7 +3,8 @@
 abbr -a n 'nvim'
 abbr -a dots '~/projects/dotfiles.v2/edit-dotfiles.sh'
 abbr -a dot 'edit_dotfiles ~/projects/dotfiles.v2'
-abbr -a dotv 'edit_dotfiles ~/.config/nvim' 
+abbr -a dotv 'edit_dotfiles ~/.config/nvim'
+abbr -a dotp 'edit_dotfiles ~/projects/ai_context' 
 abbr -a y 'yazi'
 abbr -a mess 'mdless'  # less for markdown
 abbr -a more 'bat'  # bat is better than more 
@@ -52,6 +53,7 @@ abbr -a ipm '/Applications/Inkdrop.app/Contents/Resources/app/ipm/bin/ipm'
 abbr -a ks 'ksc -ms -p'
 abbr -a claudec '~/.config/zsh/functions/claudeSaveSession.sh'
 abbr -a claude '~/.claude/local/claude'
+abbr -a ccr '~/.claude/local/claude -r'
 # abbr -a jv 'nvim -u ~/.config/nvim/jaredv.init.lua'
 
 # nvim session shortcuts

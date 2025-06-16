@@ -13,5 +13,5 @@ if spoon.Hammerflow.auto_reload then
 end
 
 -- Folder watch test
-local folderwatcher = require("folderwatcher")
+local folderwatcher = require("folderwatcher.folderwatcher")
 folderwatcher.start()

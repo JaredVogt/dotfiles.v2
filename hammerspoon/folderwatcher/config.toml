@@ -1,0 +1,49 @@
+# Folder Watcher Configuration
+# Define folders to watch and scripts to execute on file events
+
+[[watchers]]
+name = "Downloads"
+path = "~/Downloads"
+enabled = true
+
+  # Scripts receive: $1=event_type $2=file_path $3=file_name
+  [watchers.scripts]
+  on_created = "~/projects/dotfiles.v2/hammerspoon/folderwatcher/scripts/downloads/on_created.sh"
+  on_modified = "~/projects/dotfiles.v2/hammerspoon/folderwatcher/scripts/downloads/on_modified.sh" 
+  on_deleted = "~/projects/dotfiles.v2/hammerspoon/folderwatcher/scripts/downloads/on_deleted.sh"
+
+  # Optional: Filter files by pattern (glob-style)
+  [watchers.filters]
+  include = ["*.pdf", "*.doc*", "*.zip"]
+  exclude = ["*.tmp", ".*"]  # Exclude temp and hidden files
+
+[[watchers]]
+name = "Screenshots"
+path = "~/Desktop"
+enabled = false
+
+  [watchers.scripts]
+  on_created = "~/projects/dotfiles.v2/hammerspoon/folderwatcher/scripts/screenshots/process.sh"
+  
+  [watchers.filters]
+  include = ["Screenshot*.png", "Screen Recording*.mov"]
+
+[[watchers]]
+name = "Projects"
+path = "~/projects"
+enabled = false  # Disabled for now
+recursive = true  # Watch subdirectories
+
+  [watchers.scripts]
+  on_modified = "~/projects/dotfiles.v2/hammerspoon/folderwatcher/scripts/projects/sync.sh"
+  
+  [watchers.filters]
+  include = ["*.js", "*.ts", "*.lua"]
+  exclude = ["node_modules/*", ".git/*"]
+
+# Global settings
+[settings]
+debug = true  # Log all events
+notification = true  # Show macOS notifications
+script_timeout = 30  # Max seconds for script execution
+script_environment = { PROJECT_ROOT = "~/projects", EDITOR = "nvim" }
