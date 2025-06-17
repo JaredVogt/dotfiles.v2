@@ -27,7 +27,8 @@ function obj:new()
         position = "center",
         size = { w = 600, h = 400 },
         opacity = 0.95,
-        animationDuration = 300
+        animationDuration = 300,
+        clickThrough = false  -- New option for click-through behavior
     }
     
     -- Register built-in templates
@@ -295,6 +296,18 @@ function obj:_registerBuiltInTemplates()
         self._templates["minimal"] = minimal
     end
     
+    -- Load overlay template (partial click-through)
+    local overlay = loadTemplateFile(templatesDir .. "overlay.html")
+    if overlay then
+        self._templates["overlay"] = overlay
+    end
+    
+    -- Load HUD template (fully click-through)
+    local hud = loadTemplateFile(templatesDir .. "hud.html")
+    if hud then
+        self._templates["hud"] = hud
+    end
+    
     -- Load other example templates
     local particles = loadTemplateFile(hs.configdir .. "/Inyo/examples/particles.html")
     if particles then
@@ -331,6 +344,12 @@ function obj:show(content, options)
     if options.template == "jellyfish" then
         size = { w = 1560, h = 1040 }  -- 130% bigger (original + 30%)
         opacity = 0.85  -- 15% transparent (85% opaque)
+    elseif options.template == "hud" then
+        -- For HUD, we could make it smaller and position at top
+        size = { w = 400, h = 200 }
+        if not options.position then
+            self._config.position = "top"
+        end
     end
     
     -- Allow options to override

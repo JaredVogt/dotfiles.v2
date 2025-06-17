@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: transparent;
+            pointer-events: none;  /* Make entire window click-through */
+        }
+        
+        #content-layer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px 30px;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            pointer-events: auto;  /* Only content area is clickable */
+            {{CUSTOM_STYLE}}
+        }
+        
+        /* Optional: make specific areas click-through */
+        .click-through {
+            pointer-events: none;
+        }
+        
+        /* Optional: make buttons/links clickable even in click-through areas */
+        .clickable {
+            pointer-events: auto;
+        }
+        
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translateX(100px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
+        }
+        
+        #content-layer {
+            animation: slideIn 0.3s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <div id="content-layer">
+        {{CONTENT}}
+        <div class="click-through" style="margin-top: 10px; font-size: 11px; opacity: 0.6;">
+            Click outside to interact with apps below
+        </div>
+    </div>
+    
+    <script>
+        // Optional: Auto-dismiss on any click outside content
+        document.addEventListener('click', function(e) {
+            if (!document.getElementById('content-layer').contains(e.target)) {
+                // This won't fire because of pointer-events: none
+            }
+        });
+    </script>
+</body>
+</html>

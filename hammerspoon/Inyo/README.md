@@ -6,11 +6,12 @@ Inyo is a Hammerspoon module that displays rich, dynamic messages in a webview c
 
 - 🎨 Rich HTML/CSS/JavaScript content
 - 🌈 Animated GIF backgrounds
-- ✨ Built-in animation effects (Matrix rain, particles, waves)
+- ✨ Built-in templates (jellyfish, neon, alert, minimal, matrix, particles, waves)
 - 🔌 Multiple input methods (HTTP API, URL events, AppleScript, Lua)
 - 📦 Message queueing
 - ⌨️ Keyboard shortcuts (ESC to dismiss)
 - 🎯 Customizable positioning and styling
+- 🎭 Template system with custom styling overrides
 
 ## Installation
 
@@ -23,6 +24,31 @@ inyo:init():start()
 ```
 
 ## Usage
+
+### Using Templates
+
+```lua
+-- Jellyfish animation (p5.js powered)
+inyo:show("<h1>System Alert</h1><p>Beautiful animation!</p>", {template = "jellyfish"})
+
+-- Neon glow effect
+inyo:show("<h1>NEON</h1>", {template = "neon"})
+
+-- Alert style with pulsing animation
+inyo:show("<h1>⚠️ Warning!</h1>", {template = "alert"})
+
+-- Clean minimal style
+inyo:show("<h1>Simple Message</h1>", {template = "minimal"})
+
+-- Override template styles
+inyo:show("<h1>Custom Styled</h1>", {
+    template = "jellyfish",
+    style = {
+        ["font-size"] = "48px",
+        ["color"] = "yellow"
+    }
+})
+```
 
 ### Simple Text Message
 
@@ -98,24 +124,39 @@ inyo:configure({
 })
 ```
 
-## Built-in Effects
+## Built-in Templates
 
-### Matrix Rain
-```lua
-local matrixHTML = io.open(hs.configdir .. "/Inyo/examples/matrix.html"):read("*a")
-inyo:show(matrixHTML)
-```
+- **jellyfish** - p5.js animated jellyfish with customized size (1560x1040) and opacity (0.85)
+- **neon** - Glowing cyan text effect on black background
+- **alert** - Red gradient background with pulsing white glass-morphism container
+- **minimal** - Clean white background with subtle slide-in animation
+- **matrix** - Matrix rain effect (from examples)
+- **particles** - Interactive particle system that responds to mouse
+- **waves** - Animated gradient waves
 
-### Interactive Particles
-```lua
-local particlesHTML = io.open(hs.configdir .. "/Inyo/examples/particles.html"):read("*a")
-inyo:show(particlesHTML)
-```
+## Register Custom Templates
 
-### Gradient Waves
 ```lua
-local waveHTML = io.open(hs.configdir .. "/Inyo/examples/gradient-wave.html"):read("*a")
-inyo:show(waveHTML)
+-- Register a custom template
+inyo:registerTemplate("mytemplate", [[
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #content-layer {
+            /* your styles */
+            {{CUSTOM_STYLE}}
+        }
+    </style>
+</head>
+<body>
+    <div id="content-layer">{{CONTENT}}</div>
+</body>
+</html>
+]])
+
+-- Use your custom template
+inyo:show("Hello!", {template = "mytemplate"})
 ```
 
 ## API Reference
@@ -126,15 +167,19 @@ inyo:show(waveHTML)
 - `inyo:dismiss()` - Dismiss current message
 - `inyo:queue(content, options)` - Add message to queue
 - `inyo:configure(config)` - Update configuration
+- `inyo:registerTemplate(name, html)` - Register a custom template
 - `inyo:startServer()` - Start HTTP server
 - `inyo:stopServer()` - Stop HTTP server
 
 ### Options
 
-- `background` - Color, gradient, or GIF URL
+- `template` - Name of built-in template to use
+- `background` - Color, gradient, or GIF URL (when not using template)
 - `style` - CSS properties object
 - `duration` - Auto-dismiss time in seconds (nil for manual)
 - `queue` - Add to queue instead of replacing (HTTP API only)
+- `size` - Override window size { w = width, h = height }
+- `opacity` - Override window opacity (0.0 to 1.0)
 
 ## Creating Custom Effects
 
