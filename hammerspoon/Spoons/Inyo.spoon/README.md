@@ -15,13 +15,18 @@ Inyo is a Hammerspoon module that displays rich, dynamic messages in a webview c
 
 ## Installation
 
-1. Copy the `Inyo` folder to your Hammerspoon configuration directory
-2. Add to your `init.lua`:
+1. Copy the `Inyo.spoon` folder to your Hammerspoon Spoons directory:
+   ```bash
+   cp -r Inyo.spoon ~/.hammerspoon/Spoons/
+   ```
 
-```lua
-local inyo = dofile(hs.configdir .. "/Inyo/init.lua")
-inyo:init():start()
-```
+2. Add to your `init.lua`:
+   ```lua
+   hs.loadSpoon("Inyo")
+   spoon.Inyo:init():start()
+   ```
+
+3. Reload Hammerspoon configuration
 
 ## Usage
 
@@ -29,19 +34,19 @@ inyo:init():start()
 
 ```lua
 -- Jellyfish animation (p5.js powered)
-inyo:show("<h1>System Alert</h1><p>Beautiful animation!</p>", {template = "jellyfish"})
+spoon.Inyo:show("<h1>System Alert</h1><p>Beautiful animation!</p>", {template = "jellyfish"})
 
 -- Neon glow effect
-inyo:show("<h1>NEON</h1>", {template = "neon"})
+spoon.Inyo:show("<h1>NEON</h1>", {template = "neon"})
 
 -- Alert style with pulsing animation
-inyo:show("<h1>⚠️ Warning!</h1>", {template = "alert"})
+spoon.Inyo:show("<h1>⚠️ Warning!</h1>", {template = "alert"})
 
 -- Clean minimal style
-inyo:show("<h1>Simple Message</h1>", {template = "minimal"})
+spoon.Inyo:show("<h1>Simple Message</h1>", {template = "minimal"})
 
 -- Override template styles
-inyo:show("<h1>Custom Styled</h1>", {
+spoon.Inyo:show("<h1>Custom Styled</h1>", {
     template = "jellyfish",
     style = {
         ["font-size"] = "48px",
@@ -53,7 +58,7 @@ inyo:show("<h1>Custom Styled</h1>", {
 ### Simple Text Message
 
 ```lua
-inyo:show("Hello World!", {
+spoon.Inyo:show("Hello World!", {
     background = "#1a1a2e",
     style = {
         ["font-size"] = "36px",
@@ -65,7 +70,7 @@ inyo:show("Hello World!", {
 ### Message with GIF Background
 
 ```lua
-inyo:show("<h1>Animated!</h1>", {
+spoon.Inyo:show("<h1>Animated!</h1>", {
     background = "path/to/animation.gif",
     duration = 5  -- Auto-dismiss after 5 seconds
 })
@@ -106,15 +111,15 @@ end tell
 Queue multiple messages:
 
 ```lua
-inyo:queue("<h1>Message 1</h1>", { background = "#ff006e", duration = 2 })
-inyo:queue("<h1>Message 2</h1>", { background = "#8338ec", duration = 2 })
-inyo:queue("<h1>Message 3</h1>", { background = "#3a86ff", duration = 2 })
+spoon.Inyo:queue("<h1>Message 1</h1>", { background = "#ff006e", duration = 2 })
+spoon.Inyo:queue("<h1>Message 2</h1>", { background = "#8338ec", duration = 2 })
+spoon.Inyo:queue("<h1>Message 3</h1>", { background = "#3a86ff", duration = 2 })
 ```
 
 ## Configuration
 
 ```lua
-inyo:configure({
+spoon.Inyo:configure({
     port = 8888,              -- HTTP server port
     defaultDuration = nil,    -- nil = manual dismiss only
     position = "center",      -- "center", "top", "bottom", or {x=, y=}
@@ -138,7 +143,7 @@ inyo:configure({
 
 ```lua
 -- Register a custom template
-inyo:registerTemplate("mytemplate", [[
+spoon.Inyo:registerTemplate("mytemplate", [[
 <!DOCTYPE html>
 <html>
 <head>
@@ -156,20 +161,20 @@ inyo:registerTemplate("mytemplate", [[
 ]])
 
 -- Use your custom template
-inyo:show("Hello!", {template = "mytemplate"})
+spoon.Inyo:show("Hello!", {template = "mytemplate"})
 ```
 
 ## API Reference
 
 ### Methods
 
-- `inyo:show(content, options)` - Display a message
-- `inyo:dismiss()` - Dismiss current message
-- `inyo:queue(content, options)` - Add message to queue
-- `inyo:configure(config)` - Update configuration
-- `inyo:registerTemplate(name, html)` - Register a custom template
-- `inyo:startServer()` - Start HTTP server
-- `inyo:stopServer()` - Stop HTTP server
+- `spoon.Inyo:show(content, options)` - Display a message
+- `spoon.Inyo:dismiss()` - Dismiss current message
+- `spoon.Inyo:queue(content, options)` - Add message to queue
+- `spoon.Inyo:configure(config)` - Update configuration
+- `spoon.Inyo:registerTemplate(name, html)` - Register a custom template
+- `spoon.Inyo:startServer()` - Start HTTP server
+- `spoon.Inyo:stopServer()` - Stop HTTP server
 
 ### Options
 

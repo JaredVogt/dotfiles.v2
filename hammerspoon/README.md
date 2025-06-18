@@ -4,10 +4,11 @@ This directory contains a custom Hammerspoon setup with symbolic links to track 
 
 ## Overview
 
-This setup tracks four key files using symbolic links:
-- **init.lua**: Main Hammerspoon configuration file that loads Hammerflow
-- **Hammerflow/init.lua**: Init file for the Hammerflow spoon
-- **Hammerflow/RecursiveBinder/init.lua**: Init file for the RecursiveBinder component
+This setup includes several custom Spoons and modules:
+- **init.lua**: Main Hammerspoon configuration file that loads spoons and modules
+- **Hammerflow**: Custom spoon for leader key mappings and window management
+- **Inyo**: Dynamic message display spoon with rich HTML/CSS/JavaScript content
+- **folderwatcher**: Module for monitoring folder changes and executing scripts
 - **config.toml**: Custom leader key mappings and settings
 
 ## File Management Strategy
@@ -19,12 +20,23 @@ Instead of managing complex backups, this setup uses symbolic links to track the
 ```
 hammerspoon/
 ├── init.lua                     # Main Hammerspoon init
-├── Hammerflow/
-│   ├── init.lua                 # Hammerflow spoon init
-│   ├── config.toml              # Leader key mappings
-│   └── RecursiveBinder/
-│       └── init.lua             # RecursiveBinder component init
-└── backup_hammerflow.sh         # Backup script
+├── Spoons/
+│   ├── Hammerflow.spoon/        # Leader key mappings and window management
+│   │   ├── init.lua
+│   │   ├── config.toml
+│   │   └── RecursiveBinder.spoon/
+│   └── Inyo.spoon/              # Dynamic message display
+│       ├── init.lua
+│       ├── README.md
+│       ├── templates/           # Built-in HTML templates
+│       └── examples/            # Example effects
+├── folderwatcher/               # Folder monitoring module
+│   ├── folderwatcher.lua
+│   ├── config.toml
+│   └── scripts/                 # Action scripts for different folders
+└── Hammerflow/                  # Source files for development
+    ├── init.lua
+    └── config.toml
 ```
 
 ### Files Tracked
@@ -42,28 +54,40 @@ Create symbolic links from the dotfiles repo to the Hammerspoon directory:
 # Link main init.lua
 ln -sf /Users/jaredvogt/projects/dotfiles.v2/hammerspoon/init.lua ~/.hammerspoon/init.lua
 
-# Link Hammerflow spoon init.lua
-ln -sf /Users/jaredvogt/projects/dotfiles.v2/hammerspoon/Hammerflow/init.lua ~/.hammerspoon/Spoons/Hammerflow.spoon/init.lua
+# Create Spoons directory
+mkdir -p ~/.hammerspoon/Spoons
 
-# Link RecursiveBinder init.lua
-ln -sf /Users/jaredvogt/projects/dotfiles.v2/hammerspoon/Hammerflow/RecursiveBinder/init.lua ~/.hammerspoon/Spoons/Hammerflow.spoon/Spoons/RecursiveBinder.spoon/init.lua
+# Link Inyo spoon
+ln -sf /Users/jaredvogt/projects/dotfiles.v2/hammerspoon/Spoons/Inyo.spoon ~/.hammerspoon/Spoons/Inyo.spoon
 
-# Link config.toml
-ln -sf /Users/jaredvogt/projects/dotfiles.v2/hammerspoon/Hammerflow/config.toml ~/.hammerspoon/Spoons/Hammerflow.spoon/config.toml
+# Link Hammerflow spoon (if using from dotfiles)
+ln -sf /Users/jaredvogt/projects/dotfiles.v2/hammerspoon/Spoons/Hammerflow.spoon ~/.hammerspoon/Spoons/Hammerflow.spoon
+
+# Link folderwatcher module
+ln -sf /Users/jaredvogt/projects/dotfiles.v2/hammerspoon/folderwatcher ~/.hammerspoon/folderwatcher
 ```
 
 ## Configuration Details
 
 ### init.lua
-The main configuration file loads the Hammerflow spoon and sets up auto-reload functionality. It now looks for config files in this order:
+The main configuration file loads spoons and modules:
 
 ```lua
+-- Load Hammerflow for leader key mappings
 hs.loadSpoon("Hammerflow")
 spoon.Hammerflow.loadFirstValidTomlFile({
     "home.toml",
     "work.toml", 
     "Spoons/Hammerflow.spoon/config.toml"
 })
+
+-- Load Inyo for message display
+hs.loadSpoon("Inyo")
+spoon.Inyo:init():start()
+
+-- Load folderwatcher module
+local folderwatcher = require("folderwatcher.folderwatcher")
+folderwatcher.start()
 ```
 
 ### config.toml

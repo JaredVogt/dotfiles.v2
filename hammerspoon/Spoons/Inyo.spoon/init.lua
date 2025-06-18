@@ -1,3 +1,12 @@
+--- === Inyo ===
+---
+--- A dynamic webview message display module for Hammerspoon
+---
+--- Inyo allows you to display customizable messages, notifications, and interactive content
+--- using webviews. It supports templates, animations, HTTP API, and URL events.
+---
+--- Download: [https://github.com/jaredvogt/inyo](https://github.com/jaredvogt/inyo)
+
 ---@diagnostic disable: undefined-global
 
 local obj = {}
@@ -8,9 +17,33 @@ obj.name = "Inyo"
 obj.version = "1.0"
 obj.author = "Jared Vogt"
 obj.homepage = "https://github.com/jaredvogt/inyo"
-obj.license = "MIT"
+obj.license = "MIT - https://opensource.org/licenses/MIT"
 
--- Constructor
+-- Spoon path (set by Hammerspoon when loading)
+obj.spoonPath = nil
+
+-- Internal state (will be initialized in init())
+obj._webview = nil
+obj._modal = nil
+obj._httpServer = nil
+obj._messageQueue = {}
+obj._templates = {}
+obj._config = {
+    port = 8888,
+    defaultDuration = nil,
+    position = "center",
+    size = { w = 600, h = 400 },
+    opacity = 0.95,
+    animationDuration = 300,
+    clickThrough = false
+}
+
+--- Inyo.logger
+--- Variable
+--- Logger instance for debugging
+obj.logger = hs.logger.new('Inyo')
+
+-- Constructor (internal use)
 function obj:new()
     local o = {}
     setmetatable(o, self)
@@ -30,6 +63,10 @@ function obj:new()
         animationDuration = 300,
         clickThrough = false  -- New option for click-through behavior
     }
+    
+    -- Create instance logger
+    o.logger = hs.logger.new('Inyo')
+    o.logger.setLogLevel('debug')
     
     -- Register built-in templates
     o:_registerBuiltInTemplates()
@@ -74,25 +111,59 @@ local function loadTemplateFile(path)
     return content
 end
 
+-- Get Spoon resource path
+local function getResourcePath()
+    -- Check if we're running as a Spoon
+    if spoon and spoon.Inyo and spoon.Inyo.spoonPath then
+        local path = spoon.Inyo.spoonPath
+        obj.logger.d("[debug] Using Spoon path: " .. tostring(path))
+        return path
+    elseif hs.spoons and hs.spoons.scriptPath then
+        -- Try to get the path from the script path
+        local scriptPath = hs.spoons.scriptPath()
+        if scriptPath and scriptPath:match("Inyo%.spoon") then
+            local path = scriptPath:match("(.*/Inyo%.spoon)")
+            obj.logger.d("[debug] Using script-based Spoon path: " .. tostring(path))
+            return path
+        end
+    end
+    
+    -- Fallback for non-Spoon usage
+    local path = hs.configdir .. "/Inyo"
+    obj.logger.d("[debug] Using fallback resource path: " .. path)
+    return path
+end
+
 -- Base HTML template
 local function generateHTML(content, options, templates)
     options = options or {}
     local style = options.style or {}
     
     -- Check if using a template
-    if options.template and templates[options.template] then
-        local template = templates[options.template]
-        
-        -- Build custom CSS from style options
-        local customCSS = ""
-        for k, v in pairs(style) do
-            customCSS = customCSS .. k .. ": " .. v .. "; "
+    if options.template then
+        obj.logger.d("[debug] Template requested: " .. options.template)
+        if templates[options.template] then
+            obj.logger.d("[debug] Template found: " .. options.template)
+            local template = templates[options.template]
+            
+            -- Build custom CSS from style options
+            local customCSS = ""
+            for k, v in pairs(style) do
+                customCSS = customCSS .. k .. ": " .. v .. "; "
+            end
+            
+            -- Replace placeholders in template
+            local html = template:gsub("{{CONTENT}}", content or "")
+            html = html:gsub("{{CUSTOM_STYLE}}", customCSS)
+            return html
+        else
+            obj.logger.e("[debug] Template not found: " .. options.template)
+            local templateNames = {}
+            for name, _ in pairs(templates) do
+                table.insert(templateNames, name)
+            end
+            obj.logger.d("[debug] Available templates: " .. table.concat(templateNames, ", "))
         end
-        
-        -- Replace placeholders in template
-        local html = template:gsub("{{CONTENT}}", content or "")
-        html = html:gsub("{{CUSTOM_STYLE}}", customCSS)
-        return html
     end
     
     -- Original template generation for non-template usage
@@ -212,16 +283,24 @@ end
 
 -- Register built-in templates
 function obj:_registerBuiltInTemplates()
-    local templatesDir = hs.configdir .. "/Inyo/templates/"
+    local resourcePath = getResourcePath()
+    local templatesDir = resourcePath .. "/templates/"
+    
+    self.logger.d("[debug] Looking for templates in: " .. templatesDir)
     
     -- Load jellyfish template
-    local jellyfish = loadTemplateFile(templatesDir .. "jellyfish.html")
+    local jellyfishPath = templatesDir .. "jellyfish.html"
+    self.logger.d("[debug] Attempting to load jellyfish template from: " .. jellyfishPath)
+    local jellyfish = loadTemplateFile(jellyfishPath)
     if jellyfish then
         self._templates["jellyfish"] = jellyfish
+        self.logger.d("[debug] Successfully loaded jellyfish template")
+    else
+        self.logger.e("[debug] Failed to load jellyfish template from: " .. jellyfishPath)
     end
     
     -- Load existing example files as templates
-    local matrix = loadTemplateFile(hs.configdir .. "/Inyo/examples/matrix.html")
+    local matrix = loadTemplateFile(resourcePath .. "/examples/matrix.html")
     if matrix then
         -- Wrap in template format
         self._templates["matrix"] = [[
@@ -309,24 +388,52 @@ function obj:_registerBuiltInTemplates()
     end
     
     -- Load other example templates
-    local particles = loadTemplateFile(hs.configdir .. "/Inyo/examples/particles.html")
+    local particles = loadTemplateFile(resourcePath .. "/examples/particles.html")
     if particles then
         self._templates["particles"] = particles:gsub('<div id="particles%-message">(.-)</div>', '<div id="particles-message">{{CONTENT}}</div>')
     end
     
-    local waves = loadTemplateFile(hs.configdir .. "/Inyo/examples/gradient-wave.html")
+    local waves = loadTemplateFile(resourcePath .. "/examples/gradient-wave.html")
     if waves then
         self._templates["waves"] = waves:gsub('<div id="wave%-message">(.-)</div>', '<div id="wave-message">{{CONTENT}}</div>')
     end
 end
 
--- Register custom template
+--- Inyo:registerTemplate(name, template)
+--- Method
+--- Register a custom template for use with the show() method
+---
+--- Parameters:
+---  * name - String identifier for the template
+---  * template - HTML string with {{CONTENT}} and {{CUSTOM_STYLE}} placeholders
+---
+--- Returns:
+---  * The Inyo object for method chaining
 function obj:registerTemplate(name, template)
     self._templates[name] = template
     return self
 end
 
--- Show message in webview
+--- Inyo:show(content, options)
+--- Method
+--- Display a message using the webview
+---
+--- Parameters:
+---  * content - String containing the HTML content to display
+---  * options - Optional table with the following keys:
+---    * background - CSS background value (color, gradient, or image URL)
+---    * style - Table of CSS properties to apply to the content
+---    * duration - Number of seconds before auto-dismissing
+---    * template - String name of a registered template to use
+---    * size - Table with w and h keys for custom dimensions
+---    * opacity - Number between 0 and 1 for window opacity
+---
+--- Returns:
+---  * The Inyo object for method chaining
+---
+--- Notes:
+---  * Press ESC to dismiss the message manually
+---  * If a message is already showing, it will be dismissed first
 function obj:show(content, options)
     options = options or {}
     
@@ -390,7 +497,18 @@ function obj:show(content, options)
     return self
 end
 
--- Dismiss current message
+--- Inyo:dismiss()
+--- Method
+--- Dismiss the currently displayed message
+---
+--- Parameters:
+---  * None
+---
+--- Returns:
+---  * None
+---
+--- Notes:
+---  * If messages are queued, the next one will be displayed automatically
 function obj:dismiss()
     if self._modal then
         self._modal:exit()
@@ -409,7 +527,20 @@ function obj:dismiss()
     end
 end
 
--- Queue a message
+--- Inyo:queue(content, options)
+--- Method
+--- Add a message to the queue for sequential display
+---
+--- Parameters:
+---  * content - String containing the HTML content to display
+---  * options - Optional table with the same keys as show()
+---
+--- Returns:
+---  * None
+---
+--- Notes:
+---  * Messages are displayed in FIFO order
+---  * If no message is currently showing, the queued message displays immediately
 function obj:queue(content, options)
     table.insert(self._messageQueue, { content = content, options = options })
     
@@ -420,7 +551,20 @@ function obj:queue(content, options)
     end
 end
 
--- Start HTTP server
+--- Inyo:startServer()
+--- Method
+--- Start the HTTP server for external message control
+---
+--- Parameters:
+---  * None
+---
+--- Returns:
+---  * None
+---
+--- Notes:
+---  * Server listens on the configured port (default 8888)
+---  * Endpoint: POST /message with JSON body
+---  * Example: curl -X POST http://localhost:8888/message -H "Content-Type: application/json" -d '{"content": "Hello", "background": "#ff0000"}'
 function obj:startServer()
     if self._httpServer then
         self._httpServer:stop()
@@ -437,7 +581,10 @@ function obj:startServer()
                     local options = {
                         background = data.background,
                         style = data.style,
-                        duration = data.duration
+                        duration = data.duration,
+                        template = data.template,
+                        size = data.size,
+                        opacity = data.opacity
                     }
                     
                     if data.queue then
@@ -459,7 +606,15 @@ function obj:startServer()
     print("Inyo HTTP server started on port " .. self._config.port)
 end
 
--- Stop HTTP server
+--- Inyo:stopServer()
+--- Method
+--- Stop the HTTP server
+---
+--- Parameters:
+---  * None
+---
+--- Returns:
+---  * None
 function obj:stopServer()
     if self._httpServer then
         self._httpServer:stop()
@@ -467,7 +622,22 @@ function obj:stopServer()
     end
 end
 
--- Configuration
+--- Inyo:configure(config)
+--- Method
+--- Update configuration options
+---
+--- Parameters:
+---  * config - Table with configuration options:
+---    * port - HTTP server port (default: 8888)
+---    * defaultDuration - Default auto-dismiss duration in seconds
+---    * position - String "center", "top", "bottom", or table with x,y coordinates
+---    * size - Table with w and h keys for default dimensions
+---    * opacity - Default window opacity (0-1)
+---    * animationDuration - Animation duration in milliseconds
+---    * clickThrough - Boolean for click-through behavior
+---
+--- Returns:
+---  * The Inyo object for method chaining
 function obj:configure(config)
     for k, v in pairs(config) do
         self._config[k] = v
@@ -475,45 +645,121 @@ function obj:configure(config)
     return self
 end
 
--- Initialize
+--- Inyo:debug()
+--- Method
+--- Print debug information about the current state
+---
+--- Parameters:
+---  * None
+---
+--- Returns:
+---  * None
+function obj:debug()
+    print("=== Inyo Debug Info ===")
+    print("Resource path: " .. (getResourcePath() or "nil"))
+    print("Templates loaded:")
+    if self._templates then
+        for name, _ in pairs(self._templates) do
+            print("  - " .. name)
+        end
+    else
+        print("  No templates table!")
+    end
+    print("Config:")
+    print(hs.inspect(self._config))
+end
+
+--- Inyo:init()
+--- Method
+--- Initialize the Inyo spoon
+---
+--- Parameters:
+---  * None
+---
+--- Returns:
+---  * The Inyo object
+---
+--- Notes:
+---  * This method is called automatically by hs.loadSpoon()
+---  * Sets up templates and URL event handlers
 function obj:init()
+    -- Initialize instance state if not already done
+    if not self._templates then
+        self._webview = nil
+        self._modal = nil
+        self._httpServer = nil
+        self._messageQueue = {}
+        self._templates = {}
+        self._config = self._config or {
+            port = 8888,
+            defaultDuration = nil,
+            position = "center",
+            size = { w = 600, h = 400 },
+            opacity = 0.95,
+            animationDuration = 300,
+            clickThrough = false
+        }
+    end
+    
+    -- Set spoonPath if we're running as a Spoon
+    if not self.spoonPath and spoon and spoon.Inyo == self then
+        self.spoonPath = hs.configdir .. "/Spoons/Inyo.spoon"
+    end
+    
+    -- Register built-in templates
+    self:_registerBuiltInTemplates()
+    
+    -- Bind URL event handler
+    hs.urlevent.bind("inyo", function(eventName, params)
+        local content = params.content or params.message or "No content"
+        local options = {
+            background = params.background,
+            duration = tonumber(params.duration),
+            style = {}
+        }
+        
+        -- Parse style parameters
+        for k, v in pairs(params) do
+            if k:match("^style%.") then
+                local styleKey = k:gsub("^style%.", "")
+                options.style[styleKey] = v
+            end
+        end
+        
+        self:show(content, options)
+    end)
+    
     return self
 end
 
--- Start (auto-start server)
+--- Inyo:start()
+--- Method
+--- Start the Inyo spoon (starts HTTP server)
+---
+--- Parameters:
+---  * None
+---
+--- Returns:
+---  * The Inyo object for method chaining
 function obj:start()
     self:startServer()
     return self
 end
 
--- Stop
+--- Inyo:stop()
+--- Method
+--- Stop the Inyo spoon (stops HTTP server and dismisses any messages)
+---
+--- Parameters:
+---  * None
+---
+--- Returns:
+---  * The Inyo object for method chaining
 function obj:stop()
     self:stopServer()
     self:dismiss()
     return self
 end
 
--- Create singleton instance
-local instance = obj:new()
-
--- Bind URL event handler to instance
-hs.urlevent.bind("inyo", function(eventName, params)
-    local content = params.content or params.message or "No content"
-    local options = {
-        background = params.background,
-        duration = tonumber(params.duration),
-        style = {}
-    }
-    
-    -- Parse style parameters
-    for k, v in pairs(params) do
-        if k:match("^style%.") then
-            local styleKey = k:gsub("^style%.", "")
-            options.style[styleKey] = v
-        end
-    end
-    
-    instance:show(content, options)
-end)
-
-return instance
+-- Return the object (not an instance) for Spoon compatibility
+return obj
