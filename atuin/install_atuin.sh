@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 # Install atuin
-bash <(curl --proto '=https' --tlsv1.2 -sSf https://setup.atuin.sh)
-
+echo "This is installed with brew... continue to set up sync\n"
 # Register with atuin
 echo "Please lookup your atuin credentials in 1Password"
 read -p "Enter username (-u): " username
 read -p "Enter email (-e): " email
-atuin register -u "$username" -e "$email" -p "RF*40"
+read -p "Enter password (-p): " password
+atuin register -u "$username" -e "$email" -p "$password"
 
 # Import existing history
 atuin import auto

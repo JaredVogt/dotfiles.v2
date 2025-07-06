@@ -81,7 +81,6 @@ export STARSHIP_CONFIG=~/.config/starship/starship.toml
 eval "$(starship init zsh)" # NOTE this is supposed to be in .zshrc - and there maybe conflicts with other prompt stuff to figure out - this overrides the agnoster prompt
 
 ## atuin stuff
-. "$HOME/.atuin/bin/env"
 eval "$(atuin init zsh)"
 
 # Last commands to execute
@@ -100,3 +99,4 @@ export PATH="/Users/jaredvogt/.codeium/windsurf/bin:$PATH"
 
 # Added by Windsurf - Next
 export PATH="/Users/jaredvogt/.codeium/windsurf/bin:$PATH"
+[ -f ~/.env ] && source ~/.env
