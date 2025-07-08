@@ -25,15 +25,23 @@ grid_separator = " ▸ "      # Separator between key and label
 # single keys to open apps 
 # z_k = "Kitty"  # This will sort to the end (z_k) but display as 'k'
 # c = ["Cursor", "Cursor", "cursor.png"]  # icon is 3rd element
-c = ["Cursor", "Cursor", "cursor.png"]    # lowercase 'c' triggers with 'c'
+# c = ["Cursor", "Cursor", "cursor.png"]    # lowercase 'c' triggers with 'c'
 p = ["Claude", "Claude", "claude.png"]     # lowercase 'p' triggers with 'p'
 P = ["ChatGPT", "ChatGPT", "chatgpt.png"]  # uppercase 'P' triggers with 'Shift+P', displays as 'P'
 "z_." = "reload" # reserved for reloading your hammerspoon config (helpful when auto_reload is false)
 g = ["km:Google_meet", "Google Meet", "google_meet.png"]
 o = ["km:Wolff_email", "ffemail", "ffemail.gif"]
+v = ["km:ICRECORDER_copy", "Rec Copy", "IC.webp"]
 
 # or a url (with input)
 "y_/" = ["input:https://google.com/search?q={input}", "Good 'ol G"] # capture input and insert it into any other action
+
+# Dynamic menus - generate items at runtime
+"3" = "dynamic:cursor"              # Show Cursor editor windows
+# f = "dynamic:files(~/Downloads)"  # Browse files with optional path
+# b = "dynamic:git"                 # Git branch switcher
+# d = "dynamic:docker"              # Docker container management
+# l = "dynamic:linear"              # Linear issues (mock data)
 
 # Background image configuration (optional) 
 # This has to be AFTER individual key definitions
@@ -49,19 +57,35 @@ size = "cover"                # Size behavior (see options below)
 #   "100% 100%" - Stretch to fill exactly (may distort image)
 #   "200px"     - Fixed width, height scales proportionally
 #   "200px 150px" - Fixed width and height
+# TODO add background as a property to submenus (for even more customizability)
 
 
 # create groups to nest actions
 [l]
 label = "[linear]"
 icon = "linear.png"
+1_n = ["km:Linear_new", "New", "dots.png"]
+2_i = ["km:Linear_inbox", "Inbox", "dots.png"]
+3_s = ["km:Linear_search", "Search", "dots.png"]
 b = ["linear://wolffaudio/view/b8ff72ac-1c48-4955-9fda-74870f1d6130", "bryce", "bryce2.png"]
+g = ["linear://wolffaudio/view/gosta-by-category-f5493ef634e2", "Gösta", "bryce2.png"]
+j = ["linear://wolffaudio/view/jared-by-category-eee98cac1a29", "Jared", "bryce2.png"]
+c = ["linear://wolffaudio/project/configurator-bd9e2dcf2468/issues?layout=board&ordering=priority&grouping=workflowState&subGrouping=none&showCompletedIssues=all&showSubIssues=true&showTriageIssues=false", "Configurator", "bryce2.png"]
+
+[a]
+label = "[apps]"
+c = ["Calendar", "Calendar", "calendar.webp"]
+1 = ["1Password", "1Password", "1password.png"]
+p = ["Wolffhound", "Wolffhound", "dots.png"]
+e = ["Cursor", "Cursor", "cursor.png"]
+w = ["Windsurf", "Windsurf", "windsurf.png"]
+v = ["VoiceMemos", "Voice Memos", "voicememo.png"]
+a = ["Whatsapp", "Whatsapp", "voicememo.png"]
 
 [b]
 label = "[links]" # the "label" key is reserved to change the label of the group
-g = "https://github.com"
-b = "https://bsky.app"
-t = "https://twitter.com"
+g = "https://github.com/jaredvogt"  # this needs to open in canary
+s = "https://goldmansachs.com"  # this needs to open in canary
 
 [d]
 label = "[dots]"
@@ -85,7 +109,16 @@ c = ["raycast://extensions/raycast/raycast/confetti", "confetti"]
 e = ["raycast://extensions/raycast/emoji-symbols/search-emoji-symbols", "emoji"]
 
 
+[f]
+label = "[fathom]" # the "label" key is reserved to change the label of the group
+f = "https://github.com"
+
+[h]
+label = "[home]"
+u = ["km:unifi_hs", "Unifi", "dots.png"]
+# 1 = ["1Password", "1Password", "1password.png"]
 # use prefixes for special actions
+
 [x]
 label = "[prefixes]"
 t = "text:sam@saml.dev"       # types "sam@saml.dev"

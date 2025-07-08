@@ -226,6 +226,19 @@ f = "function:myFunction"       # Call registered function
 g = "function:myFunc|arg1|arg2" # Call with arguments
 ```
 
+#### Dynamic Menus
+Generate menu items dynamically at runtime:
+```toml
+c = "dynamic:cursor"            # Show Cursor editor windows
+f = "dynamic:files(~/Downloads)" # Browse files (with optional path argument)
+g = "dynamic:git"               # Git branch switcher
+d = "dynamic:docker"            # Docker container management
+l = "dynamic:linear"            # Linear issues
+
+# Arguments are passed in parentheses
+f = "dynamic:files(~/Projects)" # Browse specific directory
+```
+
 ### Groups and Nesting
 
 Create organized groups of actions:
@@ -485,6 +498,96 @@ o = "input:code {input}"                         # Open file/folder in VS Code
 
 ### Browser-specific Fixes
 The framework includes specific handling for Firefox and Zen Browser window management animations.
+
+## Dynamic Menus
+
+Dynamic menus allow you to generate menu items at runtime based on lookups, API calls, or system state. This is perfect for creating menus that change based on context or external data.
+
+### How It Works
+
+1. When you press a key bound to a `dynamic:` action, Hammerflow calls the specified generator
+2. The generator returns a list of items (e.g., "dog", "cat", "bird")
+3. Hammerflow automatically assigns shortcuts (a, b, c, etc.) to each item
+4. The submenu is displayed with the generated items
+
+### Built-in Generators
+
+Hammerflow includes several built-in dynamic menu generators located in `DynamicMenu/generators/`:
+
+- **`cursor`** - Show Cursor editor windows (integrates with Keyboard Maestro)
+- **`files`** - Browse files and folders (accepts path argument)
+- **`git`** - Git branch switcher for current repository
+- **`docker`** - Docker container management
+- **`linear`** - Linear issues (example with mock data)
+
+### Creating Custom Generators
+
+Create your own generators by adding a new file to `DynamicMenu/generators/`:
+
+```lua
+-- DynamicMenu/generators/myprojects.lua
+return function(args)
+  return {
+    {label = "Website", action = "code:~/projects/website"},
+    {label = "Mobile App", action = "code:~/projects/app"},
+    {label = "API Server", action = "code:~/projects/api"}
+  }
+end
+```
+
+Then use it in config.toml:
+```toml
+p = "dynamic:myprojects"        # No registration needed!
+```
+
+### Generator Return Formats
+
+Generators can return items in several formats:
+
+```lua
+-- Simple string array (launches as applications)
+return {"Safari", "Chrome", "Firefox"}
+
+-- Objects with actions
+return {
+  {label = "Google", action = "https://google.com"},
+  {label = "GitHub", action = "https://github.com"},
+  {label = "Lock Screen", action = function() hs.caffeinate.lockScreen() end}
+}
+
+-- Mixed formats
+return {
+  "TextEdit",  -- Simple app launch
+  {label = "My Project", action = "code:~/project"},  -- Custom action
+  {label = "Sleep", action = function() hs.caffeinate.systemSleep() end}  -- Function
+}
+
+-- Rich actions with Keyboard Maestro integration
+return {
+  {
+    label = "Window Name",
+    icon = "cursor.png",
+    action = {
+      type = "km",
+      macro = "MacroName",
+      variables = {
+        var1 = "value1",
+        var2 = "value2"
+      }
+    }
+  }
+}
+```
+
+### Advanced Example
+
+See `examples/custom_dynamic_menu.lua` for comprehensive examples including:
+- Project switchers
+- Bookmark managers
+- System control panels
+- API integrations
+- Context-aware menus
+- Music controls
 
 ## Tips
 

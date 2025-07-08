@@ -54,6 +54,7 @@ end
 
 local toml = loadfile_relative("lib/tinytoml.lua")
 local validateTomlStructure = loadfile_relative("toml_validator.lua")
+local dynamicMenu = loadfile_relative("DynamicMenu/init.lua")
 
 local function parseKeystroke(keystroke)
   local parts = {}
@@ -503,6 +504,67 @@ local function getActionAndLabel(s)
   elseif startswith(s, "text:") then
     local arg = postfix(s)
     return text(arg), arg, nil
+  elseif startswith(s, "dynamic:") then
+    local arg = postfix(s)
+    -- Parse generator name and optional arguments
+    local generatorName, args = arg:match("^([^|]+)|?(.*)$")
+    if not generatorName then
+      generatorName = arg
+      args = nil
+    end
+    
+    -- Return a function that generates the submenu when accessed
+    return function()
+      local items, err = dynamicMenu:generate(generatorName, args)
+      if not items then
+        hs.alert("Dynamic menu error: " .. (err or "unknown"), nil, nil, 5)
+        return
+      end
+      
+      -- Convert items to Hammerflow keymap format
+      local keyMap = {}
+      for k, v in pairs(items) do
+        if type(v) == "string" then
+          -- Simple string -> launch app
+          local action, label, icon = getActionAndLabel(v)
+          keyMap[singleKey(k, label)] = {action = action, icon = icon}
+        elseif type(v) == "table" then
+          if v.action then
+            -- Item with custom action
+            local action, label, icon
+            if type(v.action) == "function" then
+              action = v.action
+              label = v.label or "Action"
+            elseif type(v.action) == "table" and v.action.type == "km" then
+              -- Keyboard Maestro action with variables
+              action = function()
+                -- Build AppleScript to set multiple variables and trigger macro
+                local script = 'tell application "Keyboard Maestro Engine"\n'
+                if v.action.variables then
+                  for varName, varValue in pairs(v.action.variables) do
+                    script = script .. string.format('  setvariable "%s" to "%s"\n', 
+                      varName, tostring(varValue):gsub('"', '\\"'))
+                  end
+                end
+                script = script .. string.format('  do script "%s"\n', v.action.macro)
+                script = script .. 'end tell'
+                hs.osascript.applescript(script)
+              end
+              label = v.label or v.action.macro
+            else
+              action, label, icon = getActionAndLabel(v.action)
+            end
+            keyMap[singleKey(k, v.label or label)] = {action = action, icon = v.icon or icon}
+          else
+            -- Nested submenu
+            keyMap[singleKey(k, v.label or k)] = v
+          end
+        end
+      end
+      
+      -- Show the dynamic menu
+      spoon.RecursiveBinder.recursiveBind(keyMap)()
+    end, "→ " .. generatorName, nil
   elseif startswith(s, "window:") then
     local loc = postfix(s)
     if windowLocations[loc] then
@@ -785,5 +847,8 @@ function obj.registerFunctions(...)
     end
   end
 end
+
+-- Expose DynamicMenu for custom generators
+obj.dynamicMenu = dynamicMenu
 
 return obj
