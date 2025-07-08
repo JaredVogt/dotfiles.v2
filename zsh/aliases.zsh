@@ -7,6 +7,7 @@ alias cellar="cd /opt/homebrew/Cellar && lla"
 alias rm="trash"
 alias claude="~/.claude/local/claude"
 alias ccr="claude -r"
+alias ccc="claude -c"
 alias dot='edit_dotfiles ~/projects/dotfiles.v2'
 alias dotv='edit_dotfiles ~/.config/nvim'
 alias dotp='edit_dotfiles ~/projects/ai_context'

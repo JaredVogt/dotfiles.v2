@@ -54,6 +54,7 @@ abbr -a ks 'ksc -ms -p'
 abbr -a claudec '~/.config/zsh/functions/claudeSaveSession.sh'
 abbr -a claude '~/.claude/local/claude'
 abbr -a ccr '~/.claude/local/claude -r'
+abbr -a ccc '~/.claude/local/claude -c'
 # abbr -a jv 'nvim -u ~/.config/nvim/jaredv.init.lua'
 
 # nvim session shortcuts

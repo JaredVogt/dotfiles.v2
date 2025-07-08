@@ -117,4 +117,4 @@ records = true
 # inline_height = 0
 
 # Use the full UI style instead of compact
-# style = "full"
+style = "compact"
