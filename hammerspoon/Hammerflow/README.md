@@ -63,7 +63,9 @@ show_ui = true                  # Optional: Show visual interface (default: true
 display_mode = "webview"        # Optional: "webview" or "text" (default: "webview")
 
 # Grid layout options (for webview mode)
-max_grid_columns = 5            # Maximum columns in grid (default: 5)
+layout_mode = "horizontal"      # Layout direction: "horizontal" or "vertical" (default: "horizontal")
+max_grid_columns = 5            # Maximum columns in grid (horizontal mode, default: 5)
+max_column_height = 10          # Maximum items per column (vertical mode, default: 10)
 grid_spacing = " | "            # Spacing between columns (default: " | ")
 grid_separator = " ▸ "          # Separator between key and label (default: " : ")
 
@@ -237,6 +239,9 @@ l = "dynamic:linear"            # Linear issues
 
 # Arguments are passed in parentheses
 f = "dynamic:files(~/Projects)" # Browse specific directory
+
+# With custom layout options (4th element)
+c = ["dynamic:cursor", "Cursor Windows", "", {layout_mode = "vertical", max_column_height = 8}]
 ```
 
 ### Groups and Nesting
@@ -429,6 +434,7 @@ The modern visual interface with:
 - Click-to-execute functionality
 - Translucent background with optional custom image
 - Configurable spacing and separators
+- Choice of horizontal or vertical layout
 
 ```toml
 display_mode = "webview"  # Modern visual grid
@@ -458,6 +464,43 @@ The classic lightweight display with:
 ```toml
 display_mode = "text"     # Classic text display
 ```
+
+### Layout Modes (Webview only)
+
+When using webview display mode, you can choose between horizontal and vertical layouts:
+
+#### Horizontal Layout (default)
+Items flow from left to right, wrapping to new rows:
+```toml
+layout_mode = "horizontal"      # Items flow left-to-right
+max_grid_columns = 5           # Maximum columns before wrapping to next row
+```
+
+#### Vertical Layout
+Items flow from top to bottom, wrapping to new columns:
+```toml
+layout_mode = "vertical"        # Items flow top-to-bottom
+max_column_height = 10         # Maximum items per column before wrapping
+```
+
+This is particularly useful when you have many shortcuts and prefer to scan them vertically rather than horizontally. The vertical layout creates newspaper-style columns that are easier to read for long lists.
+
+#### Per-Entry Layout Control
+You can override layout settings for individual menu items or groups by using the 4th element in array format:
+
+```toml
+# Dynamic menu with vertical layout
+"3" = ["dynamic:cursor", "Cursor Windows", "", {layout_mode = "vertical", max_column_height = 8}]
+
+# Regular action with custom layout
+k = ["Kitty", "Terminal", "kitty.png", {layout_mode = "horizontal", max_grid_columns = 3}]
+
+# Group with custom layout (use array format for label)
+[w]
+label = ["[window]", "", "", {layout_mode = "vertical", max_column_height = 12}]
+```
+
+Note: When using inline tables in TOML, keys must be unquoted (e.g., `layout_mode` not `"layout_mode"`).
 
 ### Custom Sort Order
 

@@ -513,8 +513,9 @@ local function getActionAndLabel(s)
       args = nil
     end
     
-    -- Return a function that generates the submenu when accessed
-    return function()
+    -- Create a closure that captures layout options
+    local function createDynamicMenu(capturedLayoutOptions)
+      return function()
       local items, err = dynamicMenu:generate(generatorName, args)
       if not items then
         hs.alert("Dynamic menu error: " .. (err or "unknown"), nil, nil, 5)
@@ -562,9 +563,11 @@ local function getActionAndLabel(s)
         end
       end
       
-      -- Show the dynamic menu
-      spoon.RecursiveBinder.recursiveBind(keyMap)()
-    end, "→ " .. generatorName, nil
+        -- Show the dynamic menu with layout options
+        spoon.RecursiveBinder.recursiveBind(keyMap, nil, capturedLayoutOptions)()
+      end
+    end
+    return createDynamicMenu, "→ " .. generatorName, nil
   elseif startswith(s, "window:") then
     local loc = postfix(s)
     if windowLocations[loc] then
@@ -696,6 +699,8 @@ function obj.loadFirstValidTomlFile(paths)
   local maxCols = configFile.max_grid_columns or 5
   local gridSpacing = configFile.grid_spacing or " | "
   local gridSeparator = configFile.grid_separator or " : "
+  local layoutMode = configFile.layout_mode or "horizontal"
+  local maxColumnHeight = configFile.max_column_height or 10
 
   -- Background configuration
   local backgroundConfig = configFile.background or {}
@@ -708,6 +713,8 @@ function obj.loadFirstValidTomlFile(paths)
   spoon.RecursiveBinder.maxColumns = maxCols
   spoon.RecursiveBinder.gridSpacing = gridSpacing
   spoon.RecursiveBinder.gridSeparator = gridSeparator
+  spoon.RecursiveBinder.layoutMode = layoutMode
+  spoon.RecursiveBinder.maxColumnHeight = maxColumnHeight
   spoon.RecursiveBinder.backgroundImage = backgroundImage
   spoon.RecursiveBinder.backgroundOpacity = backgroundOpacity
   spoon.RecursiveBinder.backgroundPosition = backgroundPosition
@@ -724,6 +731,8 @@ function obj.loadFirstValidTomlFile(paths)
   configFile.max_grid_columns = nil
   configFile.grid_spacing = nil
   configFile.grid_separator = nil
+  configFile.layout_mode = nil
+  configFile.max_column_height = nil
   configFile.background = nil
 
   local function parseKeyMap(config)
@@ -754,7 +763,12 @@ function obj.loadFirstValidTomlFile(paths)
           elseif type(v) == "table" and v[1] then
             local action, defaultLabel, icon = getActionAndLabel(v[1])
             local customIcon = v[3] or icon
-            keyMap[singleKey(displayKey, v[2] or defaultLabel)] = {action = action, icon = customIcon, sortKey = sortKey}
+            local layoutOptions = v[4] or {}
+            -- If action is a dynamic menu factory, call it with layout options
+            if type(action) == "function" and v[1]:find("^dynamic:") then
+              action = action(layoutOptions)
+            end
+            keyMap[singleKey(displayKey, v[2] or defaultLabel)] = {action = action, icon = customIcon, sortKey = sortKey, layoutOptions = layoutOptions}
           else
             -- Nested submenu
             keyMap[singleKey(displayKey, v.label or displayKey)] = parseKeyMap(v)
@@ -780,10 +794,22 @@ function obj.loadFirstValidTomlFile(paths)
       elseif type(v) == "table" and v[1] then
         local action, defaultLabel, icon = getActionAndLabel(v[1])
         local customIcon = v[3] or icon
-        keyMap[singleKey(k, v[2] or defaultLabel)] = {action = action, icon = customIcon, sortKey = k}
+        local layoutOptions = v[4] or {}
+        -- If action is a dynamic menu factory, call it with layout options
+        if type(action) == "function" and v[1]:find("^dynamic:") then
+          action = action(layoutOptions)
+        end
+        keyMap[singleKey(k, v[2] or defaultLabel)] = {action = action, icon = customIcon, sortKey = k, layoutOptions = layoutOptions}
       else
         local nestedKeyMap = parseKeyMap(v)
-        keyMap[singleKey(k, v.label or k)] = {keyMap = nestedKeyMap, icon = v.icon, sortKey = k}
+        local layoutOptions = {}
+        local groupLabel = v.label
+        -- Check if group label is in array format with layout options
+        if type(v.label) == "table" and v.label[1] then
+          groupLabel = v.label[1]  -- Extract the actual label
+          layoutOptions = v.label[4] or {}
+        end
+        keyMap[singleKey(k, groupLabel or k)] = {keyMap = nestedKeyMap, icon = v.icon, sortKey = k, layoutOptions = layoutOptions}
       end
     end
 
@@ -837,7 +863,7 @@ function obj.loadFirstValidTomlFile(paths)
   -- to guide users on proper TOML structure.
 
   local keys = parseKeyMap(configFile)
-  hs.hotkey.bind(leader_key_mods, leader_key, spoon.RecursiveBinder.recursiveBind(keys))
+  hs.hotkey.bind(leader_key_mods, leader_key, spoon.RecursiveBinder.recursiveBind(keys, nil, nil))
 end
 
 function obj.registerFunctions(...)

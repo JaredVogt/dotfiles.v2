@@ -351,13 +351,17 @@ local function killHelper()
 end
 
 -- create webview grid display
-local function showWebviewGrid(keymap)
+local function showWebviewGrid(keymap, layoutOptions)
    -- Close existing webview if present
    if gridWebview then
       gridWebview:delete()
    end
    
-   local MAX_COLS = obj.maxColumns or 7
+   -- Use passed layout options or fall back to global settings
+   layoutOptions = layoutOptions or {}
+   local MAX_COLS = layoutOptions.max_grid_columns or obj.maxColumns or 7
+   local LAYOUT_MODE = layoutOptions.layout_mode or obj.layoutMode or "horizontal"
+   local MAX_COL_HEIGHT = layoutOptions.max_column_height or obj.maxColumnHeight or 10
    local items = {}
    
    -- Collect and sort items
@@ -405,8 +409,16 @@ local function showWebviewGrid(keymap)
    end
    
    -- Calculate grid dimensions
-   local numCols = math.min(#items, MAX_COLS)
-   local numRows = math.ceil(#items / numCols)
+   local numCols, numRows
+   if LAYOUT_MODE == "vertical" then
+      -- For vertical layout, rows are limited and columns expand
+      numRows = math.min(#items, MAX_COL_HEIGHT)
+      numCols = math.ceil(#items / numRows)
+   else
+      -- For horizontal layout (default), columns are limited and rows expand
+      numCols = math.min(#items, MAX_COLS)
+      numRows = math.ceil(#items / numCols)
+   end
    
    -- Generate HTML
    local html = [[
@@ -428,8 +440,10 @@ local function showWebviewGrid(keymap)
            }
            .grid-container {
                display: grid;
-               grid-template-columns: repeat(]] .. numCols .. [[, 1fr);
-               gap: 30px 60px;
+               ]] .. (LAYOUT_MODE == "vertical" and 
+                  "grid-auto-flow: column;\n               grid-template-rows: repeat(" .. numRows .. ", 1fr);" or
+                  "grid-template-columns: repeat(" .. numCols .. ", 1fr);") .. [[
+               gap: ]] .. (LAYOUT_MODE == "vertical" and "20px 40px" or "30px 60px") .. [[;
                justify-items: start;
                align-items: center;
                background-color: rgba(0, 0, 0, 0.6);
@@ -570,21 +584,28 @@ local function showWebviewGrid(keymap)
          if file then
             local imageData = file:read("*all")
             file:close()
-            local base64 = hs.base64.encode(imageData)
-            local extension = item.icon:match("%.(%w+)$"):lower()
-            local mimeType = "image/jpeg" -- default
-            if extension == "png" then
-              mimeType = "image/png"
-            elseif extension == "gif" then
-              mimeType = "image/gif"
-            elseif extension == "webp" then
-              mimeType = "image/webp"
-            elseif extension == "svg" then
-              mimeType = "image/svg+xml"
+            if imageData and #imageData > 0 then
+               local base64 = hs.base64.encode(imageData)
+               local extension = item.icon:match("%.(%w+)$")
+               if extension then
+                  extension = extension:lower()
+                  local mimeType = "image/jpeg" -- default
+                  if extension == "png" then
+                     mimeType = "image/png"
+                  elseif extension == "gif" then
+                     mimeType = "image/gif"
+                  elseif extension == "webp" then
+                     mimeType = "image/webp"
+                  elseif extension == "svg" then
+                     mimeType = "image/svg+xml"
+                  end
+                  iconHtml = string.format('<img src="data:%s;base64,%s" class="icon">', mimeType, base64)
+               end
+            else
+               print("Could not read image file: " .. iconFilePath)
             end
-            iconHtml = string.format('<img src="data:%s;base64,%s" class="icon">', mimeType, base64)
          else
-            print("Could not read image file: " .. iconFilePath)
+            print("Could not open image file: " .. iconFilePath)
          end
       end
       html = html .. string.format([[
@@ -627,10 +648,10 @@ local function showWebviewGrid(keymap)
    local baseCharWidth = 18  -- Increased character width for Menlo 48px font
    local iconWidth = hasIcons and 60 or 0  -- 48px icon + 12px margin if icons present
    local cellWidth = math.max(300, maxLabelLength * baseCharWidth + 100 + iconWidth)  -- Dynamic width with icon consideration
-   local cellHeight = 100  -- Height per cell
+   local cellHeight = LAYOUT_MODE == "vertical" and 80 or 100  -- Slightly smaller cells for vertical layout
    local padding = 60     -- Padding around content
-   local gapWidth = 80    -- Gap between columns
-   local gapHeight = 40   -- Gap between rows
+   local gapWidth = LAYOUT_MODE == "vertical" and 50 or 80    -- Smaller gap between columns in vertical mode
+   local gapHeight = LAYOUT_MODE == "vertical" and 20 or 40   -- Smaller gap between rows in vertical mode
    
    local webviewWidth = (numCols * cellWidth) + ((numCols - 1) * gapWidth) + (padding * 2)
    local webviewHeight = (numRows * cellHeight) + ((numRows - 1) * gapHeight) + (padding * 2)
@@ -677,10 +698,16 @@ local function showWebviewGrid(keymap)
                if key[2] == keyPressed then
                   local modal = hs.hotkey.modal.new()
                   local actionBinding = binding
-                  if type(binding) == "table" and binding.action then
-                     actionBinding = binding.action
+                  local childLayoutOptions = nil
+                  if type(binding) == "table" then
+                     if binding.action then
+                        actionBinding = binding.action
+                     end
+                     if binding.layoutOptions then
+                        childLayoutOptions = binding.layoutOptions
+                     end
                   end
-                  local func = obj.recursiveBind(actionBinding, {modal})
+                  local func = obj.recursiveBind(actionBinding, {modal}, childLayoutOptions)
                   func()
                   break
                end
@@ -713,7 +740,7 @@ end
 ---    And the table have the same format of top table: keys to keys, value to table or function
 
 -- the actual binding function
-function obj.recursiveBind(keymap, modals)
+function obj.recursiveBind(keymap, modals, layoutOptions)
    if not modals then modals = {} end
    if type(keymap) == 'function' then
       -- in this case "keymap" is actuall a function
@@ -729,6 +756,7 @@ function obj.recursiveBind(keymap, modals)
    for key, map in pairs(keymap) do
       local actualMap = map
       local sortKey = nil
+      local childLayoutOptions = nil
       if type(map) == "table" then
          if map.action then
             actualMap = map.action
@@ -738,8 +766,11 @@ function obj.recursiveBind(keymap, modals)
          if map.sortKey then
             sortKey = map.sortKey
          end
+         if map.layoutOptions then
+            childLayoutOptions = map.layoutOptions
+         end
       end
-      local func = obj.recursiveBind(actualMap, modals)
+      local func = obj.recursiveBind(actualMap, modals, childLayoutOptions)
       -- key[1] is modifiers, i.e. {'shift'}, key[2] is key, i.e. 'f' 
       modal:bind(key[1], key[2], function() modal:exit() killHelper() modalActive = false func() end)
       if #key >= 3 then
@@ -768,7 +799,7 @@ function obj.recursiveBind(keymap, modals)
             if obj.displayMode == "text" then
                showHelper(keyFuncNameTable, keyFuncSortTable)
             else
-               showWebviewGrid(keymap)
+               showWebviewGrid(keymap, layoutOptions)
             end
          end
       end

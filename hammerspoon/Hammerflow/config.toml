@@ -18,6 +18,8 @@ show_ui = true            # optional, default true, show the ui with your key ma
 display_mode = "webview"  # optional, default "webview", options: "webview" or "text"
 
 # Grid layout options (optional - these are the defaults)
+# layout_mode = "vertical"    # Use vertical layout for all menus
+# max_column_height = 8       # Maximum items per column before wrapping
 max_grid_columns = 5        # Maximum columns (1-10 recommended)
 grid_spacing = " | "        # Spacing between columns
 grid_separator = " ▸ "      # Separator between key and label
@@ -37,7 +39,7 @@ v = ["km:ICRECORDER_copy", "Rec Copy", "IC.webp"]
 "y_/" = ["input:https://google.com/search?q={input}", "Good 'ol G"] # capture input and insert it into any other action
 
 # Dynamic menus - generate items at runtime
-"3" = "dynamic:cursor"              # Show Cursor editor windows
+"3" = ["dynamic:cursor", "Cursor Windows", "", {layout_mode = "vertical", max_column_height = 8}]  # Show Cursor editor windows with vertical layout
 # f = "dynamic:files(~/Downloads)"  # Browse files with optional path
 # b = "dynamic:git"                 # Git branch switcher
 # d = "dynamic:docker"              # Docker container management
@@ -74,6 +76,7 @@ c = ["linear://wolffaudio/project/configurator-bd9e2dcf2468/issues?layout=board&
 
 [a]
 label = "[apps]"
+# To use vertical layout for this group, use: label = ["[apps]", "", "", {layout_mode = "vertical", max_column_height = 10}]
 c = ["Calendar", "Calendar", "calendar.webp"]
 1 = ["1Password", "1Password", "1password.png"]
 p = ["Wolffhound", "Wolffhound", "dots.png"]
