@@ -509,14 +509,17 @@ local function showWebviewGrid(keymap, layoutOptions)
    
    -- Load background image using config settings
    local backgroundImageData = "none"
-   local backgroundOpacity = obj.backgroundOpacity or 0.6
-   local backgroundPosition = obj.backgroundPosition or "center center"
-   local backgroundSize = obj.backgroundSize or "cover"
+   -- Use per-menu background settings if available, otherwise fall back to global settings
+   local backgroundConfig = layoutOptions and layoutOptions.background or {}
+   local backgroundOpacity = backgroundConfig.opacity or obj.backgroundOpacity or 0.6
+   local backgroundPosition = backgroundConfig.position or obj.backgroundPosition or "center center"
+   local backgroundSize = backgroundConfig.size or obj.backgroundSize or "cover"
+   local backgroundImage = backgroundConfig.image or obj.backgroundImage
    
-   if obj.backgroundImage then
+   if backgroundImage then
       -- Use configured image filename
       local home = os.getenv("HOME")
-      local backgroundPath = home .. "/projects/dotfiles.v2/hammerspoon/Hammerflow/images/" .. obj.backgroundImage
+      local backgroundPath = home .. "/projects/dotfiles.v2/hammerspoon/Hammerflow/images/" .. backgroundImage
       local bgFile = io.open(backgroundPath, "rb")
       if bgFile then
          local imageData = bgFile:read("*all")
@@ -524,7 +527,7 @@ local function showWebviewGrid(keymap, layoutOptions)
          local base64 = hs.base64.encode(imageData)
          
          -- Get proper MIME type
-         local extension = obj.backgroundImage:match("%.(%w+)$"):lower()
+         local extension = backgroundImage:match("%.(%w+)$"):lower()
          local mimeType = "image/jpeg" -- default
          if extension == "png" then
             mimeType = "image/png"

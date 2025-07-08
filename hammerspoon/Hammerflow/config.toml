@@ -39,7 +39,20 @@ v = ["km:ICRECORDER_copy", "Rec Copy", "IC.webp"]
 "y_/" = ["input:https://google.com/search?q={input}", "Good 'ol G"] # capture input and insert it into any other action
 
 # Dynamic menus - generate items at runtime
-"3" = ["dynamic:cursor", "Cursor Windows", "", {layout_mode = "vertical", max_column_height = 8}]  # Show Cursor editor windows with vertical layout
+"3" = ["dynamic:cursor", "Cursor Windows", "", {layout_mode = "vertical", max_column_height = 8, background = {image = "cursor.gif", opacity = 0.6, position = "center center", size = "cover"}}]  # Show Cursor editor windows with custom background
+
+# Example with per-menu background image:
+# "4" = ["dynamic:docker", "Docker Containers", "", {
+#     layout_mode = "vertical", 
+#     max_column_height = 8,
+#     background = {
+#         image = "docker-bg.png",    # Custom background image for this menu
+#         opacity = 0.8,              # Override global opacity
+#         position = "center center",
+#         size = "cover"
+#     }
+# }]
+
 # f = "dynamic:files(~/Downloads)"  # Browse files with optional path
 # b = "dynamic:git"                 # Git branch switcher
 # d = "dynamic:docker"              # Docker container management
@@ -59,12 +72,12 @@ size = "cover"                # Size behavior (see options below)
 #   "100% 100%" - Stretch to fill exactly (may distort image)
 #   "200px"     - Fixed width, height scales proportionally
 #   "200px 150px" - Fixed width and height
-# TODO add background as a property to submenus (for even more customizability)
+# Per-menu backgrounds are now supported! See examples above for dynamic menus and submenus
 
 
 # create groups to nest actions
 [l]
-label = "[linear]"
+label = ["[linear]", "", "", {background = {image = "linear_background.gif", opacity = 0.6, position = "center center", size = "cover"}}]
 icon = "linear.png"
 1_n = ["km:Linear_new", "New", "dots.png"]
 2_i = ["km:Linear_inbox", "Inbox", "dots.png"]
@@ -135,6 +148,8 @@ i = "input:https://google.com/search?q={input}" # capture input and insert it in
 # we have window management too!
 [w]
 label = "[window]"
+# To add a custom background to this submenu, use the array format:
+# label = ["[window]", nil, nil, {background = {image = "window-bg.png", opacity = 0.7}}]
 h = ["raycast://extensions/raycast/window-management/left-half", "left half"]
 l = ["raycast://extensions/raycast/window-management/right-half", "right half"]
 c = ["raycast://extensions/raycast/window-management/center-half", "center half"]
