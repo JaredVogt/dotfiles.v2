@@ -47,3 +47,4 @@ debug = true  # Log all events
 notification = true  # Show macOS notifications
 script_timeout = 30  # Max seconds for script execution
 script_environment = { PROJECT_ROOT = "~/projects", EDITOR = "nvim" }
+log_path = "~/.hammerspoon/logs/folderwatcher.log"  # Central log file for all folder watcher activity

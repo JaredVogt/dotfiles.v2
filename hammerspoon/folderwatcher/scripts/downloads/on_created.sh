@@ -7,7 +7,7 @@ FILE_PATH="$2"
 FILE_NAME="$3"
 
 # Log the event
-echo "[$(date)] File created: $FILE_NAME" >> ~/scripts/downloads/activity.log
+echo "[$(date)] File created: $FILE_NAME" >> ~/.hammerspoon/logs/folderwatcher.log
 
 # Example actions based on file type (commented out - only notifications active)
 # case "$FILE_NAME" in
